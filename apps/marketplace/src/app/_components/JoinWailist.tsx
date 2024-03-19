@@ -10,7 +10,7 @@ import { getTRPCError } from "~/utils/error";
 export function JoinWaitlist() {
   const [error, setError] = useState<"already-joined" | "unknown" | "validation" | null>(null);
   const [loading, setLoading] = useState(false);
-  const [success, setSuccess] = useState(true);
+  const [success, setSuccess] = useState(false);
 
   const { mutateAsync: join } = api.waitlist.join.useMutation();
 
