@@ -10,6 +10,9 @@ import { appRouter } from "./trpc/routers/root";
 import { createContext } from "./trpc/context";
 import cookieParser from "cookie-parser";
 import { createExpressMiddleware } from "@trpc/server/adapters/express";
+import { initEnv } from "./environment";
+
+initEnv();
 
 const port: number = 3002 as const;
 
