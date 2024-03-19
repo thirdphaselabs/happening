@@ -1,4 +1,4 @@
-import { AppRouter } from "@template/server";
+import { AppRouter } from "@plaventi/server";
 import type { inferRouterInputs, inferRouterOutputs } from "@trpc/server";
 
 export type RouterInput = inferRouterInputs<AppRouter>;

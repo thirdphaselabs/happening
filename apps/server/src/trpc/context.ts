@@ -1,4 +1,4 @@
-import { prisma } from "@template/database";
+import { prisma } from "@plaventi/database";
 import type * as trpc from "@trpc/server";
 import { initTRPC } from "@trpc/server";
 import type * as trpcExpress from "@trpc/server/adapters/express";

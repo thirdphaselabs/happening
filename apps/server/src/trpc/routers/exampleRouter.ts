@@ -1,7 +1,7 @@
 import { z } from "zod";
 import { protectedProcedure, publicProcedure } from "../procedures";
 import { createTRPCRouter, t } from "../context";
-import { prisma } from "@template/database";
+import { prisma } from "@plaventi/database";
 
 export const eventsRouter = createTRPCRouter({
   hello: publicProcedure.query(() => {

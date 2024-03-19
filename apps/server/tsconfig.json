@@ -1,5 +1,5 @@
 {
-  "extends": "tsconfig/base.json",
+  "extends": "@plaventi/tsconfig/base.json",
   "compilerOptions": {
     "lib": ["ES2015", "DOM"],
     "module": "CommonJS",
@@ -8,7 +8,11 @@
     "declaration": false,
     "declarationMap": false,
     "skipLibCheck": true,
-    "types": []
+    "baseUrl": ".",
+    "types": [],
+    "paths": {
+      "@trpc/server/*": ["../../../node_modules/@trpc/server/*"]
+    }
   },
   "ts-node": {
     "esm": true

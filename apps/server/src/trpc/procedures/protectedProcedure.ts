@@ -1,6 +1,6 @@
 import { TRPCError } from "@trpc/server";
 import { t } from "../context";
-import { prisma } from "@template/database";
+import { prisma } from "@plaventi/database";
 
 const isAdmin = t.middleware(async ({ ctx, next }) => {
   const event = await prisma.event.findFirst();

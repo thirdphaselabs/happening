@@ -13,8 +13,8 @@
     "dotenv-cli": "^7.4.1",
     "eslint": "^8.47.0",
     "prettier": "^3.0.2",
-    "prettier-config": "workspace:*",
-    "tsconfig": "workspace:*",
+    "@plaventi/prettier-config": "workspace:*",
+    "@plaventi/tsconfig": "workspace:*",
     "turbo": "latest"
   },
   "name": "trpc-server-client-turborepo-template",

@@ -1,4 +1,4 @@
-import { PrismaClient } from "@template/database";
+import { PrismaClient } from "@plaventi/database";
 import { protectedProcedure } from "../trpc/procedures";
 
 export type ProtectedPersistanceCallArgs = Parameters<Parameters<typeof protectedProcedure.query>["0"]>[0];

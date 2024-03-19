@@ -1,5 +1,5 @@
 import { EventPersistance } from "./event.persistance";
-import { CreateEvent } from "./use-cases/CreateEvent";
+import { CreateEvent } from "./use-cases/create-event";
 
 export class EventService {
   private eventPersistance: EventPersistance;

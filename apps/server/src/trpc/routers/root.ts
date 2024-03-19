@@ -1,10 +1,10 @@
-import { eventsRouter } from "../../modules/event/event.route";
+import { eventsRouter } from "../../modules/event/event.router";
+import { waitlistRouter } from "../../modules/waitlist/waitlist.router";
 import { createTRPCRouter } from "../context";
 
-// Create routes in /routers and add them in appRouter/index.ts
 export const appRouter = createTRPCRouter({
-  // Add new routes here
   event: eventsRouter,
+  waitlist: waitlistRouter,
 });
 
 export type AppRouter = typeof appRouter;

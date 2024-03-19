@@ -1,4 +1,4 @@
-import { prisma } from "@template/database";
+import { prisma } from "@plaventi/database";
 
 export class EventPersistance {
   get() {
