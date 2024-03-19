@@ -1,0 +1,50 @@
+import cors from "cors";
+import express, { Application } from "express";
+import { json, urlencoded } from "body-parser";
+
+import swaggerUi from "swagger-ui-express";
+
+import { openApiDocument } from "./trpc/openapi";
+import { createOpenApiExpressMiddleware } from "trpc-openapi";
+import { appRouter } from "./trpc/routers/root";
+import { createContext } from "./trpc/context";
+import cookieParser from "cookie-parser";
+import { createExpressMiddleware } from "@trpc/server/adapters/express";
+
+const port: number = 3002 as const;
+
+const app: Application = express();
+
+app
+  .use(cors({ origin: true, credentials: true }))
+  .disable("x-powered-by")
+  .use(cookieParser())
+  .use(urlencoded({ extended: true }))
+  .use(json());
+
+app.get("/health", (_req, res) => {
+  res.send("ok");
+});
+
+// Handle incoming tRPC requests
+app.use(
+  "/api/trpc",
+  createExpressMiddleware({
+    router: appRouter,
+    createContext,
+  }),
+);
+
+// Handle incoming OpenAPI requests
+app.use("/api", createOpenApiExpressMiddleware({ router: appRouter, createContext }));
+
+// Serve Swagger UI with our OpenAPI schema
+app.use("/", swaggerUi.serve);
+app.get("/", swaggerUi.setup(openApiDocument));
+
+// Server setup
+app.listen(port, () => {
+  console.log(`🚀 Server started on port ${port}`);
+});
+
+export type { AppRouter } from "./trpc/routers/root";

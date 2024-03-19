@@ -1,0 +1,28 @@
+{
+  "private": true,
+  "scripts": {
+    "build": "turbo run build",
+    "build:server": "turbo run build --filter=server --filter=database",
+    "start:server": "dotenv -- node ./build/index.js",
+    "dev": "dotenv -- turbo dev",
+    "lint": "turbo run lint",
+    "format": "prettier --write \"**/*.{ts,tsx,md}\"",
+    "migrate:dev": "dotenv -- turbo run migrate --env-mode=loose --filter=./packages/database"
+  },
+  "devDependencies": {
+    "dotenv-cli": "^7.4.1",
+    "eslint": "^8.47.0",
+    "prettier": "^3.0.2",
+    "prettier-config": "workspace:*",
+    "tsconfig": "workspace:*",
+    "turbo": "latest"
+  },
+  "name": "trpc-server-client-turborepo-template",
+  "workspaces": [
+    "apps/*",
+    "packages/*"
+  ],
+  "dependencies": {
+    "turbowatch": "^2.29.4"
+  }
+}
