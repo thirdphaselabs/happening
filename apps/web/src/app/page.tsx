@@ -3,16 +3,19 @@
 import { Button, Header } from "ui";
 import { api } from "../trpc/provider";
 import Link from "next/link";
+import { AllExamples } from "./test/_components/AllExamples";
 
 export default function Page(): JSX.Element {
-  const { data } = api.example.hello.useQuery();
+  const { data, error } = api.event.all.useQuery();
 
-  console.log({ data });
+  if (error || !data) {
+    return <div>Error</div>;
+  }
 
   return (
     <>
       <Header text="Docs" />
-      yes now {data?.yesnow}
+      <AllExamples initialExamples={data} />
       <p className="text-red-900">its a reload</p>
       <Button>Yes</Button>
       <Link href="/test">About</Link>
