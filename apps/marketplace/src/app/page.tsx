@@ -101,19 +101,14 @@ function HeroImagery() {
   return (
     <>
       <Flex className="pointer-events-none" position="absolute" top="0">
-        <Flex
-          className="h-screen w-screen md:h-[80vh]"
-          position="relative"
-          style={{
-            opacity: 0.6,
-          }}>
+        <Flex className="h-screen w-screen opacity-[0.3] md:h-[80vh] lg:opacity-[0.6]" position="relative">
           <Image src={hero} layout="fill" alt="Nightclub event scene" objectFit="cover" />
         </Flex>
       </Flex>
       <Flex
         position="absolute"
         bottom="0"
-        className="pointer-events-none h-[85vh] w-screen bg-black md:h-[55vh]"
+        className="pointer-events-none z-10 h-[85vh] w-screen bg-black md:h-[55vh]"
         style={{
           filter: "blur(200px)",
         }}></Flex>
