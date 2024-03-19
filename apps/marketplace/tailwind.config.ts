@@ -1,5 +1,5 @@
 // @ts-ignore
-import config from "tailwind-config/tailwind.config.js";
+import config from "@plaventi/tailwind-config/tailwind.config.js";
 import { type Config } from "tailwindcss";
 
 export default {
