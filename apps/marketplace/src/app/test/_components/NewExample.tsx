@@ -2,7 +2,7 @@
 
 import { Flex, TextField } from "@radix-ui/themes";
 import { useRef } from "react";
-import { Button } from "ui";
+import { Button } from "@plaventi/ui";
 import { api } from "~/trpc/provider";
 
 export function NewExample() {
