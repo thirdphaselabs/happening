@@ -29,7 +29,7 @@ export default function Page() {
 
       <Flex direction="column" gap="6" className="z-20 h-screen" justify="center" align="center" width="100%">
         <Flex direction="column" gap="3" className="max-w-[900px] text-center" align="center">
-          <Text weight="medium" size="4">
+          <Text weight="medium" size="3" color="gray">
             Be the first to know when we launch
           </Text>
           <Heading
@@ -102,10 +102,10 @@ function HeroImagery() {
     <>
       <Flex className="pointer-events-none" position="absolute" top="0">
         <Flex
-          className="h-[80vh] w-screen"
+          className="h-screen w-screen md:h-[80vh]"
           position="relative"
           style={{
-            opacity: 0.7,
+            opacity: 0.6,
           }}>
           <Image src={hero} layout="fill" alt="Nightclub event scene" objectFit="cover" />
         </Flex>
@@ -113,7 +113,7 @@ function HeroImagery() {
       <Flex
         position="absolute"
         bottom="0"
-        className="pointer-events-none h-[55vh] w-screen bg-black"
+        className="pointer-events-none h-[85vh] w-screen bg-black md:h-[55vh]"
         style={{
           filter: "blur(200px)",
         }}></Flex>

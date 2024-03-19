@@ -1,18 +1,11 @@
 "use client";
 
-import { Flex, TextFieldInput, Button, Text, Callout } from "@radix-ui/themes";
+import { CheckCircledIcon, ExclamationTriangleIcon } from "@radix-ui/react-icons";
+import { Button, Callout, Flex, TextFieldInput } from "@radix-ui/themes";
 import { useState } from "react";
+import { AiOutlineLoading3Quarters } from "react-icons/ai";
 import { api } from "~/trpc/provider";
-import { AiOutlineLoading3Quarters, AiOutlineWarning } from "react-icons/ai";
-import { assertError, getTRPCError } from "~/utils/error";
-import {
-  CheckCircledIcon,
-  Cross1Icon,
-  Cross2Icon,
-  CrossCircledIcon,
-  ExclamationTriangleIcon,
-} from "@radix-ui/react-icons";
-import { parseTRPCMessage } from "@trpc/server/rpc";
+import { getTRPCError } from "~/utils/error";
 
 export function JoinWaitlist() {
   const [error, setError] = useState<"already-joined" | "unknown" | "validation" | null>(null);
@@ -85,7 +78,7 @@ export function JoinWaitlist() {
           required
           disabled={loading}
         />
-        <Button size="3" className="h-[48px] w-[108px]" disabled={loading}>
+        <Button size="3" className="h-[48px] w-full lg:w-[108px]" disabled={loading}>
           {loading ? (
             <>
               <AiOutlineLoading3Quarters className="h-4 w-4 animate-spin" />
@@ -95,11 +88,13 @@ export function JoinWaitlist() {
           )}
         </Button>
       </Flex>
-      <Callout.Root
-        color={success ? "green" : error === "already-joined" ? "amber" : "red"}
-        className={`h-[52px]  ${error !== null || success ? "visible" : "invisible"}`}>
-        {error !== null ? <Error type={error} /> : success ? <Success /> : null}
-      </Callout.Root>
+      <Flex px="4">
+        <Callout.Root
+          color={success ? "green" : error === "already-joined" ? "amber" : "red"}
+          className={`h-[52px]   ${error !== null || success ? "visible" : "invisible"}`}>
+          {error !== null ? <Error type={error} /> : success ? <Success /> : null}
+        </Callout.Root>
+      </Flex>
     </form>
   );
 }
@@ -110,7 +105,7 @@ function Success() {
       <Callout.Icon>
         <CheckCircledIcon />
       </Callout.Icon>
-      <Callout.Text>Success, you're on the list. We'll be in touch soon!</Callout.Text>
+      <Callout.Text>You're on the list. We'll be in touch soon!</Callout.Text>
     </>
   );
 }
@@ -123,10 +118,10 @@ function Error({ type }: { type: "already-joined" | "unknown" | "validation" }) 
       </Callout.Icon>
       <Callout.Text>
         {type === "already-joined"
-          ? "You're already on the waitlist. We'll be in touch soon."
+          ? "Already on the list. We'll be in touch soon."
           : type === "validation"
             ? "Invalid email, please enter a valid email."
-            : "An error occurred while trying to join the waitlist. Please try again."}
+            : "An error occurred. Please try again."}
       </Callout.Text>
     </>
   );
