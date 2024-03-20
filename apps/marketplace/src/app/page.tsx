@@ -1,7 +1,7 @@
 import { Button, Container, Flex, Heading, Separator, Text, TextFieldInput } from "@radix-ui/themes";
 import Image from "next/image";
 import hero from "~/assets/event.avif";
-import logo from "~/assets/logo.svg";
+import logo from "~/assets/logo.png";
 import { FaXTwitter, FaInstagram, FaLinkedin, FaTiktok } from "react-icons/fa6";
 import Link from "next/link";
 import { JoinWaitlist } from "./_components/JoinWailist";
@@ -9,12 +9,11 @@ import { JoinWaitlist } from "./_components/JoinWailist";
 export default function Page() {
   return (
     <Flex
-      className="h-screen"
+      className="h-screen-max"
       position="relative"
       direction="column"
       style={{
         backgroundColor: "#111315",
-        maxHeight: '-webkit-fill-available'
       }}>
       <HeroImagery />
       <Flex position="absolute" top="0" width="100%">
@@ -24,12 +23,11 @@ export default function Page() {
               <Image src={logo} layout="fill" objectFit="contain" alt="Plaventi logo" />
             </Flex>
           </Flex>
-          <Separator size="1" className="w-full" />
         </Container>
       </Flex>
 
       <Flex direction="column" gap="6" className="z-20 h-screen" justify="center" align="center" width="100%">
-        <Flex direction="column" gap="3" className="max-w-[900px] text-center" align="center">
+        <Flex direction="column" gap="3" className="max-w-[900px] text-center" align="center" p="4">
           <Text weight="medium" size="3" color="gray">
             Be the first to know when we launch
           </Text>
@@ -39,7 +37,7 @@ export default function Page() {
               md: "9",
             }}
             className="md:text-[42px] lg:text-[55px]">
-            The all-in-one event planning, management, and ticketing platform
+            Success is just an event away
           </Heading>
         </Flex>
         <JoinWaitlist />
@@ -102,14 +100,14 @@ function HeroImagery() {
   return (
     <>
       <Flex className="pointer-events-none" position="absolute" top="0">
-        <Flex className="h-screen w-screen opacity-[0.3] md:h-[80vh] lg:opacity-[0.6]" position="relative">
+        <Flex className="h-screen-max w-screen opacity-[0.3] md:h-[80vh] lg:opacity-[0.6]" position="relative">
           <Image src={hero} layout="fill" alt="Nightclub event scene" objectFit="cover" />
         </Flex>
       </Flex>
       <Flex
         position="absolute"
         bottom="0"
-        className="pointer-events-none z-10 h-[85vh] w-screen bg-black md:h-[55vh]"
+        className="pointer-events-none z-10 h-[80vh] w-screen bg-black md:h-[55vh]"
         style={{
           filter: "blur(200px)",
         }}></Flex>
