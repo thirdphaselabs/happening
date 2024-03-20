@@ -14,6 +14,7 @@ export default function Page() {
       direction="column"
       style={{
         backgroundColor: "#111315",
+        maxHeight: '-webkit-fill-available'
       }}>
       <HeroImagery />
       <Flex position="absolute" top="0" width="100%">
