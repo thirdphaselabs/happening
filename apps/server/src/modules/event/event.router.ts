@@ -10,6 +10,7 @@ export const eventsRouter = createTRPCRouter({
   all: protectedProcedure.output(z.array(PlaventiEvent)).query(async () => {
     return eventService.get();
   }),
+  
   create: publicProcedure
     .input(
       z.object({

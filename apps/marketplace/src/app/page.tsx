@@ -37,7 +37,7 @@ export default function Page() {
               md: "9",
             }}
             className="md:text-[42px] lg:text-[55px]">
-            Success is just an event away
+            Events Re-imagined: Plan, Manage, Sell & Discover
           </Heading>
         </Flex>
         <JoinWaitlist />
@@ -76,16 +76,16 @@ export default function Page() {
               </Text>
             </Flex>
             <Flex gap="5">
-              <Link href="https://twitter.com">
+              <Link href="https://twitter.com/plaventi_app">
                 <FaXTwitter size="24" />
               </Link>
-              <Link href="https://instagram.com">
+              <Link href="https://instagram.com/plaventi">
                 <FaInstagram size="24" />
               </Link>
-              <Link href="https://linkedin.com">
+              <Link href="https://www.linkedin.com/company/plaventi/">
                 <FaLinkedin size="24" />
               </Link>
-              <Link href="https://tiktok.com">
+              <Link href="https://www.tiktok.com/@plaventi">
                 <FaTiktok size="24" />
               </Link>
             </Flex>
