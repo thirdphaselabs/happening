@@ -2,7 +2,7 @@
   "private": true,
   "scripts": {
     "build": "turbo run build",
-    "build:server": "turbo run build --filter=server --filter=database",
+    "build:server": "pnpm --filter server --filter database build",
     "start:server": "pnpm --filter server start",
     "build:platform": "turbo run build --filter=platform",
     "start:platform": "pnpm --filter platform start",
