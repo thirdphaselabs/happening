@@ -1,7 +1,7 @@
 "use client";
 
 import { CheckCircledIcon, ExclamationTriangleIcon } from "@radix-ui/react-icons";
-import { Button, Callout, Flex, TextFieldInput } from "@radix-ui/themes";
+import { Button, Callout, Flex, TextField } from "@radix-ui/themes";
 import { useState } from "react";
 import { AiOutlineLoading3Quarters } from "react-icons/ai";
 import { api } from "~/trpc/provider";
@@ -68,7 +68,7 @@ export function JoinWaitlist() {
           initial: "column",
           md: "row",
         }}>
-        <TextFieldInput
+        <TextField.Root
           variant="classic"
           className="h-[48px] w-full md:w-[295px]"
           placeholder="Enter your email"

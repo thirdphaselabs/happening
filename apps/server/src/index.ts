@@ -11,6 +11,23 @@ import { createContext } from "./trpc/context";
 import cookieParser from "cookie-parser";
 import { createExpressMiddleware } from "@trpc/server/adapters/express";
 import { initEnv } from "./environment";
+import { UserRole } from "@plaventi/database";
+import { OnboardingStep } from "./modules/onboarding/onboarding.service";
+import { ClerkAuth } from "./middleware/clerk-auth";
+
+declare global {
+  namespace Express {
+    interface Request {
+      auth: {
+        userId?: string;
+        sessionId?: string;
+        role?: UserRole;
+        onboardingComplete?: boolean;
+        onboardingStep?: OnboardingStep;
+      };
+    }
+  }
+}
 
 initEnv();
 
@@ -28,6 +45,8 @@ app
 app.get("/health", (_req, res) => {
   res.send("ok");
 });
+
+app.use(ClerkAuth);
 
 // Handle incoming tRPC requests
 app.use(

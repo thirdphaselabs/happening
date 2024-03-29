@@ -1,9 +1,9 @@
-import { Button, Container, Flex, Heading, Separator, Text, TextFieldInput } from "@radix-ui/themes";
+import { Container, Flex, Heading, Text } from "@radix-ui/themes";
 import Image from "next/image";
+import Link from "next/link";
+import { FaInstagram, FaLinkedin, FaTiktok, FaXTwitter } from "react-icons/fa6";
 import hero from "~/assets/event.avif";
 import logo from "~/assets/logo.png";
-import { FaXTwitter, FaInstagram, FaLinkedin, FaTiktok } from "react-icons/fa6";
-import Link from "next/link";
 import { JoinWaitlist } from "./_components/JoinWailist";
 
 export default function Page() {

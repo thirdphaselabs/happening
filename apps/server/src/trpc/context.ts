@@ -7,21 +7,15 @@ import { OpenApiMeta } from "trpc-openapi";
 import { ZodError } from "zod";
 
 export const createContextInner = async ({ req, res }: trpcExpress.CreateExpressContextOptions) => {
-  const event = await prisma.event.findFirst();
+   // @ts-ignore
+   const auth: WithAuthProp<Request> = req.auth;
 
-  if (!event) {
-    return {
-      req,
-      res,
-      event: null,
-    };
-  }
-
-  return {
-    req,
-    res,
-    event,
-  };
+   console.log("auth", auth);
+ 
+   return {
+     req,
+     res,
+   };
 };
 
 export const t = initTRPC

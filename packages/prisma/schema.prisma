@@ -7,6 +7,50 @@ datasource db {
   url      = env("DATABASE_URL")
 }
 
+enum UserRole {
+  PLAVENTI_ADMIN
+  ORGANIZER_ADMIN
+  ORGANIZER
+  MEMBER
+}
+
+
+model Onboarding {
+  id              Int      @id @default(autoincrement())
+  clerkId         String   @unique
+  firstName       String?
+  lastName        String?
+  role            String?
+  userRole        UserRole @default(MEMBER)
+  organisationId  Int?
+  createdAt       DateTime @default(now())
+  updatedAt       DateTime @updatedAt
+}
+
+model User {
+  id        Int      @id @default(autoincrement())
+  firstName String
+  lastName  String
+  role      String
+  userRole  UserRole 
+  clerkId   String   @unique
+  createdAt DateTime @default(now())
+
+  organisationId Int
+  organisation   Organisation @relation(fields: [organisationId], references: [id])
+
+  @@index([clerkId])
+}
+
+model Organisation {
+  id                  Int      @id @default(autoincrement())
+  clerkOrganisationId String   @unique
+  name                String   
+  createdAt           DateTime @default(now())
+
+  users User[]
+}
+
 model Event {
   id        String   @id @default(cuid())
   title     String   @unique

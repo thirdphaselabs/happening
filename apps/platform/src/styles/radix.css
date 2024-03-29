@@ -1,0 +1,15 @@
+@import "@radix-ui/themes/styles.css";
+
+.radix-themes {
+  --default-font-size: 18px;
+  --default-font-family: var(--font-plaventi);
+  --font-weight-bold: 600;
+
+  .rt-Heading {
+    font-weight: var(--font-weight-medium);
+  }
+}
+
+* {
+  font-family: var(--default-font-family);
+}

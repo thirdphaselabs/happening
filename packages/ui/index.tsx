@@ -1,3 +1,5 @@
 // component exports
-export * from "./button";
-export * from "./header";
+export * from "./src/button";
+export * from "./src/header";
+export * from "./src/text-input/text-input";
+export * from "./src/theme";

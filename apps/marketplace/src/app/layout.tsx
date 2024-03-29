@@ -5,6 +5,7 @@ import { cookies } from "next/headers";
 import { TRPCReactProvider } from "../trpc/provider";
 
 import type { Metadata } from "next";
+import { themeConfig } from "@plaventi/ui";
 
 export const metadata: Metadata = {
   title: "Plaventi",
@@ -15,7 +16,7 @@ export default function RootLayout({ children }: { children: React.ReactNode }):
   return (
     <html lang="en">
       <body>
-        <Theme appearance="dark" accentColor="sky">
+        <Theme {...themeConfig} appearance="dark">
           <TRPCReactProvider cookies={cookies().toString()}>{children}</TRPCReactProvider>
         </Theme>
       </body>

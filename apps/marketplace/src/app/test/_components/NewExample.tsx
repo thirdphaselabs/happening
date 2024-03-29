@@ -30,7 +30,7 @@ export function NewExample() {
         }
       }}>
       <Flex>
-        <TextField.Input name="example"></TextField.Input>
+        <TextField.Root name="example"></TextField.Root>
         <Button type="submit">Add</Button>
       </Flex>
     </form>

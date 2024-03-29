@@ -3,6 +3,8 @@ import "dotenv/config";
 
 const envSchema = z.object({
   DATABASE_URL: z.string().trim().min(1),
+  CLERK_SECRET_KEY: z.string().trim().min(1),
+  CLERK_PEM_PUBLIC_KEY: z.string().trim().min(1),
 });
 
 export function initEnv() {
