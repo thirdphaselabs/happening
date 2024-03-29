@@ -6,6 +6,8 @@
     "start:server": "pnpm --filter server start",
     "build:platform": "turbo run build --filter=platform",
     "start:platform": "pnpm --filter platform start",
+    "build:marketplace": "turbo run build --filter=marketplace",
+    "start:marketplace": "pnpm --filter marketplace start",
     "dev": "dotenv -- turbo dev",
     "lint": "turbo run lint",
     "format": "prettier --write \"**/*.{ts,tsx,md}\"",
