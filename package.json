@@ -3,7 +3,7 @@
   "scripts": {
     "build": "turbo run build",
     "build:server": "turbo run build --filter=server --filter=database",
-    "start:server": "dotenv -- node ./apps/server/build/index.js",
+    "start:server": "pnpm --filter server start",
     "dev": "dotenv -- turbo dev",
     "lint": "turbo run lint",
     "format": "prettier --write \"**/*.{ts,tsx,md}\"",
