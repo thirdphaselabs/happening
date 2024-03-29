@@ -229,7 +229,7 @@ importers:
         version: 4.13.11(react@18.2.0)
       '@plaventi/database':
         specifier: workspace:*
-        version: link:../../packages/prisma
+        version: link:../../packages/database
       '@prisma/client':
         specifier: ^5.3.1
         version: 5.11.0(prisma@5.11.0)
@@ -334,22 +334,7 @@ importers:
         specifier: ^4.7.1
         version: 4.7.1
 
-  packages/eslint-config-custom:
-    devDependencies:
-      '@vercel/style-guide':
-        specifier: ^4.0.2
-        version: 4.0.2(eslint@8.57.0)(prettier@3.2.5)(typescript@4.9.5)
-      eslint-config-turbo:
-        specifier: ^1.10.12
-        version: 1.12.5(eslint@8.57.0)
-
-  packages/prettier-config:
-    devDependencies:
-      prettier-plugin-tailwindcss:
-        specifier: ^0.5.3
-        version: 0.5.12(prettier@3.2.5)
-
-  packages/prisma:
+  packages/database:
     dependencies:
       '@prisma/client':
         specifier: ^5.3.1
@@ -370,6 +355,21 @@ importers:
       dotenv-cli:
         specifier: ^7.3.0
         version: 7.4.1
+
+  packages/eslint-config-custom:
+    devDependencies:
+      '@vercel/style-guide':
+        specifier: ^4.0.2
+        version: 4.0.2(eslint@8.57.0)(prettier@3.2.5)(typescript@4.9.5)
+      eslint-config-turbo:
+        specifier: ^1.10.12
+        version: 1.12.5(eslint@8.57.0)
+
+  packages/prettier-config:
+    devDependencies:
+      prettier-plugin-tailwindcss:
+        specifier: ^0.5.3
+        version: 0.5.12(prettier@3.2.5)
 
   packages/tailwind-config: {}
 
