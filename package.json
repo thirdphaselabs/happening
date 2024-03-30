@@ -3,7 +3,7 @@
   "scripts": {
     "build": "turbo run build",
     "build:server": "pnpm --filter server --filter database build",
-    "start:server": "pnpm --filter server start",
+  "start:server": "pnpm --filter server start",
     "build:platform": "turbo run build --filter=platform",
     "start:platform": "pnpm --filter platform start",
     "build:marketplace": "turbo run build --filter=marketplace",
