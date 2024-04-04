@@ -1,0 +1,11 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+@import "@radix-ui/themes/styles.css";
+
+@layer utilities {
+  .h-screen-max {
+    height: 100vh;
+    max-height: -webkit-fill-available;
+  }
+}
