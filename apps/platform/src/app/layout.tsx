@@ -3,6 +3,7 @@ import { themeConfig } from "@plaventi/ui";
 import { Theme } from "@radix-ui/themes";
 import "../styles/radix.css";
 import "../styles/input.css";
+import "@plaventi/ui/src/radix.css";
 
 import { Inter } from "next/font/google";
 import { cookies } from "next/headers";
@@ -16,7 +17,7 @@ export const metadata: Metadata = {
   description: "Events Re-imagined: Plan, Manage, Sell & Discover",
 };
 
-const inter = Inter({ subsets: ["latin"], variable: "--font-plaventi",});
+const inter = Inter({ subsets: ["latin"], variable: "--font-plaventi" });
 
 export default function RootLayout({ children }: { children: React.ReactNode }): JSX.Element {
   return (

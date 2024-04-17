@@ -5,6 +5,13 @@ import { type Config } from "tailwindcss";
 export default {
   ...config,
   mode: "jit",
+  content: [
+    "./pages/**/*.{ts,tsx}",
+    "./components/**/*.{ts,tsx}",
+    "./app/**/*.{ts,tsx}",
+    "./src/**/*.{ts,tsx}",
+    "../../packages/ui/**/*.{ts,tsx}",
+  ],
   screens: {
     initial: "0px",
     xs: "520px",
@@ -13,5 +20,13 @@ export default {
     lg: "1280px",
     xl: "1640px",
   },
-  content: ["./src/**/*.html", "./src/**/*.tsx"],
+  theme: {
+    extend: {
+      colors: {
+        "brand-navy": "#0C1324",
+        "sky-transparent": "rgba(33, 188, 226, 0.4)",
+        white15: "rgba(255, 255, 255, 0.15)",
+      },
+    },
+  },
 } satisfies Config;

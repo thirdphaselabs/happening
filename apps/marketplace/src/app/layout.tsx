@@ -1,5 +1,6 @@
 import { Theme } from "@radix-ui/themes";
 import "../styles/input.css";
+import "@plaventi/ui/src/radix.css";
 
 import { cookies } from "next/headers";
 import { TRPCReactProvider } from "../trpc/provider";

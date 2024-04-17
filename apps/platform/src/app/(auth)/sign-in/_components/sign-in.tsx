@@ -1,38 +1,26 @@
 "use client";
 
-import { useSignIn, useUser } from "@clerk/nextjs";
-import { ArrowRightIcon, MagnifyingGlassIcon } from "@radix-ui/react-icons";
-import {
-  Card,
-  Flex,
-  Heading,
-  Link,
-  Separator,
-  Text,
-  TextField,
-  TextFieldInput,
-  Theme,
-} from "@radix-ui/themes";
+import { useSignIn } from "@clerk/nextjs";
 import { Button, TextFieldError, TextFieldLabel, TextFieldLabelContainer, TextFieldRoot } from "@plaventi/ui";
+import { ArrowRightIcon } from "@radix-ui/react-icons";
+import { Card, Flex, Heading, Link, Separator, Text, TextFieldInput, Theme } from "@radix-ui/themes";
 import { StaticImport } from "next/dist/shared/lib/get-img-props";
 import Image from "next/image";
 import NextLink from "next/link";
-import { redirect, useRouter, useSearchParams } from "next/navigation";
+import { useRouter, useSearchParams } from "next/navigation";
 import { useState } from "react";
 import logo from "~/assets/logo-only.png";
+import { InputOTP, InputOTPGroup, InputOTPSeparator, InputOTPSlot } from "~/components/ui/input-otp";
 import { baseAccessColor } from "~/styles/theme";
 import { api } from "~/trpc/provider";
 import { ClerkErrorType, clerkErrorTypeToCode, getExpectedClerkError } from "~/utils/error";
 import { invariant } from "~/utils/helpers";
 import { LoginWithGoogle } from "../../sign-up/_components/LoginWithGoogle";
 import { SignInContextProvider, useSignInContext } from "./sign-in-context";
-import { InputOTP, InputOTPGroup, InputOTPSeparator, InputOTPSlot } from "~/components/ui/input-otp";
 
 export function SignIn() {
   const searchParams = useSearchParams();
   const errorCode = searchParams.get("code");
-
-  console.log({ errorCode });
 
   const isCode = errorCode === clerkErrorTypeToCode[ClerkErrorType.EmailAlreadyAssociated];
 
@@ -49,9 +37,8 @@ function SignInInner() {
 
   return (
     <Theme appearance="dark" className="w-full">
-      <Flex
-        className="h-screen w-full items-center justify-center bg-skyDark1"> 
-        <Card className="h-fit w-[480px] p-8 bg-skyDark2">
+      <Flex className="bg-skyDark1 h-screen w-full items-center justify-center">
+        <Card className="bg-skyDark2 h-fit w-[480px] p-8">
           <Header />
 
           <Flex direction="column" gap="6" align="start" width="100%">
@@ -173,7 +160,7 @@ function EmailStep() {
               isLoading: loading,
               loadingText: "Validating your email",
             }}>
-            Continue <ArrowRightIcon />
+            Continuea <ArrowRightIcon />
           </Button>
         </Flex>
       </Flex>
@@ -290,7 +277,7 @@ function PasswordStep() {
               isLoading: loading,
               loadingText: "Validating credentials",
             }}>
-            Continue <ArrowRightIcon />
+            Continuea <ArrowRightIcon />
           </Button>
         </Flex>
       </Flex>

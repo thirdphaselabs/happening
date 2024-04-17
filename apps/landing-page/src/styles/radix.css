@@ -1,0 +1,27 @@
+@import "@radix-ui/themes/styles.css";
+
+.radix-themes {
+  --default-font-size: 18px;
+  --default-font-family: var(--font-plaventi);
+  --font-weight-bold: 600;
+  --color-background: #0c1324;
+  --container-1: 448px;
+  --container-2: 688px;
+  --container-3: 880px;
+  --container-4: 1336px;
+}
+
+* {
+  font-family: var(--default-font-family);
+}
+
+body,
+html {
+  background-color: #0c1324;
+  max-width: 100%;
+  overflow-x: hidden;
+}
+
+.rt-BaseButton:where(.rt-variant-solid) {
+  color: white;
+}
