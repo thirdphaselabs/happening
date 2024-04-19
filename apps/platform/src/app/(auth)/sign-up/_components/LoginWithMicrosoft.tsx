@@ -1,12 +1,12 @@
 "use client";
 
-import { FaGoogle } from "react-icons/fa";
+import { FaMicrosoft } from "react-icons/fa";
 import { type OAuthStrategy } from "@clerk/nextjs/server";
 import { useSignIn } from "@clerk/nextjs";
-import { useState } from "react";
 import { Button } from "@montisk/ui";
+import { useState } from "react";
 
-export function LoginWithGoogle() {
+export function LoginWithMicrosoft() {
   const [isLoading, setIsLoading] = useState(false);
   const { signIn } = useSignIn();
 
@@ -33,10 +33,10 @@ export function LoginWithGoogle() {
         hideIcon: true,
       }}
       onClick={async () => {
-        await signInWith("oauth_google");
+        await signInWith("oauth_microsoft");
       }}>
-      <FaGoogle />
-      Continue with Google
+      <FaMicrosoft size="18" />
+      Continue with Microsoft
     </Button>
   );
 }

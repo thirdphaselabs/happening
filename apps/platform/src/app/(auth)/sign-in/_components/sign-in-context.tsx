@@ -19,13 +19,17 @@ const SignInContext = createContext<SignInState | undefined>(undefined);
 type SignInContextProviderProps = {
   children: ReactNode;
   errorCode: ClerkErrorType.EmailAlreadyAssociated | null;
+  email?: string;
 };
 
-export function SignInContextProvider({ children, errorCode: intialErrorCode,  }: SignInContextProviderProps) {
-  const [stage, setStage] = useState<SignInState["stage"]>("email");
-  const [email, setEmail] = useState<SignInState["email"]>();
-  const [errorCode, setErrorCode] = useState<ClerkErrorType.EmailAlreadyAssociated | null>(intialErrorCode);
-  const [otp, setOtp] = useState<SignInState["otp"]>(null);
+export function SignInContextProvider({
+  children,
+  errorCode: initialErrorCode,
+  email: initialEmail,
+}: SignInContextProviderProps) {
+  const [stage, setStage] = useState<SignInState["stage"]>(initialEmail ? "password" : "email");
+  const [email, setEmail] = useState<SignInState["email"]>(initialEmail);
+  const [errorCode, setErrorCode] = useState<ClerkErrorType.EmailAlreadyAssociated | null>(initialErrorCode);
 
   return (
     <SignInContext.Provider

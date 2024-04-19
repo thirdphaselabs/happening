@@ -24,6 +24,7 @@ export enum ClerkErrorType {
   VerificationFailedTooManyAttempts = "VerificationFailedTooManyAttempts",
   PasswordFoundInBreach = "PasswordFoundInBreach",
   VerificationExpired = "VerificationExpired",
+  ToManyRequests = "ToManyRequests",
 }
 
 export const clerkErrorTypeToCode: Record<ClerkErrorType, string> = {
@@ -35,6 +36,7 @@ export const clerkErrorTypeToCode: Record<ClerkErrorType, string> = {
   [ClerkErrorType.VerificationFailedTooManyAttempts]: "verification_failed",
   [ClerkErrorType.PasswordFoundInBreach]: "form_password_pwned",
   [ClerkErrorType.VerificationExpired]: "verification_expired",
+  [ClerkErrorType.ToManyRequests]: "too_many_requests",
 };
 
 const clerkErrorSchema = z.object({
@@ -57,7 +59,10 @@ function parseClerkError(error: unknown): ClerkError | null {
   }
 }
 
-export function getExpectedClerkError(error: unknown, expected: ClerkErrorType[]): ClerkErrorType | null {
+export function getExpectedClerkError(
+  error: unknown,
+  expected: ClerkErrorType[],
+): { clerkErrorType: ClerkErrorType; errorMessage: null } | { clerkErrorType: null; errorMessage: string } {
   const clerkError = parseClerkError(error);
 
   console.log({ clerkError });
@@ -65,9 +70,9 @@ export function getExpectedClerkError(error: unknown, expected: ClerkErrorType[]
   for (const type of expected) {
     console.log({ cCode: clerkError?.errors[0].code, t: clerkErrorTypeToCode[type] });
     if (clerkError?.errors[0].code === clerkErrorTypeToCode[type]) {
-      return type;
+      return { clerkErrorType: type, errorMessage: null };
     }
   }
 
-  return null;
+  return { clerkErrorType: null, errorMessage: clerkError?.errors[0].message ?? "An error occurred." };
 }

@@ -1,31 +1,36 @@
 "use client";
 
-import { useSignIn } from "@clerk/nextjs";
-import { Button, TextFieldError, TextFieldLabel, TextFieldLabelContainer, TextFieldRoot } from "@plaventi/ui";
-import { ArrowRightIcon } from "@radix-ui/react-icons";
-import { Card, Flex, Heading, Link, Separator, Text, TextFieldInput, Theme } from "@radix-ui/themes";
+import { useSignIn, useUser } from "@clerk/nextjs";
+import { ArrowRightIcon, MagnifyingGlassIcon } from "@radix-ui/react-icons";
+import { Card, Flex, Heading, Link, Separator, Text, TextField, Theme } from "@radix-ui/themes";
+import { Button, TextFieldError, TextFieldLabel, TextFieldLabelContainer, TextFieldRoot } from "@montisk/ui";
 import { StaticImport } from "next/dist/shared/lib/get-img-props";
 import Image from "next/image";
 import NextLink from "next/link";
-import { useRouter, useSearchParams } from "next/navigation";
+import { redirect, useRouter, useSearchParams } from "next/navigation";
 import { useState } from "react";
-import logo from "~/assets/logo-only.png";
-import { InputOTP, InputOTPGroup, InputOTPSeparator, InputOTPSlot } from "~/components/ui/input-otp";
+import logo from "~/assets/logo.svg";
 import { baseAccessColor } from "~/styles/theme";
 import { api } from "~/trpc/provider";
 import { ClerkErrorType, clerkErrorTypeToCode, getExpectedClerkError } from "~/utils/error";
 import { invariant } from "~/utils/helpers";
 import { LoginWithGoogle } from "../../sign-up/_components/LoginWithGoogle";
 import { SignInContextProvider, useSignInContext } from "./sign-in-context";
+import { InputOTP, InputOTPGroup, InputOTPSeparator, InputOTPSlot } from "~/components/ui/input-otp";
+import { LoginWithMicrosoft } from "../../sign-up/_components/LoginWithMicrosoft";
+import { EventsManagerBadge } from "~/app/_components/EventsManagerBadge";
 
 export function SignIn() {
   const searchParams = useSearchParams();
   const errorCode = searchParams.get("code");
+  const email = searchParams.get("email");
 
   const isCode = errorCode === clerkErrorTypeToCode[ClerkErrorType.EmailAlreadyAssociated];
 
   return (
-    <SignInContextProvider errorCode={isCode ? ClerkErrorType.EmailAlreadyAssociated : null}>
+    <SignInContextProvider
+      errorCode={isCode ? ClerkErrorType.EmailAlreadyAssociated : null}
+      email={email ?? undefined}>
       <SignInInner />
     </SignInContextProvider>
   );
@@ -36,42 +41,29 @@ function SignInInner() {
   const [loading, setLoading] = useState<boolean>(false);
 
   return (
-    <Theme appearance="dark" className="w-full">
-      <Flex className="bg-skyDark1 h-screen w-full items-center justify-center">
-        <Card className="bg-skyDark2 h-fit w-[480px] p-8">
-          <Header />
+    <Flex direction="column" mx="auto" className="w-full max-w-[450px]">
+      <Flex direction="column" align="center" width="100%" gap="6">
+        <Header />
 
-          <Flex direction="column" gap="6" align="start" width="100%">
-            {stage === "email" && <EmailStep />}
-            {stage === "password" && <PasswordStep />}
-            {(stage === "forgot-password" || stage === "reset-password") && <ResetPassword />}
-            {(stage === "email" || stage === "password") && (
-              <>
-                <Flex width="100%" align="center" gap="3">
-                  <Separator orientation="horizontal" style={{ width: "100%" }} />
-                  <Text color="gray" size="1">
-                    {" "}
-                    OR
-                  </Text>
-                  <Separator orientation="horizontal" style={{ width: "100%" }} />
-                </Flex>
-                <Flex width="100%" direction="column" gap="4">
-                  <LoginWithGoogle />
-                </Flex>
-                <Flex width="100%" justify="center">
-                  <Text size="2" color="gray">
-                    Don't have an account?{" "}
-                    <Link asChild size="2" underline={"hover"} color={baseAccessColor}>
-                      <NextLink href="/sign-up">Sign up</NextLink>
-                    </Link>
-                  </Text>
-                </Flex>
-              </>
-            )}
-          </Flex>
-        </Card>
+        <Flex direction="column" gap="6" align="start" width="100%">
+          {stage === "email" && <EmailStep />}
+          {stage === "password" && <PasswordStep />}
+          {(stage === "forgot-password" || stage === "reset-password") && <ResetPassword />}
+          {(stage === "email" || stage === "password") && (
+            <>
+              <Flex width="100%" justify="center">
+                <Text size="2" color="gray">
+                  Don't have an account?{" "}
+                  <Link asChild size="2" underline={"hover"} color={baseAccessColor}>
+                    <NextLink href="/sign-up">Sign up</NextLink>
+                  </Link>
+                </Text>
+              </Flex>
+            </>
+          )}
+        </Flex>
       </Flex>
-    </Theme>
+    </Flex>
   );
 }
 
@@ -79,17 +71,17 @@ function Header() {
   const { stage } = useSignInContext();
 
   return (
-    <Flex direction="column" gap="5">
-      <Flex direction="column" width="100%" mb="6">
-        <Flex align="center" mb="4">
-          <Image src={logo as StaticImport} alt="Logo" height="60" />
+    <Flex direction="column" align="center" justify="center" gap="5">
+      <Flex direction="column" width="100%" gap="6" align="center" justify="center">
+        <Flex align="center">
+          <EventsManagerBadge />
         </Flex>
 
         <Flex direction="column" gap="2">
           <Heading size="7">
             {stage === "forgot-password" || stage === "reset-password"
               ? "Reset your password"
-              : "Sign in to Plaventi"}
+              : "Sign in your account"}
           </Heading>
         </Flex>
       </Flex>
@@ -135,14 +127,14 @@ function EmailStep() {
   };
 
   return (
-    <form onSubmit={handleSubmit} className="flex h-[160px] w-full items-center">
-      <Flex direction="column" gap="4" width="100%">
+    <form onSubmit={handleSubmit} className="flex  w-full items-center">
+      <Flex direction="column" gap="6" width="100%">
         <TextFieldRoot>
           <TextFieldLabelContainer>
             <TextFieldLabel>Email</TextFieldLabel>
             {errorCode && <TextFieldError>You already have an account. Please sign in.</TextFieldError>}
           </TextFieldLabelContainer>
-          <TextFieldInput
+          <TextField.Root
             size="3"
             placeholder="Enter your email address"
             name="email"
@@ -160,8 +152,11 @@ function EmailStep() {
               isLoading: loading,
               loadingText: "Validating your email",
             }}>
-            Continuea <ArrowRightIcon />
+            Continue <ArrowRightIcon />
           </Button>
+          <Flex width="100%" direction="column" gap="4">
+            <LoginWithGoogle />
+          </Flex>
         </Flex>
       </Flex>
     </form>
@@ -171,12 +166,13 @@ function EmailStep() {
 function PasswordStep() {
   const [loading, setLoading] = useState<boolean>(false);
   const { signIn, setActive } = useSignIn();
-  const { email, setStage } = useSignInContext();
+  const { email, setStage, errorCode, clearError } = useSignInContext();
   const [isPasswordStrong, setIsPasswordStrong] = useState<boolean | null>(null);
   const [error, setError] = useState<string | null>(null);
   const router = useRouter();
 
   const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
+    clearError();
     e.preventDefault();
     invariant(signIn, "Sign up context is not available.");
     invariant(email, "Email is not available.");
@@ -194,24 +190,31 @@ function PasswordStep() {
         await setActive({ session: result.createdSessionId });
         return;
       }
-      alert("erroe");
     } catch (error) {
-      const clerkError = getExpectedClerkError(error, [
+      const { clerkErrorType, errorMessage } = getExpectedClerkError(error, [
         ClerkErrorType.IncorrectPassword,
         ClerkErrorType.AccountNotFound,
+        ClerkErrorType.ToManyRequests,
       ]);
-      switch (clerkError) {
+      if (!clerkErrorType) {
+        setError(errorMessage);
+        setLoading(false);
+        return;
+      }
+      switch (clerkErrorType) {
         case ClerkErrorType.IncorrectPassword:
           setError("Incorrect password. Please try again.");
           break;
         case ClerkErrorType.AccountNotFound:
           setError("Account not found. Please sign up.");
           break;
+        case ClerkErrorType.ToManyRequests:
+          setError("Too many requests. Please try again later.");
+          break;
         default:
           setError("An error occurred. Please try again.");
           break;
       }
-      console.log({ error });
       setLoading(false);
     }
   };
@@ -224,11 +227,12 @@ function PasswordStep() {
     <form className="w-full" onSubmit={handleSubmit}>
       <Flex direction="column" gap="4" width="100%">
         <label>
-          <Text as="div" size="2" mb="1">
-            Email
-          </Text>
+          <TextFieldLabelContainer>
+            <TextFieldLabel>Email</TextFieldLabel>
+            {errorCode && <TextFieldError>You already have an account. Please sign in.</TextFieldError>}
+          </TextFieldLabelContainer>
 
-          <TextFieldInput
+          <TextField.Root
             defaultValue={email}
             size="3"
             placeholder="Enter your email address"
@@ -251,6 +255,7 @@ function PasswordStep() {
                 <NextLink
                   href="/sign-in?stage=forgot-password"
                   onClick={() => {
+                    clearError();
                     setStage("forgot-password");
                   }}>
                   <Text size="1" className="flex items-center gap-1">
@@ -260,7 +265,7 @@ function PasswordStep() {
               </Link>
             )}
           </Flex>
-          <TextFieldInput
+          <TextField.Root
             size="3"
             placeholder="Enter your password"
             name="password"
@@ -277,7 +282,7 @@ function PasswordStep() {
               isLoading: loading,
               loadingText: "Validating credentials",
             }}>
-            Continuea <ArrowRightIcon />
+            Continue <ArrowRightIcon />
           </Button>
         </Flex>
       </Flex>
@@ -336,14 +341,19 @@ export function ResetPassword() {
       }
       alert("error");
     } catch (error) {
-      const clerkError = getExpectedClerkError(error, [
+      const { clerkErrorType, errorMessage } = getExpectedClerkError(error, [
         ClerkErrorType.AccountNotFound,
         ClerkErrorType.PasswordFoundInBreach,
         ClerkErrorType.IncorrectOTPCode,
         ClerkErrorType.VerificationFailedTooManyAttempts,
         ClerkErrorType.VerificationExpired,
       ]);
-      switch (clerkError) {
+      if (!clerkErrorType) {
+        setError(errorMessage);
+        setIsLoading(false);
+        return;
+      }
+      switch (clerkErrorType) {
         case ClerkErrorType.IncorrectOTPCode:
           setOtpError("Incorrect code. Please try again.");
           break;
@@ -373,13 +383,13 @@ export function ResetPassword() {
   if (stage === "forgot-password") {
     return (
       <form className="w-full" onSubmit={handleSubmit}>
-        <Flex direction="column" gap="4" width="100%">
+        <Flex direction="column" gap="6" width="100%">
           <label>
             <Text as="div" size="2" mb="1">
               Email
             </Text>
 
-            <TextFieldInput
+            <TextField.Root
               defaultValue={email}
               size="3"
               placeholder="Enter your email address"
@@ -399,8 +409,8 @@ export function ResetPassword() {
               Send reset instructions{" "}
             </Button>
           </Flex>
-          <Flex>
-            <Text size="2" color="gray">
+          <Flex justify="center" align="center">
+            <Text size="2" color="gray" align="center">
               Don't want to reset your password?{" "}
               <Link asChild size="2" underline={"hover"} color={baseAccessColor}>
                 <NextLink href="/sign-in" onClick={() => setStage("password")}>
@@ -416,15 +426,15 @@ export function ResetPassword() {
 
   return (
     <form className="w-full" onSubmit={handlePasswordReset}>
-      <Flex direction="column" gap="4" width="100%">
-        <Flex direction="column" gap="5">
-          <Text size="2" color="gray" className="max-w-[300px]">
+      <Flex direction="column" gap="6" width="100%">
+        <Flex direction="column" gap="6" justify="center" align="center">
+          <Text size="2" color="gray" className="max-w-[300px] text-center">
             We've sent an email with a verification code to{" "}
             <Text color="gray" highContrast>
               {email}
             </Text>
           </Text>
-          <Flex direction="column" gap="5" width="100%" align="center">
+          <Flex direction="column" gap="6" width="100%" align="center">
             <InputOTP
               maxLength={6}
               name="code"
@@ -457,7 +467,7 @@ export function ResetPassword() {
               </Text>
             )}
           </Flex>
-          <TextFieldInput
+          <TextField.Root
             size="3"
             placeholder="Enter your new password"
             name="password"
@@ -493,8 +503,8 @@ export function ResetPassword() {
             </Button>
           )}
         </Flex>
-        <Flex>
-          <Text size="2" color="gray">
+        <Flex justify="center" width="100%" align="center">
+          <Text size="2" color="gray" align="center">
             Don't want to reset your password?{" "}
             <Link asChild size="2" underline={"hover"} color={baseAccessColor}>
               <NextLink href="/sign-in" onClick={() => setStage("password")}>

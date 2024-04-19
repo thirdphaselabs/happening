@@ -1,7 +1,7 @@
 "use client";
 
-import { useSession, useSignUp, useUser } from "@clerk/nextjs";
-import { Button } from "@plaventi/ui";
+import { useClerk, useSession, useSignUp, useUser } from "@clerk/nextjs";
+import { Button } from "@montisk/ui";
 import { ArrowRightIcon, CheckCircledIcon, Cross2Icon } from "@radix-ui/react-icons";
 import {
   Avatar,
@@ -9,24 +9,20 @@ import {
   Heading,
   HoverCard,
   IconButton,
-  Separator,
+  Link,
   Text,
-  TextFieldInput,
+  TextField,
   Theme,
-  Tooltip
+  Tooltip,
 } from "@radix-ui/themes";
-import { type StaticImport } from "next/dist/shared/lib/get-img-props";
-import Image from "next/image";
+import NextLink from "next/link";
 import { useRouter, useSearchParams } from "next/navigation";
 import { useRef, useState } from "react";
-import logo from "~/assets/logo-only.png";
+import { EventsManagerBadge } from "~/app/_components/EventsManagerBadge";
 import { InputOTP, InputOTPGroup, InputOTPSeparator, InputOTPSlot } from "~/components/ui/input-otp";
+import { baseAccessColor } from "~/styles/theme";
 import { api } from "~/trpc/provider";
-import {
-  ClerkErrorType,
-  clerkErrorTypeToCode,
-  getExpectedClerkError
-} from "~/utils/error";
+import { ClerkErrorType, clerkErrorTypeToCode, getExpectedClerkError } from "~/utils/error";
 import { invariant } from "~/utils/helpers";
 import { GoToLogin } from "./GoToLogin";
 import { LoginWithGoogle } from "./LoginWithGoogle";
@@ -60,43 +56,33 @@ function SignUpFormInner() {
 
   return (
     <Flex direction="column" mx="auto" className="w-full max-w-[450px]">
-      <Flex direction="column" width="100%" mb="6">
-        <Flex align="center" mb="4">
-          <Image src={logo as StaticImport} alt="Logo" height="60" />
+      <Flex direction="column" align="center" width="100%" gap="6">
+        <Flex align="center" justify="center" mb="4">
+          <EventsManagerBadge />
         </Flex>
 
-        <Flex direction="column" gap="2">
-          <Heading size="7">
-            {stage === "email-verification" ? "Verify your email" : "Create your Plaventi account"}
+        <Flex direction="column" gap="2" align="center">
+          <Heading size="7" mb="0">
+            {stage === "email-verification" ? "Verify your email" : "Create your account"}
           </Heading>
+          <Text size="2" color="gray" weight="light">
+            Join the new age of event planning.
+          </Text>
         </Flex>
-      </Flex>
 
-      <Flex direction="column" gap="6" align="start" width="100%">
-        {stage === "email" && <EmailStep />}
-        {stage === "password" && <PasswordStep />}
-        {stage === "email-verification" && <EmailVerification />}
+        <Flex direction="column" gap="6" align="start" width="100%">
+          {stage === "email" && <EmailStep />}
+          {stage === "password" && <PasswordStep />}
+          {stage === "email-verification" && <EmailVerification />}
+          {stage === "personal-details" && <PersonalDetails />}
+        </Flex>
 
         {(stage === "email" || stage === "password") && !ticket && (
-          <>
-            {" "}
-            <Flex width="100%" align="center" gap="3">
-              <Separator orientation="horizontal" style={{ width: "100%" }} />
-              <Text color="gray" size="1">
-                {" "}
-                OR
-              </Text>
-              <Separator orientation="horizontal" style={{ width: "100%" }} />
-            </Flex>
-            <Flex width="100%" direction="column" gap="4">
-              <LoginWithGoogle />
-            </Flex>
-            <Flex width="100%" justify="center">
-              <Text size="2" color="gray">
-                Already have a Plaventi account? <GoToLogin />
-              </Text>
-            </Flex>
-          </>
+          <Flex width="100%" justify="center">
+            <Text size="2" color="gray">
+              Already have an account? <GoToLogin />
+            </Text>
+          </Flex>
         )}
       </Flex>
     </Flex>
@@ -129,11 +115,19 @@ function EmailStep() {
     try {
       await signUp.create({ emailAddress });
     } catch (err) {
-      const clerkError = getExpectedClerkError(err, [ClerkErrorType.EmailAlreadyAssociated]);
-      console.log({ err, clerkError });
-      switch (clerkError) {
+      const { clerkErrorType, errorMessage } = getExpectedClerkError(err, [
+        ClerkErrorType.EmailAlreadyAssociated,
+      ]);
+      if (!clerkErrorType) {
+        setError(errorMessage);
+        setLoading(false);
+        return;
+      }
+      switch (clerkErrorType) {
         case ClerkErrorType.EmailAlreadyAssociated:
-          router.push(`/sign-in?code=${clerkErrorTypeToCode[ClerkErrorType.EmailAlreadyAssociated]}`);
+          router.push(
+            `/sign-in?code=${clerkErrorTypeToCode[ClerkErrorType.EmailAlreadyAssociated]}&email=${emailAddress}`,
+          );
           return;
         default:
           break;
@@ -156,13 +150,13 @@ function EmailStep() {
   };
 
   return (
-    <form onSubmit={handleSubmit} className="flex h-[160px] w-full items-center">
-      <Flex direction="column" gap="4" width="100%">
+    <form onSubmit={handleSubmit} className="flex w-full items-center">
+      <Flex direction="column" gap="6" width="100%">
         <label>
-          <Text as="div" size="2" mb="1">
+          <Text as="div" size="3" mb="1">
             Email
           </Text>
-          <TextFieldInput
+          <TextField.Root
             size="3"
             placeholder="Enter your email address"
             name="email"
@@ -180,6 +174,9 @@ function EmailStep() {
             }}>
             Continue <ArrowRightIcon />
           </Button>
+          <Flex width="100%" direction="column" gap="4">
+            <LoginWithGoogle />
+          </Flex>
         </Flex>
       </Flex>
     </form>
@@ -215,17 +212,26 @@ function PasswordStep() {
         setStage("email-verification");
       }
     } catch (error) {
-      const errorType = getExpectedClerkError(error, [
+      const { clerkErrorType, errorMessage } = getExpectedClerkError(error, [
         ClerkErrorType.EmailAlreadyAssociated,
         ClerkErrorType.PasswordTooShort,
+        ClerkErrorType.PasswordFoundInBreach,
       ]);
 
-      switch (errorType) {
+      if (!clerkErrorType) {
+        setError(errorMessage);
+        return;
+      }
+
+      switch (clerkErrorType) {
         case ClerkErrorType.EmailAlreadyAssociated:
-          router.push("/sign-in");
+          router.push("/sign-in?code=form_identifier_exists");
           return;
         case ClerkErrorType.PasswordTooShort:
           setError("Password is too short.");
+          return;
+        case ClerkErrorType.PasswordFoundInBreach:
+          setError("Password has been found in breach. Please try another one.");
           return;
         default:
           setError("Unknown error. Please try again.");
@@ -244,7 +250,7 @@ function PasswordStep() {
     <form className="h-[160px] w-full" onSubmit={handleSubmit}>
       <Flex direction="column" gap="4" width="100%">
         {!ticket && email && (
-          <Flex width="100%" justify="between" align="center" color="gray">
+          <Flex width="100%" justify="between" align="center">
             <Flex gap="2" align="center">
               <Avatar size="2" fallback={email.slice(0, 1)}></Avatar>
               <Text>{email}</Text>
@@ -268,7 +274,7 @@ function PasswordStep() {
               </Text>
             )}
           </Flex>
-          <TextFieldInput
+          <TextField.Root
             size="3"
             placeholder="Choose a strong password"
             name="password"
@@ -342,15 +348,17 @@ function PasswordStrength({ isPasswordStrong }: { isPasswordStrong: boolean }) {
 
   return (
     <Text size="1" color="gray" className="flex gap-1">
-      Strong <CheckCircledIcon className="text-sky10" />
+      Strong <CheckCircledIcon style={{ color: "var(--jade-10)" }} />
     </Text>
   );
 }
 
 function EmailVerification() {
-  const { signUp, isLoaded, setActive } = useSignUp();
+  const { signUp, isLoaded, setActive, setSession } = useSignUp();
   const router = useRouter();
-  const { email } = useSignUpContext();
+  const { signOut } = useClerk();
+  const { session } = useSession();
+  const { email, setStage, setEmail } = useSignUpContext();
   const [loading, setLoading] = useState<boolean>(false);
   const ref = useRef<HTMLFormElement>(null);
   const [previousLength, setPreviousLength] = useState<number>(0);
@@ -371,11 +379,16 @@ function EmailVerification() {
         return;
       }
     } catch (error) {
-      const clerkError = getExpectedClerkError(error, [
+      const { clerkErrorType, errorMessage } = getExpectedClerkError(error, [
         ClerkErrorType.IncorrectOTPCode,
         ClerkErrorType.VerificationFailedTooManyAttempts,
       ]);
-      switch (clerkError) {
+      if (!clerkErrorType) {
+        setError(errorMessage);
+        setLoading(false);
+        return;
+      }
+      switch (clerkErrorType) {
         case ClerkErrorType.IncorrectOTPCode:
           setError("Incorrect code. Please try again.");
           break;
@@ -393,14 +406,14 @@ function EmailVerification() {
 
   return (
     <form className=" w-full" onSubmit={handleSubmit} ref={ref}>
-      <Flex direction="column" gap="5">
-        <Text size="2" color="gray" className="max-w-[300px]">
+      <Flex direction="column" gap="6" align="center">
+        <Text size="2" color="gray" className="max-w-[300px] text-center">
           We've sent an email with a verification code to{" "}
           <Text color="gray" highContrast>
             {email}
           </Text>
         </Text>
-        <Flex direction="column" gap="5" width="100%" align="center">
+        <Flex direction="column" gap="6" width="100%" align="center">
           <InputOTP
             maxLength={6}
             name="code"
@@ -426,7 +439,7 @@ function EmailVerification() {
             </InputOTPGroup>
           </InputOTP>
 
-          <Flex direction="column" gap="3" width="100%">
+          <Flex direction="column" gap="6" width="100%">
             <Button
               className="w-full"
               disabled={loading}
@@ -457,8 +470,32 @@ function EmailVerification() {
               </Button>
             )}
           </Flex>
+          <Flex width="100%" justify="center">
+            <Text size="2" color="gray" className="flex gap-1">
+              Didn’t receive a code?{" "}
+              <Flex gap="1">
+                <Link asChild size="2" underline={"hover"} color={baseAccessColor}>
+                  <NextLink href="/sign-up">Resend</NextLink>
+                </Link>
+                or
+                <Link asChild size="2" underline={"hover"} color={baseAccessColor}>
+                  <div
+                    className="cursor-pointer"
+                    onClick={() => {
+                      setStage("email");
+                    }}>
+                    Change email
+                  </div>
+                </Link>
+              </Flex>
+            </Text>
+          </Flex>
         </Flex>
       </Flex>
     </form>
   );
+}
+
+function PersonalDetails() {
+  return null;
 }

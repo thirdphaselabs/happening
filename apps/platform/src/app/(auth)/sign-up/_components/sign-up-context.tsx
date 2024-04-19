@@ -4,7 +4,7 @@ import { createContext, useContext, type ReactNode, useState } from "react";
 import { invariant } from "~/utils/helpers";
 
 type SignUpState = {
-  stage: "email" | "password" | "email-verification";
+  stage: "email" | "password" | "email-verification" | "personal-details";
   email: string | null;
   ticket?: string;
   setEmail: (email: string) => void;

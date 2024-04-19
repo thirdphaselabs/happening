@@ -24,7 +24,7 @@ export default function RootLayout({ children }: { children: React.ReactNode }):
     <ClerkProvider>
       <html lang="en">
         <body className={`${inter.variable}`}>
-          <Theme {...themeConfig}>
+          <Theme {...themeConfig} appearance="light">
             <TRPCReactProvider cookies={cookies().toString()}>{children}</TRPCReactProvider>
             <Toaster
               duration={5000}

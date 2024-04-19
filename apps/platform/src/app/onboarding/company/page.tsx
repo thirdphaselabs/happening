@@ -1,6 +1,6 @@
 "use client";
 
-import { Flex, Text, TextFieldInput } from "@radix-ui/themes";
+import { Flex, Text, TextField } from "@radix-ui/themes";
 import { Button } from "@plaventi/ui";
 import { useState } from "react";
 import { toast } from "sonner";
@@ -41,7 +41,7 @@ export default function OnboardingCompany() {
               Company name
             </Text>
 
-            <TextFieldInput
+            <TextField.Root
               size="3"
               placeholder="Enter your company name"
               name="companyName"
