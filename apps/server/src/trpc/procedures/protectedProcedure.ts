@@ -1,7 +1,7 @@
 import { TRPCError } from "@trpc/server";
 import { t } from "../context";
-import { OnboardingStep } from "../../modules/onboarding/onboarding.service";
 import { UserRole } from "@prisma/client";
+import { OnboardingStep } from "src/modules/user-metadata/user-metadata.service";
 
 export type AuthContext = {
   sessionId: string;
@@ -23,7 +23,7 @@ const hasValidSessionToken = t.middleware(async ({ ctx, next }) => {
     userId,
     role,
     onboardingComplete: ctx.req.auth.onboardingComplete ?? false,
-    onboardingStep: ctx.req.auth.onboardingStep ?? OnboardingStep.Welcome,
+    onboardingStep: ctx.req.auth.onboardingStep ?? OnboardingStep.Profile,
   };
 
   return next({

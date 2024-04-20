@@ -15,11 +15,9 @@ export function useCompletePersonalDetails() {
   const completePersonalDetails = async ({
     firstName,
     lastName,
-    role,
   }: {
     firstName: string;
     lastName: string;
-    role: string;
   }) => {
     setIsLoading(true);
 
@@ -34,7 +32,7 @@ export function useCompletePersonalDetails() {
         orgId: membership.organization.id,
         orgMembershipId: membership.id,
       }));
-      const data = await mutateAsync({ firstName, lastName, role, organisations });
+      const data = await mutateAsync({ firstName, lastName, organisations });
       await user?.reload();
       router.push(computeOnboardingPath(data.nextStep));
     } catch (error) {

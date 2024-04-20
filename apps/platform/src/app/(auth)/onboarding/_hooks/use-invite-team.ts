@@ -5,37 +5,23 @@ import { api } from "~/trpc/provider";
 import { assertError } from "~/utils/error";
 import { computeOnboardingPath } from "~/utils/helpers";
 
-export function useCreateOrganization() {
+export function useInviteTeam() {
   const [isLoading, setIsLoading] = useState<boolean>(false);
   const [error, setError] = useState<string | null>(null);
-  const { mutateAsync } = api.onboarding.createOrganization.useMutation();
+  const { mutateAsync } = api.onboarding.inviteTeamMembers.useMutation();
   const { user } = useUser();
-  const { isLoaded, userMemberships } = useOrganizationList({
-    userMemberships: {
-      infinite: true,
-    },
-  });
   const router = useRouter();
 
-  const createCompany = async (args: { companyName: string }) => {
+  const inviteTeam = async (args: {
+    invites: { email: string }[];
+    organisations: { orgId: string; orgMembershipId: string }[];
+  }) => {
     setIsLoading(true);
-    if (!isLoaded || !userMemberships.data) {
-      setError("Please wait");
-      setIsLoading(false);
-      return;
-    }
-
-    console.log(userMemberships.data);
-
-    if (userMemberships.data.length > 0) {
-      setError("You are already part of a organization");
-      setIsLoading(false);
-      return;
-    }
 
     try {
       const { nextStep } = await mutateAsync({
-        name: args.companyName,
+        invites: args.invites,
+        organisations: args.organisations,
       });
       await user?.reload();
       router.push(computeOnboardingPath(nextStep));
@@ -49,7 +35,7 @@ export function useCreateOrganization() {
   if (isLoading) {
     return {
       isLoading: true,
-      createCompany,
+      inviteTeam,
       error: null,
     } as const;
   }
@@ -58,13 +44,13 @@ export function useCreateOrganization() {
     return {
       error,
       isLoading: false,
-      createCompany,
+      inviteTeam,
     } as const;
   }
 
   return {
     isLoading,
-    createCompany,
+    inviteTeam,
     error: null,
   } as const;
 }

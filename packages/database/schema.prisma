@@ -31,7 +31,6 @@ model User {
   id        Int      @id @default(autoincrement())
   firstName String
   lastName  String
-  role      String
   userRole  UserRole 
   clerkId   String   @unique
   createdAt DateTime @default(now())
@@ -47,6 +46,7 @@ model Organisation {
   clerkOrganisationId String   @unique
   name                String   
   createdAt           DateTime @default(now())
+  domain              String   @unique
 
   users User[]
 }

@@ -1,3 +1,6 @@
+import { currentUser, redirectToSignIn } from "@clerk/nextjs";
+import { invariant } from "~/utils/helpers";
+
 function getBaseUrl(): string {
   if (process.env.NEXT_PUBLIC_SERVER_DEPLOY_URL) {
     return process.env.NEXT_PUBLIC_SERVER_DEPLOY_URL;
@@ -9,4 +12,13 @@ function getBaseUrl(): string {
 export function getUrl(): string {
   const url = `${getBaseUrl()}/api/trpc`;
   return url;
+}
+
+export async function getCurrentUser() {
+  const user = await currentUser();
+  if (!user) {
+    redirectToSignIn();
+    invariant(user, "User is not authenticated");
+  }
+  return user;
 }

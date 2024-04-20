@@ -33,11 +33,15 @@ export class OnboardingPersistence {
       },
     });
   }
-  async createOrganization(userId: string, args: { clerkOrganizationId: string; name: string }) {
+  async createOrganization(
+    userId: string,
+    args: { clerkOrganizationId: string; name: string; domain: string },
+  ) {
     const organisation = await prisma.organisation.create({
       data: {
         name: args.name,
         clerkOrganisationId: args.clerkOrganizationId,
+        domain: args.domain,
       },
     });
 
@@ -51,7 +55,7 @@ export class OnboardingPersistence {
     });
   }
 
-  async completePersonalDetails(userId: string, args: { firstName: string; lastName: string; role: string }) {
+  async completePersonalDetails(userId: string, args: { firstName: string; lastName: string }) {
     return prisma.onboarding.update({
       where: {
         clerkId: userId,
@@ -59,7 +63,6 @@ export class OnboardingPersistence {
       data: {
         firstName: args.firstName,
         lastName: args.lastName,
-        role: args.role,
       },
     });
   }

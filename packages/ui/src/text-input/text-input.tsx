@@ -19,7 +19,7 @@ export function TextFieldLabelContainer({ children }: { children: ReactNode }) {
 
 export function TextFieldLabel({ children }: { children: ReactNode }) {
   return (
-    <Text as="div" size="2">
+    <Text as="div" size="2" weight="medium" mb="1" color="gray" className="flex justify-between items-center">
       {children}
     </Text>
   );

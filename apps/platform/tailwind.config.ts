@@ -1,5 +1,5 @@
 import type { Config } from "tailwindcss";
-import { sky, skyA, skyDark, skyDarkA, slate, slateA } from "@radix-ui/colors";
+import { gray, grayA, sky, skyA } from "@plaventi/ui/src/colours";
 
 const config = {
   darkMode: ["class"],
@@ -13,6 +13,29 @@ const config = {
   ],
   prefix: "",
   theme: {
+    spacing: {
+      "0": "0px",
+      "1": "4px",
+      "2": "8px",
+      "3": "12px",
+      "4": "16px",
+      "5": "24px",
+      "6": "32px",
+      "7": "40px",
+      "8": "48px",
+      "9": "64px",
+      "10": "80px",
+      "11": "96px",
+      "12": "112px",
+    },
+    screens: {
+      initial: "0px",
+      xs: "520px",
+      sm: "768px",
+      md: "1024px",
+      lg: "1280px",
+      xl: "1640px",
+    },
     container: {
       center: true,
       padding: "2rem",
@@ -22,34 +45,10 @@ const config = {
     },
     extend: {
       colors: {
+        ...gray,
+        ...grayA,
         ...sky,
         ...skyA,
-        skyDark1: skyDark.sky1,
-        skyDark2: skyDark.sky2,
-        skyDark3: skyDark.sky3,
-        skyDark4: skyDark.sky4,
-        skyDark5: skyDark.sky5,
-        skyDark6: skyDark.sky6,
-        skyDark7: skyDark.sky7,
-        skyDark8: skyDark.sky8,
-        skyDark9: skyDark.sky9,
-        skyDark10: skyDark.sky10,
-        skyDark11: skyDark.sky11,
-        skyDark12: skyDark.sky12,
-        skyDarkA1: skyDarkA.skyA1,
-        skyDarkA2: skyDarkA.skyA2,
-        skyDarkA3: skyDarkA.skyA3,
-        skyDarkA4: skyDarkA.skyA4,
-        skyDarkA5: skyDarkA.skyA5,
-        skyDarkA6: skyDarkA.skyA6,
-        skyDarkA7: skyDarkA.skyA7,
-        skyDarkA8: skyDarkA.skyA8,
-        skyDarkA9: skyDarkA.skyA9,
-        skyDarkA10: skyDarkA.skyA10,
-        skyDarkA11: skyDarkA.skyA11,
-        skyDarkA12: skyDarkA.skyA12,
-        ...slate,
-        ...slateA,
         border: "hsl(var(--border))",
         input: "hsl(var(--input))",
         ring: "hsl(var(--ring))",

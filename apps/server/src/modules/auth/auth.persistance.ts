@@ -23,7 +23,6 @@ export class AuthPersistence {
   async createUser(args: {
     firstName: string;
     lastName: string;
-    role: string;
     clerkId: string;
     clerkOrganisationId: string;
     userRole: UserRole;
@@ -38,7 +37,6 @@ export class AuthPersistence {
       data: {
         firstName: args.firstName,
         lastName: args.lastName,
-        role: args.role,
         clerkId: args.clerkId,
         userRole: args.userRole,
         organisation: {

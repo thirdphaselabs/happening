@@ -3,7 +3,6 @@ import { UserRole } from "@prisma/client";
 import { z } from "zod";
 
 export enum OnboardingStep {
-  Welcome = "Welcome",
   Profile = "Profile",
   CreateCompany = "CreateCompany",
   InviteTeam = "InviteTeam",
@@ -27,7 +26,7 @@ export class UserMetadataService {
   async resetOnboardingMetadata(userId: string) {
     await this.updateWithExistingMetadata(userId, {
       onboardingComplete: false,
-      onboardingStep: OnboardingStep.Welcome,
+      onboardingStep: OnboardingStep.Profile,
     });
   }
   async addRole(userId: string, role: UserRole) {

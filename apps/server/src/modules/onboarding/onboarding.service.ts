@@ -1,19 +1,11 @@
 import clerkClient from "@clerk/clerk-sdk-node";
 import { TRPCError } from "@trpc/server";
 import { AuthService } from "../auth/auth.service";
-import { UserMetadataService } from "../user-metadata/user-metadata.service";
+import { OnboardingStep, UserMetadataService } from "../user-metadata/user-metadata.service";
 import { OnboardingPersistence } from "./onboarding.persistence";
 import { UserRole } from "@prisma/client";
 import { mapClerkRoleToUserRole, roleToClerkRole } from "../role/role-mapper";
 import { AuthContext } from "../../trpc/procedures/protectedProcedure";
-
-export enum OnboardingStep {
-  Welcome = "Welcome",
-  Profile = "Profile",
-  CreateCompany = "CreateCompany",
-  InviteTeam = "InviteTeam",
-  Complete = "Complete",
-}
 
 const onboardingPersistence = new OnboardingPersistence();
 const authService = new AuthService();
@@ -51,14 +43,11 @@ export class OnboardingService {
     }
 
     await onboardingPersistence.beginOnboarding(auth.userId);
-
-    const nextStep = await this.updateToNextStep(auth);
-
-    return {
-      nextStep,
-    };
   }
-  async inviteTeamMembers(auth: AuthContext, input: { invites: {  email: string }[] }) {
+  async inviteTeamMembers(
+    auth: AuthContext,
+    input: { invites: { email: string }[]; organisations: { orgId: string; orgMembershipId: string }[] },
+  ) {
     try {
       const organisation = await onboardingPersistence.getOrganisation(auth.userId);
 
@@ -79,6 +68,9 @@ export class OnboardingService {
           });
         }),
       );
+
+      await this.completeOnboarding(auth, { organisations: input.organisations });
+
       const nextStep = await this.updateToNextStep(auth);
 
       return {
@@ -93,7 +85,7 @@ export class OnboardingService {
     }
   }
 
-  async createOrganization(auth: AuthContext, { name }: { name: string }) {
+  async createOrganization(auth: AuthContext, { name, domain }: { name: string; domain: string }) {
     try {
       const clerkUser = await clerkClient.users.getUser(auth.userId);
 
@@ -105,6 +97,7 @@ export class OnboardingService {
       await onboardingPersistence.createOrganization(auth.userId, {
         clerkOrganizationId: clerkOrganization.id,
         name,
+        domain,
       });
 
       const nextStep = await this.updateToNextStep(auth);
@@ -134,13 +127,12 @@ export class OnboardingService {
     input: {
       firstName: string;
       lastName: string;
-      role: string;
       organisations: { orgId: string; orgMembershipId: string }[];
     },
   ) {
     try {
       await onboardingPersistence.completePersonalDetails(auth.userId, input);
-      const nextStep = await this.updateToNextStep(auth);
+      const nextStep = await this.updateToNextStep({ ...auth, onboardingStep: OnboardingStep.Profile });
       return {
         nextStep,
       };
@@ -169,7 +161,7 @@ export class OnboardingService {
 
   async completeCurrentOnboardingStep(auth: AuthContext) {
     try {
-      const nextStep = this.computeNextStepAdmin(auth.onboardingStep || OnboardingStep.Welcome);
+      const nextStep = this.computeNextStep(auth.onboardingStep || OnboardingStep.Profile);
 
       await userMetadataService.updateOnboardingStep(auth.userId, nextStep);
 
@@ -187,14 +179,14 @@ export class OnboardingService {
     { organisations }: { organisations: { orgId: string; orgMembershipId: string }[] },
   ) {
     try {
-      const { firstName, lastName, role } = await onboardingPersistence.getOnboarding(userId);
-      if (!firstName || !lastName || !role) {
+      const { firstName, lastName } = await onboardingPersistence.getOnboarding(userId);
+      if (!firstName || !lastName) {
         throw new TRPCError({
           code: "BAD_REQUEST",
           message: "Personal details are missing",
         });
       }
-      await authService.createUser(userId, { firstName, lastName, role, organisations });
+      await authService.createUser(userId, { firstName, lastName, organisations });
       await userMetadataService.completeOnboarding(userId);
     } catch (error) {
       console.log(error);
@@ -203,44 +195,23 @@ export class OnboardingService {
   }
 
   private async updateToNextStep({ userId, role, onboardingStep }: AuthContext) {
-    if (role === UserRole.MEMBER) {
-      const nextStep = this.computeNextStep(onboardingStep);
-
-      await userMetadataService.updateOnboardingStep(userId, nextStep);
-
-      return nextStep;
-    }
-
-    const nextStep = this.computeNextStepAdmin(onboardingStep);
+    const nextStep = this.computeNextStep(onboardingStep);
 
     await userMetadataService.updateOnboardingStep(userId, nextStep);
 
     return nextStep;
   }
 
-  private computeNextStepAdmin(currentStep: OnboardingStep): OnboardingStep {
+  private computeNextStep(currentStep: OnboardingStep): OnboardingStep {
     switch (currentStep) {
-      case OnboardingStep.Welcome:
-        return OnboardingStep.Profile;
       case OnboardingStep.Profile:
         return OnboardingStep.CreateCompany;
       case OnboardingStep.CreateCompany:
         return OnboardingStep.InviteTeam;
       case OnboardingStep.InviteTeam:
         return OnboardingStep.Complete;
-      case OnboardingStep.Complete:
-        return OnboardingStep.Complete;
-    }
-  }
-
-  private computeNextStep(currentStep: OnboardingStep): OnboardingStep {
-    switch (currentStep) {
-      case OnboardingStep.Welcome:
-        return OnboardingStep.Profile;
-      case OnboardingStep.Profile:
-        return OnboardingStep.Complete;
       default:
-        throw new Error("Invalid onboarding step");
+        return OnboardingStep.Profile;
     }
   }
 }

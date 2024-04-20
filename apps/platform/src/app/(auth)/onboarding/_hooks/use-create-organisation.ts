@@ -5,22 +5,42 @@ import { api } from "~/trpc/provider";
 import { assertError } from "~/utils/error";
 import { computeOnboardingPath } from "~/utils/helpers";
 
-export function useInviteTeam() {
+export function useCreateOrganization() {
   const [isLoading, setIsLoading] = useState<boolean>(false);
   const [error, setError] = useState<string | null>(null);
-  const { mutateAsync } = api.onboarding.inviteTeamMembers.useMutation();
+  const { mutateAsync } = api.onboarding.createOrganization.useMutation();
   const { user } = useUser();
+  const { isLoaded, userMemberships } = useOrganizationList({
+    userMemberships: {
+      infinite: true,
+    },
+  });
   const router = useRouter();
 
-  const inviteTeam = async (args: { invites: { email: string }[] }) => {
+  const createCompany = async ({ name, domain }: { name: string; domain: string }) => {
     setIsLoading(true);
+    if (!isLoaded || !userMemberships.data) {
+      setError("Please wait");
+      setIsLoading(false);
+      return;
+    }
+
+    console.log(userMemberships.data);
+
+    if (userMemberships.data.length > 0) {
+      setError("You are already part of a organization");
+      setIsLoading(false);
+      return;
+    }
 
     try {
       const { nextStep } = await mutateAsync({
-        invites: args.invites,
+        name,
+        domain,
       });
       await user?.reload();
-      router.push(computeOnboardingPath(nextStep));
+      const hostName = new URL(domain).hostname;
+      router.push(`${computeOnboardingPath(nextStep)}?domain=${hostName}`);
     } catch (error) {
       assertError(error);
       setError(error.message);
@@ -31,7 +51,7 @@ export function useInviteTeam() {
   if (isLoading) {
     return {
       isLoading: true,
-      inviteTeam,
+      createCompany,
       error: null,
     } as const;
   }
@@ -40,13 +60,13 @@ export function useInviteTeam() {
     return {
       error,
       isLoading: false,
-      inviteTeam,
+      createCompany,
     } as const;
   }
 
   return {
     isLoading,
-    inviteTeam,
+    createCompany,
     error: null,
   } as const;
 }

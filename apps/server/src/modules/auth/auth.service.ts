@@ -36,12 +36,6 @@ export class AuthService {
 
       if (!organisation) return null;
 
-      const clerkOrg = await clerkClient.organizations.getOrganization({
-        organizationId: organisation.clerkOrganisationId,
-      });
-
-      const clerkUser = await clerkClient.users.getUser(userId);
-
       return organisation;
     } catch (error) {
       console.log(error);
@@ -56,7 +50,6 @@ export class AuthService {
     args: {
       firstName: string;
       lastName: string;
-      role: string;
       organisations: { orgId: string; orgMembershipId: string }[];
     },
   ) {
@@ -91,7 +84,6 @@ export class AuthService {
         clerkId,
         firstName: args.firstName,
         lastName: args.lastName,
-        role: args.role,
         clerkOrganisationId: organisation.orgId,
         userRole: mapClerkRoleToUserRole(orgMembership.role),
       });

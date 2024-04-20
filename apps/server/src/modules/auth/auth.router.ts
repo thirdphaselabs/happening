@@ -40,6 +40,7 @@ export const authRouter = createTRPCRouter({
 
       return {
         clerkOrganisationId: organisation?.clerkOrganisationId,
+        name: organisation?.name,
       };
     } catch (error) {
       throw new TRPCError({

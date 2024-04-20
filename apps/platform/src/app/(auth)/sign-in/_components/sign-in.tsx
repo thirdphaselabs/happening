@@ -1,24 +1,20 @@
 "use client";
 
-import { useSignIn, useUser } from "@clerk/nextjs";
-import { ArrowRightIcon, MagnifyingGlassIcon } from "@radix-ui/react-icons";
-import { Card, Flex, Heading, Link, Separator, Text, TextField, Theme } from "@radix-ui/themes";
+import { useSignIn } from "@clerk/nextjs";
 import { Button, TextFieldError, TextFieldLabel, TextFieldLabelContainer, TextFieldRoot } from "@montisk/ui";
-import { StaticImport } from "next/dist/shared/lib/get-img-props";
-import Image from "next/image";
+import { ArrowRightIcon } from "@radix-ui/react-icons";
+import { Flex, Heading, Link, Text, TextField } from "@radix-ui/themes";
 import NextLink from "next/link";
-import { redirect, useRouter, useSearchParams } from "next/navigation";
+import { useRouter, useSearchParams } from "next/navigation";
 import { useState } from "react";
-import logo from "~/assets/logo.svg";
+import { EventsManagerBadge } from "~/app/_components/EventsManagerBadge";
+import { InputOTP, InputOTPGroup, InputOTPSeparator, InputOTPSlot } from "~/components/ui/input-otp";
 import { baseAccessColor } from "~/styles/theme";
 import { api } from "~/trpc/provider";
 import { ClerkErrorType, clerkErrorTypeToCode, getExpectedClerkError } from "~/utils/error";
 import { invariant } from "~/utils/helpers";
 import { LoginWithGoogle } from "../../sign-up/_components/LoginWithGoogle";
 import { SignInContextProvider, useSignInContext } from "./sign-in-context";
-import { InputOTP, InputOTPGroup, InputOTPSeparator, InputOTPSlot } from "~/components/ui/input-otp";
-import { LoginWithMicrosoft } from "../../sign-up/_components/LoginWithMicrosoft";
-import { EventsManagerBadge } from "~/app/_components/EventsManagerBadge";
 
 export function SignIn() {
   const searchParams = useSearchParams();
@@ -114,9 +110,10 @@ function EmailStep() {
     const result = await mutateAsync({ email: emailAddress });
 
     if (result.isAssociated && result.method === "google") {
-      signIn.create({
-        identifier: emailAddress,
-        actionCompleteRedirectUrl: "/",
+      await signIn.authenticateWithRedirect({
+        strategy: "oauth_google",
+        redirectUrl: "/sso-callback",
+        redirectUrlComplete: "/",
       });
       return;
     }
@@ -188,6 +185,7 @@ function PasswordStep() {
 
       if (result.status === "complete") {
         await setActive({ session: result.createdSessionId });
+        router.push("/");
         return;
       }
     } catch (error) {
@@ -220,7 +218,7 @@ function PasswordStep() {
   };
 
   if (!email) {
-    return null;
+    return <p>no email</p>;
   }
 
   return (

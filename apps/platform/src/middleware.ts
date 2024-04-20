@@ -8,7 +8,7 @@ import { computeOnboardingPath } from "./utils/helpers";
 
 export default authMiddleware({
   // Allow signed out users to access the specified routes:
-  publicRoutes: ["/test", "/developer"],
+  publicRoutes: ["/test", "/developer", "/sso-callback"],
   afterAuth: async (auth, req: NextRequest) => {
     const { userId, sessionClaims } = auth;
 
