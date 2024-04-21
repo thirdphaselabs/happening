@@ -1,7 +1,7 @@
 import { TRPCError } from "@trpc/server";
 import { t } from "../context";
 import { UserRole } from "@prisma/client";
-import { OnboardingStep } from "src/modules/user-metadata/user-metadata.service";
+import { OnboardingStep } from "../../modules/onboarding/onboarding.service";
 
 export type AuthContext = {
   sessionId: string;

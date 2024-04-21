@@ -1,19 +1,12 @@
 import { User } from "@clerk/nextjs/dist/types/server";
+import { Separator } from "@plaventi/ui";
 import { Flex } from "@radix-ui/themes";
 import { EventsManagerBadge } from "../EventsManagerBadge";
 import CompanySection from "./CompanySection";
-import ResponsiveSidebar from "./ResponsiveSidebar";
 import NavigationItems from "./NavigationItems";
-import UserSection from "./UserSection";
-import { Separator } from "@plaventi/ui";
+import ResponsiveSidebar from "./ResponsiveSidebar";
 
 export default function Sidebar({ user }: { user: User }) {
-  const userShort = {
-    name: `${user?.firstName ?? ""} ${user?.lastName ?? ""}`,
-    role: "MANAGER" as const,
-    image: user.hasImage ? user.imageUrl : null,
-  };
-
   return (
     <ResponsiveSidebar>
       <Flex

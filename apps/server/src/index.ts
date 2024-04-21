@@ -12,8 +12,8 @@ import cookieParser from "cookie-parser";
 import { createExpressMiddleware } from "@trpc/server/adapters/express";
 import { initEnv } from "./environment";
 import { UserRole } from "@plaventi/database";
-import { OnboardingStep } from "./modules/onboarding/onboarding.service";
 import { ClerkAuth } from "./middleware/clerk-auth";
+import { OnboardingStep } from "./modules/onboarding/onboarding.service";
 
 declare global {
   namespace Express {

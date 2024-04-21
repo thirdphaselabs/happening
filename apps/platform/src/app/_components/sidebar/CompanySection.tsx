@@ -9,7 +9,7 @@ import { Logout } from "./user-dropdown/Logout";
 
 export default function CompanySection() {
   const { organization } = useOrganization();
-  const { userMemberships, isLoaded, setActive } = useOrganizationList({ userMemberships: true });
+  const { isLoaded, setActive } = useOrganizationList({ userMemberships: true });
   const router = useRouter();
 
   if (!isLoaded)
@@ -56,11 +56,11 @@ export default function CompanySection() {
       </DropdownMenu.Trigger>
       <DropdownMenu.Content>
         <DropdownMenu.Item>Team settings</DropdownMenu.Item>
-        <DropdownMenu.Separator />
         <DropdownMenu.Item>
           <PersonIcon />
           Invite & manage members
         </DropdownMenu.Item>
+        <DropdownMenu.Separator />
         <Logout />
       </DropdownMenu.Content>
     </DropdownMenu.Root>

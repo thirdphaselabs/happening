@@ -1,18 +1,23 @@
-import { auth, currentUser, useUser } from "@clerk/nextjs";
+"use client";
+
+import { useUser } from "@clerk/nextjs";
 import { Avatar, Button, ChevronDownIcon, DropdownMenu, Flex, Text } from "@radix-ui/themes";
-import { getCurrentUser } from "~/trpc/utils/getUrl";
+import clsx from "clsx";
 import { Logout } from "./Logout";
 
-export async function UserDropdown() {
-  const user = await getCurrentUser();
+export function UserDropdown() {
+  const { user, isLoaded } = useUser();
   return (
     <DropdownMenu.Root>
       <DropdownMenu.Trigger>
-        <Button variant="ghost" color="gray" className="focus:outline-none hidden md:flex">
+        <Button variant="ghost" color="gray" className="hidden focus:outline-none md:flex">
           <Flex gap="2" align="center">
             <Avatar size="1" fallback="RJ" color="sky" />
-            <Text size="2" color="gray">
-              {user.firstName}
+            <Text
+              size="2"
+              color="gray"
+              className={clsx("", !isLoaded && "bg-gray3 h-[15px] w-[45px] animate-pulse rounded-sm")}>
+              {user?.firstName}
             </Text>
             <ChevronDownIcon />
           </Flex>

@@ -6,7 +6,7 @@ import { Box, Flex, Separator } from "@radix-ui/themes";
 import { usePathname } from "next/navigation";
 import { ReactNode } from "react";
 
-export enum OnboardingStep {
+enum OnboardingStep {
   Profile = "Profile",
   Company = "CreateCompany",
   Invite = "InviteTeam",
@@ -19,7 +19,6 @@ const stepPaths: Record<OnboardingStep, string> = {
 };
 
 export default function OnboardingLayout({ children }: { children: ReactNode }) {
-  const { user, isLoaded } = useUser();
   const pathName = usePathname();
 
   const currentStep = Object.values(OnboardingStep).find((step) => stepPaths[step] === pathName);
@@ -41,11 +40,6 @@ export default function OnboardingLayout({ children }: { children: ReactNode }) 
             </>
           );
         })}
-        {/* <Completed />
-        <Separator orientation="horizontal" className="w-[32px]" />
-        <Active />
-        <Separator orientation="horizontal" className="w-[32px]" />
-        <Upcoming /> */}
       </Flex>
     </Flex>
   );

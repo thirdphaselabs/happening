@@ -1,6 +1,6 @@
 "use client";
 
-import { useSignIn } from "@clerk/nextjs";
+import { useSignIn, useUser } from "@clerk/nextjs";
 import { Button, TextFieldError, TextFieldLabel, TextFieldLabelContainer, TextFieldRoot } from "@montisk/ui";
 import { ArrowRightIcon } from "@radix-ui/react-icons";
 import { Flex, Heading, Link, Text, TextField } from "@radix-ui/themes";
@@ -167,9 +167,11 @@ function PasswordStep() {
   const [isPasswordStrong, setIsPasswordStrong] = useState<boolean | null>(null);
   const [error, setError] = useState<string | null>(null);
   const router = useRouter();
+  const { user } = useUser();
 
   const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
     clearError();
+    setError(null);
     e.preventDefault();
     invariant(signIn, "Sign up context is not available.");
     invariant(email, "Email is not available.");
@@ -183,12 +185,17 @@ function PasswordStep() {
         password,
       });
 
+      console.log({ result });
+
       if (result.status === "complete") {
         await setActive({ session: result.createdSessionId });
+        await user?.reload();
+        console.log("redirecting");
         router.push("/");
         return;
       }
     } catch (error) {
+      console.log({ error });
       const { clerkErrorType, errorMessage } = getExpectedClerkError(error, [
         ClerkErrorType.IncorrectPassword,
         ClerkErrorType.AccountNotFound,

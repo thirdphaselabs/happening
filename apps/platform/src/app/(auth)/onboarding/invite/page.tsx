@@ -1,19 +1,17 @@
 "use client";
 
+import { useUser } from "@clerk/nextjs";
 import { Button, TextFieldLabel, TextFieldRoot } from "@plaventi/ui";
 import { Cross1Icon, Link1Icon, PlusIcon } from "@radix-ui/react-icons";
 import { Checkbox, Flex, IconButton, Separator, Text, TextField } from "@radix-ui/themes";
+import { useRouter, useSearchParams } from "next/navigation";
 import { useState } from "react";
-import { assertError } from "~/utils/error";
-import { useInviteTeam } from "../_hooks/use-invite-team";
-import { InviteContextProvider, useInviteContext } from "./_components/invite-context";
-import { OnboardingSectionHeader } from "../_components/OnboardingSectionHeader";
-import { useCompleteOnboarding } from "../_hooks/use-complete-onboarding";
-import { useOrganization, useUser } from "@clerk/nextjs";
 import { toast } from "sonner";
 import { NotificationCallout } from "~/app/_components/Notification";
-import { useRouter, useSearchParams } from "next/navigation";
-import { api } from "~/trpc/provider";
+import { assertError } from "~/utils/error";
+import { OnboardingSectionHeader } from "../_components/OnboardingSectionHeader";
+import { useInviteTeam } from "../_hooks/use-invite-team";
+import { InviteContextProvider, useInviteContext } from "./_components/invite-context";
 
 export default function OnboardingInvites() {
   return (

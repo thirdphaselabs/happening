@@ -4,6 +4,8 @@ import Image from "next/image";
 import navGraphic from "~/assets/nav.svg";
 import { EventsManagerBadge } from "../EventsManagerBadge";
 import { UserDropdown } from "./user-dropdown/UserDropdown";
+import { currentUser } from "@clerk/nextjs";
+import { getCurrentUser } from "~/trpc/utils/getUrl";
 
 export function TopNavigation() {
   return (

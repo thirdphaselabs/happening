@@ -11,6 +11,8 @@ export default authMiddleware({
   publicRoutes: ["/test", "/developer", "/sso-callback"],
   afterAuth: async (auth, req: NextRequest) => {
     const { userId, sessionClaims } = auth;
+    console.log("userId", userId);
+    console.log("sessionClaims", sessionClaims);
 
     if (req.nextUrl.pathname === "/developer") {
       return NextResponse.next();
@@ -37,6 +39,11 @@ export default authMiddleware({
       return NextResponse.redirect(onboardingUrl);
     }
 
+    // user is signed in and tries to access sign-in page
+    if (userId && (req.nextUrl.pathname === "/sign-in" || req.nextUrl.pathname === "/sign-up")) {
+      const url = new URL("/", req.url);
+      return NextResponse.redirect(url);
+    }
     // User is logged in and the route is protected - let them view.
     if (userId && !auth.isPublicRoute) return NextResponse.next();
 

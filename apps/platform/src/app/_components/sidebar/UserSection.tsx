@@ -4,9 +4,8 @@ import { useClerk } from "@clerk/nextjs";
 import { DotsVerticalIcon } from "@radix-ui/react-icons";
 import { Avatar, Button, DropdownMenu, Flex, Text } from "@radix-ui/themes";
 import { buildOrganizationFallbackInitials } from "~/lib/utils";
-import { Role } from "~/trpc/types";
 
-export default function UserSection({ user }: { user: { name: string; role: Role; image: string | null } }) {
+export default function UserSection({ user }: { user: { name: string; image: string | null } }) {
   const { signOut } = useClerk();
   return (
     <DropdownMenu.Root>
@@ -21,9 +20,6 @@ export default function UserSection({ user }: { user: { name: string; role: Role
             <Flex direction="column" align="start">
               <Text className="text-white" size="2">
                 {user.name}
-              </Text>
-              <Text size="1" className="capitalize text-neutral-400">
-                {user.role.toLowerCase()}
               </Text>
             </Flex>
           </Flex>

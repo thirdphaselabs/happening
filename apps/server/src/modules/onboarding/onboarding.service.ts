@@ -1,11 +1,18 @@
 import clerkClient from "@clerk/clerk-sdk-node";
 import { TRPCError } from "@trpc/server";
 import { AuthService } from "../auth/auth.service";
-import { OnboardingStep, UserMetadataService } from "../user-metadata/user-metadata.service";
+import { UserMetadataService } from "../user-metadata/user-metadata.service";
 import { OnboardingPersistence } from "./onboarding.persistence";
 import { UserRole } from "@prisma/client";
 import { mapClerkRoleToUserRole, roleToClerkRole } from "../role/role-mapper";
 import { AuthContext } from "../../trpc/procedures/protectedProcedure";
+
+export enum OnboardingStep {
+  Profile = "Profile",
+  CreateCompany = "CreateCompany",
+  InviteTeam = "InviteTeam",
+  Complete = "Complete",
+}
 
 const onboardingPersistence = new OnboardingPersistence();
 const authService = new AuthService();

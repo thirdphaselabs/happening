@@ -1,5 +1,0 @@
-export function AuthCard() {
-  return (
-    
-  )
-}

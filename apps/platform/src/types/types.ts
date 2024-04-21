@@ -6,6 +6,7 @@ export enum Route {
   Organization = "/organization",
   Events = "/events",
   Tickets = "/tickets",
+  Analytics = "/analytics",
   Messages = "/messages",
 }
 

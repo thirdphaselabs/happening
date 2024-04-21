@@ -1,13 +1,7 @@
 import clerkClient from "@clerk/clerk-sdk-node";
 import { UserRole } from "@prisma/client";
 import { z } from "zod";
-
-export enum OnboardingStep {
-  Profile = "Profile",
-  CreateCompany = "CreateCompany",
-  InviteTeam = "InviteTeam",
-  Complete = "Complete",
-}
+import { OnboardingStep } from "../onboarding/onboarding.service";
 
 export const userPublicMetadataSchema = z.object({
   onboardingComplete: z.boolean().optional(),
