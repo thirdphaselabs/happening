@@ -1,6 +1,6 @@
 import { Flex, Heading } from "@radix-ui/themes";
 
-export default async function Events() {
+export default function Loading() {
   return (
     <Flex>
       <Heading>Events</Heading>

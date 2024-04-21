@@ -12,7 +12,7 @@ export default function Sidebar({ user }: { user: User }) {
       <Flex
         direction="column"
         justify="between"
-        className="h-[calc(100vh-72px)] w-[256px] flex-shrink-0 pt-3 md:py-5">
+        className="h-[calc(100vh-72px)] w-[256px] flex-shrink-0 pt-3 md:pt-5 pb-3">
         <Flex direction="column" gap="6">
           <Flex className="px-4 md:hidden">
             <EventsManagerBadge />

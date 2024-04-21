@@ -1,10 +1,11 @@
 "use client";
 
-import { Button, Flex } from "@radix-ui/themes";
+import { Button, Flex, Badge } from "@radix-ui/themes";
 import Link from "next/link";
-import { NavigationItem } from "~/types/types";
+import { NavigationItem, Route } from "~/types/types";
 import useNavigation from "./_hooks/useNavigation";
 import clsx from "clsx";
+import { ReactNode } from "react";
 
 export default function NavigationItems() {
   const { activeRoute, navigationItems } = useNavigation();
@@ -13,17 +14,18 @@ export default function NavigationItems() {
     <Flex direction="column" px="4" gap="2" className="w-full">
       {navigationItems.map((item) => {
         const isActive = activeRoute.route === item.route;
-        if (isActive) return <Active key={item.title} navigationItem={item} />;
-        return <Inactive key={item.title} navigationItem={item} />;
+        const context = item.route === Route.Messages ? <Badge color="sky">2</Badge> : null;
+        if (isActive) return <Active key={item.title} navigationItem={item} context={context} />;
+        return <Inactive key={item.title} navigationItem={item} context={context} />;
       })}
     </Flex>
   );
 }
 
 const commonButtonClasses =
-  "w-full cursor-pointer justify-start gap-3 py-4 font-semibold border-[1px] border-solid transition-colors duration-200";
+  "w-full cursor-pointer justify-start gap-3 py-4 font-semibold border-[1px] justify-between  border-solid transition-colors duration-200";
 
-function Active({ navigationItem }: { navigationItem: NavigationItem }) {
+function Active({ navigationItem, context }: { navigationItem: NavigationItem; context: ReactNode }) {
   return (
     <Button
       size="2"
@@ -32,14 +34,17 @@ function Active({ navigationItem }: { navigationItem: NavigationItem }) {
       color="gray"
       variant="soft">
       <Link prefetch={false} href={navigationItem.route}>
-        <navigationItem.icon width={16} height={16} />
-        {navigationItem.title}
+        <Flex className="items-center gap-2">
+          <navigationItem.icon width={16} height={16} />
+          {navigationItem.title}
+        </Flex>
+        {context}
       </Link>
     </Button>
   );
 }
 
-function Inactive({ navigationItem }: { navigationItem: NavigationItem }) {
+function Inactive({ navigationItem, context }: { navigationItem: NavigationItem; context: ReactNode }) {
   return (
     <Button
       size="2"
@@ -51,8 +56,11 @@ function Inactive({ navigationItem }: { navigationItem: NavigationItem }) {
       color="gray"
       asChild>
       <Link prefetch={false} href={navigationItem.route}>
-        <navigationItem.icon width={16} height={16} />
-        {navigationItem.title}
+        <Flex className="items-center gap-2">
+          <navigationItem.icon width={16} height={16} />
+          {navigationItem.title}
+        </Flex>
+        {context}
       </Link>
     </Button>
   );

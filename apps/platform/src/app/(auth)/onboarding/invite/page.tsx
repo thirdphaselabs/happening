@@ -35,7 +35,7 @@ function OnboardingInvitesInner() {
   const handleSubmit = async (event: React.FormEvent<HTMLFormElement>) => {
     event.preventDefault();
     if (!user) {
-      toast.custom(() => <NotificationCallout type="error" message="Still loading" />);
+      toast.custom((id) => <NotificationCallout toastId={id} type="error" message="Still loading" />);
       return;
     }
     const organisations = user.organizationMemberships.map((membership) => {

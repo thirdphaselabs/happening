@@ -9,6 +9,11 @@
     font-weight: var(--font-weight-medium);
   }
 
+  --container-1: 448px;
+  --container-2: 688px;
+  --container-3: 880px;
+  --container-4: 1800px;
+
   --sky-1: #f9fdff;
   --sky-2: #f1fafe;
   --sky-3: #dbf7ff;

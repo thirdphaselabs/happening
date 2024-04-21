@@ -24,7 +24,11 @@ export default function RootLayout({ children }: { children: React.ReactNode }):
             <TRPCReactProvider cookies={cookies().toString()}>{children}</TRPCReactProvider>
             <Toaster
               duration={5000}
+              closeButton={true}
+              offset={14}
               expand={true}
+              visibleToasts={3}
+              position="top-center"
               toastOptions={{
                 style: {
                   backgroundColor: "transparent",

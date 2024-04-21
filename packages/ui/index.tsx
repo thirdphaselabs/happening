@@ -7,3 +7,4 @@ export * from "./src/theme";
 export * from "./src/colours";
 export * from "./src/separator";
 export * from "./src/icons";
+export * from "./src/card";
