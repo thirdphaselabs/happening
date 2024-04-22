@@ -1,25 +1,21 @@
-import { EventPersistance } from "./event.persistance";
-import { CreateEvent } from "./use-cases/create-event";
+import { AuthWithOrg } from "../../types/types";
+import { EventPersistence } from "./event.persistence";
+import { CreateEvent, CreateEventArgs } from "./use-cases/create-event";
 
 export class EventService {
-  private eventPersistance: EventPersistance;
+  private eventPersistence: EventPersistence;
   private createEvent: CreateEvent;
 
-  constructor(persistance?: EventPersistance) {
-    if (!persistance) {
-      this.eventPersistance = new EventPersistance();
-    } else {
-      this.eventPersistance = persistance;
-    }
-
-    this.createEvent = new CreateEvent(this.eventPersistance);
+  constructor() {
+    this.eventPersistence = new EventPersistence();
+    this.createEvent = new CreateEvent(this.eventPersistence);
   }
 
-  get() {
-    return this.eventPersistance.get();
+  get(auth: AuthWithOrg) {
+    return this.eventPersistence.get(auth);
   }
 
-  create(args: { title: string }) {
-    return this.createEvent.execute(args);
+  create(auth: AuthWithOrg, args: CreateEventArgs) {
+    return this.createEvent.execute(auth, args);
   }
 }

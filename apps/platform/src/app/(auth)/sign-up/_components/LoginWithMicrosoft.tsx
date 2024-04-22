@@ -3,7 +3,7 @@
 import { FaMicrosoft } from "react-icons/fa";
 import { type OAuthStrategy } from "@clerk/nextjs/server";
 import { useSignIn } from "@clerk/nextjs";
-import { Button } from "@montisk/ui";
+import { Button } from "@plaventi/ui";
 import { useState } from "react";
 
 export function LoginWithMicrosoft() {

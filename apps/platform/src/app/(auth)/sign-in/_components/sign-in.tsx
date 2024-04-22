@@ -1,7 +1,7 @@
 "use client";
 
 import { useSignIn, useUser } from "@clerk/nextjs";
-import { Button, TextFieldError, TextFieldLabel, TextFieldLabelContainer, TextFieldRoot } from "@montisk/ui";
+import { Button, TextFieldError, TextFieldLabel, TextFieldLabelContainer, TextFieldRoot } from "@plaventi/ui";
 import { ArrowRightIcon } from "@radix-ui/react-icons";
 import { Flex, Heading, Link, Text, TextField } from "@radix-ui/themes";
 import NextLink from "next/link";
@@ -167,7 +167,9 @@ function PasswordStep() {
   const [isPasswordStrong, setIsPasswordStrong] = useState<boolean | null>(null);
   const [error, setError] = useState<string | null>(null);
   const router = useRouter();
-  const { user } = useUser();
+  const { user, isLoaded } = useUser();
+
+  console.log({ user, isLoaded });
 
   const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
     clearError();
@@ -185,13 +187,8 @@ function PasswordStep() {
         password,
       });
 
-      console.log({ result });
-
       if (result.status === "complete") {
         await setActive({ session: result.createdSessionId });
-        await user?.reload();
-        console.log("redirecting");
-        router.push("/");
         return;
       }
     } catch (error) {

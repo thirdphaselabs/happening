@@ -1,11 +1,11 @@
 // import "@types/qs";
 // import "@types/express-serve-static-core";
 import { TRPCError } from "@trpc/server";
-import { createTRPCRouter, t } from "../../trpc/context";
-import { protectedProcedure } from "../../trpc/procedures";
-import { OnboardingService, OnboardingStep } from "./onboarding.service";
 import { z } from "zod";
-import { UserRole } from "@prisma/client";
+import { createTRPCRouter } from "../../trpc/context";
+import { protectedProcedure } from "../../trpc/procedures";
+import { OnboardingService } from "./onboarding.service";
+import { OnboardingStep } from "../../types/types";
 
 const onboardingService = new OnboardingService();
 
@@ -130,6 +130,7 @@ export const onboardingRouter = createTRPCRouter({
           invites: input.invites,
           organisations: input.organisations,
         });
+        await onboardingService.completeOnboarding(ctx.auth, { organisations: input.organisations });
 
         return {
           nextStep,

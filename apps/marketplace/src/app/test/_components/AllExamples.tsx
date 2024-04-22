@@ -8,7 +8,7 @@ export function AllExamples({ initialExamples }: { initialExamples: Event[] }) {
 
   return (
     <>
-      {examples.map((d) => (
+      {examples.map((d: Event) => (
         <div key={d.id}>{d.title}</div>
       ))}
     </>

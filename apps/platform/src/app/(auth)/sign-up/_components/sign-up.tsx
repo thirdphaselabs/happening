@@ -1,7 +1,7 @@
 "use client";
 
 import { useClerk, useSession, useSignUp, useUser } from "@clerk/nextjs";
-import { Button } from "@montisk/ui";
+import { Button } from "@plaventi/ui";
 import { ArrowRightIcon, CheckCircledIcon, Cross2Icon } from "@radix-ui/react-icons";
 import {
   Avatar,

@@ -11,8 +11,6 @@ export default authMiddleware({
   publicRoutes: ["/test", "/developer", "/sso-callback"],
   afterAuth: async (auth, req: NextRequest) => {
     const { userId, sessionClaims } = auth;
-    console.log("userId", userId);
-    console.log("sessionClaims", sessionClaims);
 
     if (req.nextUrl.pathname === "/developer") {
       return NextResponse.next();
@@ -20,6 +18,15 @@ export default authMiddleware({
 
     const onboardingStepRaw = sessionClaims?.metadata?.onboardingStep;
     const onboardingPath = computeOnboardingPath(onboardingStepRaw);
+
+    const rnadmom = Math.random() * 100;
+    console.log("*********************" + rnadmom + "*************", {
+      onboardingPath,
+      onboardingStepRaw,
+      sessionClaims,
+      userId,
+      reqUrl: req.url,
+    });
 
     if (userId && req.nextUrl.pathname === onboardingPath) {
       const headers = new Headers(req.headers);
@@ -35,17 +42,28 @@ export default authMiddleware({
     // Catch users who doesn't have `onboardingComplete: true` in PublicMetata
     // Redirect them to the /onboading out to complete onboarding
     if (userId && !sessionClaims?.metadata?.onboardingComplete) {
+      console.log("*********************" + rnadmom + "*************", {
+        onboardingRedirect: true,
+      });
       const onboardingUrl = new URL(onboardingPath, req.url);
       return NextResponse.redirect(onboardingUrl);
     }
 
     // user is signed in and tries to access sign-in page
     if (userId && (req.nextUrl.pathname === "/sign-in" || req.nextUrl.pathname === "/sign-up")) {
+      console.log("*********************" + rnadmom + "*************", {
+        authRedirect: true,
+      });
       const url = new URL("/", req.url);
       return NextResponse.redirect(url);
     }
     // User is logged in and the route is protected - let them view.
-    if (userId && !auth.isPublicRoute) return NextResponse.next();
+    if (userId && !auth.isPublicRoute) {
+      console.log("*********************" + rnadmom + "*************", {
+        nonPublicRoute: true,
+      });
+      return NextResponse.next();
+    }
 
     // If the route is public, anyone can view it.
     if (auth.isPublicRoute) return NextResponse.next();

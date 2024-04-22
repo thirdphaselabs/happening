@@ -5,7 +5,6 @@ import { HamburgerMenuIcon } from "@radix-ui/react-icons";
 import { Flex, IconButton } from "@radix-ui/themes";
 import React, { ReactNode } from "react";
 import { cn } from "~/lib/utils";
-import { EventsManagerBadge } from "../EventsManagerBadge";
 
 export default function ResponsiveSidebar({ children }: { children: ReactNode }) {
   const [container, setContainer] = React.useState<HTMLDivElement | null>(null);
@@ -25,7 +24,7 @@ export default function ResponsiveSidebar({ children }: { children: ReactNode })
               variant="soft"
               color="gray"
               size="2"
-              className="hover:bg-sageA3 fixed left-4 top-[20px] z-50 bg-transparent "
+              className="hover:bg-sageA3 fixed left-4 top-[20px] z-50 bg-white "
               onClick={() => setOpen(!open)}>
               <HamburgerMenuIcon width={20} height={20} />
             </IconButton>

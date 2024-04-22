@@ -11,7 +11,7 @@ export default async function AuthedLayout({ children }: { children: React.React
 
   return (
     <SidebarLayout user={user}>
-      <Container size="4" p="5" className="h-screen flex-1 overflow-auto">
+      <Container size="4" p="5" className="flex-1 overflow-auto">
         {children}
       </Container>
       <SyncActiveOrganization activeOrgCookie={cookies().get("m-active-org")?.value} />

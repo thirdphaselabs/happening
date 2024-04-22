@@ -8,7 +8,6 @@
     "declaration": false,
     "declarationMap": false,
     "skipLibCheck": true,
-    "baseUrl": ".",
     "types": [],
     "paths": {
       "@trpc/server/*": ["../../../node_modules/@trpc/server/*"]
@@ -17,6 +16,7 @@
   "ts-node": {
     "esm": true
   },
+
   "include": ["src/*"],
   "exclude": ["node_modules", "./node_modules", "./node_modules/*", "./node_modules/@types/node/index.d.ts"]
 }

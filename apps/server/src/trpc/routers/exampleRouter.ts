@@ -13,17 +13,4 @@ export const eventsRouter = createTRPCRouter({
   all: publicProcedure.query(({ ctx }) => {
     return prisma.event.findMany();
   }),
-  addExample: publicProcedure
-    .input(
-      z.object({
-        title: z.string(),
-      }),
-    )
-    .mutation(({ ctx, input: { title } }) => {
-      return prisma.event.create({
-        data: {
-          title,
-        },
-      });
-    }),
 });

@@ -1,4 +1,3 @@
-import { prisma } from "@plaventi/database";
 import type * as trpc from "@trpc/server";
 import { initTRPC } from "@trpc/server";
 import type * as trpcExpress from "@trpc/server/adapters/express";
@@ -7,15 +6,13 @@ import { OpenApiMeta } from "trpc-openapi";
 import { ZodError } from "zod";
 
 export const createContextInner = async ({ req, res }: trpcExpress.CreateExpressContextOptions) => {
-   // @ts-ignore
-   const auth: WithAuthProp<Request> = req.auth;
+  // @ts-ignore
+  const auth: WithAuthProp<Request> = req.auth;
 
-   console.log("auth", auth);
- 
-   return {
-     req,
-     res,
-   };
+  return {
+    req,
+    res,
+  };
 };
 
 export const t = initTRPC

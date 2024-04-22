@@ -9,23 +9,25 @@ import ResponsiveSidebar from "./ResponsiveSidebar";
 export default function Sidebar({ user }: { user: User }) {
   return (
     <ResponsiveSidebar>
-      <Flex
-        direction="column"
-        justify="between"
-        className="h-[calc(100vh-72px)] w-[256px] flex-shrink-0 pt-3 md:pt-5 pb-3">
-        <Flex direction="column" gap="6">
-          <Flex className="px-4 md:hidden">
-            <EventsManagerBadge />
+      <Flex className="md:fixed">
+        <Flex
+          direction="column"
+          justify="between"
+          className="h-[calc(100vh-72px)] w-[256px] flex-shrink-0 pb-3 pt-3 md:pt-5">
+          <Flex direction="column" gap="6">
+            <Flex className="px-4 md:hidden">
+              <EventsManagerBadge />
+            </Flex>
+            <Flex align="start" direction="column" gap="5">
+              <NavigationItems />
+            </Flex>
           </Flex>
-          <Flex align="start" direction="column" gap="5">
-            <NavigationItems />
+          <Flex className="mb-2 w-full px-2">
+            <CompanySection />
           </Flex>
         </Flex>
-        <Flex className="mb-2 w-full px-2">
-          <CompanySection />
-        </Flex>
+        <Separator orientation="vertical" className="absolute right-0" />
       </Flex>
-      <Separator orientation="vertical" />
     </ResponsiveSidebar>
   );
 }

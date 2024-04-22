@@ -1,17 +1,26 @@
-import { NextFunction, Response, Request } from "express";
+import { NextFunction, Request, Response } from "express";
 import jwt from "jsonwebtoken";
-import { environment } from "../environment";
 import { z } from "zod";
-import { userPublicMetadataSchema } from "../modules/user-metadata/user-metadata.service";
+import { environment } from "../environment";
+import { OnboardingStep } from "../types/types";
 
 const clerkJwtPayloadSchema = z.object({
   sub: z.string(),
   sid: z.string(),
-  metadata: userPublicMetadataSchema,
+  org_id: z.string().optional(),
+  metadata: z
+    .object({
+      onboardingComplete: z.boolean().optional(),
+      onboardingStep: z.nativeEnum(OnboardingStep).optional(),
+    })
+    .optional(),
 });
 
 export function ClerkAuth(req: Request, res: Response, next: NextFunction) {
-  const token = req.cookies["__session"];
+  const header = req.headers.authorization?.split("Bearer ")[1];
+  const cookie = req.cookies["__session"];
+
+  const token = header ?? cookie;
 
   if (token === undefined) {
     req.auth = {
@@ -25,17 +34,18 @@ export function ClerkAuth(req: Request, res: Response, next: NextFunction) {
   try {
     if (token) {
       const decoded = jwt.verify(token, environment.CLERK_PEM_PUBLIC_KEY);
-      console.log({ decoded });
-      const clerkJwtPayload = clerkJwtPayloadSchema.parse(decoded);
+      const clerkJwtPayload = clerkJwtPayloadSchema.parse(Object.assign(decoded, {}));
       req.auth = {
         userId: clerkJwtPayload.sub,
         sessionId: clerkJwtPayload.sid,
-        role: clerkJwtPayload.metadata.role,
-        onboardingComplete: clerkJwtPayload.metadata.onboardingComplete,
-        onboardingStep: clerkJwtPayload.metadata.onboardingStep,
+        organisationId: clerkJwtPayload.org_id,
+        onboardingComplete: clerkJwtPayload.metadata?.onboardingComplete,
+        onboardingStep: clerkJwtPayload.metadata?.onboardingStep,
       };
     }
-  } catch (error) {}
+  } catch (error) {
+    console.error("Error parsing Clerk JWT", error);
+  }
 
   next();
 }

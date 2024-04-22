@@ -2,6 +2,7 @@ import cors from "cors";
 import express, { Application } from "express";
 import { json, urlencoded } from "body-parser";
 
+import "./types/types";
 import swaggerUi from "swagger-ui-express";
 
 import { openApiDocument } from "./trpc/openapi";
@@ -13,7 +14,7 @@ import { createExpressMiddleware } from "@trpc/server/adapters/express";
 import { initEnv } from "./environment";
 import { UserRole } from "@plaventi/database";
 import { ClerkAuth } from "./middleware/clerk-auth";
-import { OnboardingStep } from "./modules/onboarding/onboarding.service";
+import { OnboardingStep } from "./types/types";
 
 declare global {
   namespace Express {
@@ -24,6 +25,7 @@ declare global {
         role?: UserRole;
         onboardingComplete?: boolean;
         onboardingStep?: OnboardingStep;
+        organisationId?: string;
       };
     }
   }

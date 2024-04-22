@@ -1,12 +1,10 @@
 import clerkClient from "@clerk/clerk-sdk-node";
-import { UserRole } from "@prisma/client";
 import { z } from "zod";
-import { OnboardingStep } from "../onboarding/onboarding.service";
+import { OnboardingStep } from "../../types/types";
 
 export const userPublicMetadataSchema = z.object({
   onboardingComplete: z.boolean().optional(),
   onboardingStep: z.nativeEnum(OnboardingStep).optional(),
-  role: z.nativeEnum(UserRole).optional(),
 });
 export type UserPublicMetadata = z.infer<typeof userPublicMetadataSchema>;
 
@@ -21,11 +19,6 @@ export class UserMetadataService {
     await this.updateWithExistingMetadata(userId, {
       onboardingComplete: false,
       onboardingStep: OnboardingStep.Profile,
-    });
-  }
-  async addRole(userId: string, role: UserRole) {
-    await this.updateWithExistingMetadata(userId, {
-      role,
     });
   }
 
@@ -44,12 +37,23 @@ export class UserMetadataService {
   private async updateWithExistingMetadata(userId: string, update: Partial<UserPublicMetadata>) {
     const metadata = await clerkClient.users.getUser(userId);
 
+    console.log({ metadata });
+
     const updatedMetadata: UserPublicMetadata = {
-      ...metadata.publicMetadata,
+      ...(metadata.publicMetadata ?? {}),
       ...update,
     };
 
-    const parsedMetadata = userPublicMetadataSchema.parse(updatedMetadata);
+    const met: UserPublicMetadata = {
+      onboardingComplete: true,
+      onboardingStep: OnboardingStep.Profile,
+    };
+
+    console.log({ updatedMetadata });
+
+    const parsedMetadata = userPublicMetadataSchema.parse(met);
+
+    console.log({ parsedMetadata });
 
     await clerkClient.users.updateUser(userId, {
       publicMetadata: parsedMetadata,

@@ -5,14 +5,8 @@ import { UserMetadataService } from "../user-metadata/user-metadata.service";
 import { OnboardingPersistence } from "./onboarding.persistence";
 import { UserRole } from "@prisma/client";
 import { mapClerkRoleToUserRole, roleToClerkRole } from "../role/role-mapper";
-import { AuthContext } from "../../trpc/procedures/protectedProcedure";
-
-export enum OnboardingStep {
-  Profile = "Profile",
-  CreateCompany = "CreateCompany",
-  InviteTeam = "InviteTeam",
-  Complete = "Complete",
-}
+import { AuthContext } from "../../trpc/procedures/adminProcedures";
+import { OnboardingStep } from "../../types/types";
 
 const onboardingPersistence = new OnboardingPersistence();
 const authService = new AuthService();
@@ -45,8 +39,6 @@ export class OnboardingService {
           message: "User is not part of the organization",
         });
       }
-
-      await userMetadataService.addRole(auth.userId, mapClerkRoleToUserRole(orgMembership.role));
     }
 
     await onboardingPersistence.beginOnboarding(auth.userId);
@@ -203,6 +195,7 @@ export class OnboardingService {
 
   private async updateToNextStep({ userId, role, onboardingStep }: AuthContext) {
     const nextStep = this.computeNextStep(onboardingStep);
+    console.log("Updating onboarding step to", nextStep);
 
     await userMetadataService.updateOnboardingStep(userId, nextStep);
 
@@ -212,10 +205,10 @@ export class OnboardingService {
   private computeNextStep(currentStep: OnboardingStep): OnboardingStep {
     switch (currentStep) {
       case OnboardingStep.Profile:
-        return OnboardingStep.CreateCompany;
-      case OnboardingStep.CreateCompany:
-        return OnboardingStep.InviteTeam;
-      case OnboardingStep.InviteTeam:
+        return OnboardingStep.Create;
+      case OnboardingStep.Create:
+        return OnboardingStep.Invite;
+      case OnboardingStep.Invite:
         return OnboardingStep.Complete;
       default:
         return OnboardingStep.Profile;

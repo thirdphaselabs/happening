@@ -1,9 +1,7 @@
-import clerkClient, { OrganizationMembership, organizations } from "@clerk/clerk-sdk-node";
-import { AuthPersistence as AuthPersistence } from "./auth.persistance";
+import clerkClient from "@clerk/clerk-sdk-node";
 import { TRPCError } from "@trpc/server";
-import { UserRole } from "@prisma/client";
-import { UserMetadataService } from "../user-metadata/user-metadata.service";
 import { mapClerkRoleToUserRole } from "../role/role-mapper";
+import { AuthPersistence } from "./auth.persistance";
 
 export enum AuthenticationMethod {
   Email = "email",
@@ -11,17 +9,8 @@ export enum AuthenticationMethod {
 }
 
 const authPersistence = new AuthPersistence();
-const userMetadataService = new UserMetadataService();
 
 export class AuthService {
-  async getClerkRole(clerkUserId: string) {
-    try {
-      const user = await userMetadataService.getMetadata(clerkUserId);
-      return user.role;
-    } catch (error) {
-      return null;
-    }
-  }
   async getUser(clerkUserId: string) {
     try {
       const user = await authPersistence.getUserByClerkId(clerkUserId);

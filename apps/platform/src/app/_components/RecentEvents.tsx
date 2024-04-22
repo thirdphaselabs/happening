@@ -1,17 +1,18 @@
 "use client";
+import { Card } from "@plaventi/ui";
 import { DotsVerticalIcon } from "@radix-ui/react-icons";
 import { Flex, Heading, IconButton } from "@radix-ui/themes";
-import { toast } from "sonner";
-import { NotificationCallout } from "./Notification";
-import { Card } from "@plaventi/ui";
-import Image from "next/image";
-import createEvent from "~/assets/create-event.svg";
-import blackCoffee from "~/assets/black-coffee.png";
-import food from "~/assets/food.png";
 import { useRouter } from "next/navigation";
+import { toast } from "sonner";
+import blackCoffee from "~/assets/black-coffee.png";
+import createEvent from "~/assets/create-event.svg";
+import food from "~/assets/food.png";
+import { api } from "~/trpc/provider";
+import { NotificationCallout } from "./Notification";
 
 export function RecentEvents() {
   const router = useRouter();
+
   return (
     <Flex direction="column" gap="6">
       <Heading size="5">Recent Events</Heading>

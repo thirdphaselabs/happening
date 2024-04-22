@@ -1,9 +1,9 @@
 "use client";
 
 import { useUser } from "@clerk/nextjs";
-import { Button, TextFieldLabel, TextFieldRoot } from "@plaventi/ui";
+import { Button, TextFieldLabel, TextFieldRoot, Separator } from "@plaventi/ui";
 import { Cross1Icon, Link1Icon, PlusIcon } from "@radix-ui/react-icons";
-import { Checkbox, Flex, IconButton, Separator, Text, TextField } from "@radix-ui/themes";
+import { Checkbox, Flex, IconButton, Text, TextField } from "@radix-ui/themes";
 import { useRouter, useSearchParams } from "next/navigation";
 import { useState } from "react";
 import { toast } from "sonner";
@@ -25,6 +25,7 @@ function OnboardingInvitesInner() {
   const { invites } = useInviteContext();
   const [formError, setFormError] = useState<string | null>(null);
   const { inviteTeam, isLoading, error } = useInviteTeam();
+
   const { user } = useUser();
   const router = useRouter();
   const searchParams = useSearchParams();
@@ -91,7 +92,7 @@ function OnboardingInvitesInner() {
               </Button>
             </Flex>
           </Flex>
-          <Separator orientation="horizontal" className="w-full" />
+          <Separator orientation="horizontal" />
 
           <Flex align="start">
             <Checkbox name="disclaimer" className="mr-2 mt-1" defaultChecked />

@@ -1,10 +1,7 @@
 import { currentUser } from "@clerk/nextjs";
-import { Separator, Card, Button } from "@plaventi/ui";
-import { Flex, Heading, Badge, IconButton, ChevronDownIcon } from "@radix-ui/themes";
+import { Button, Separator } from "@plaventi/ui";
+import { ChevronDownIcon, Flex, Heading } from "@radix-ui/themes";
 
-import { DotsVerticalIcon } from "@radix-ui/react-icons";
-import { toast } from "sonner";
-import { NotificationCallout } from "../_components/Notification";
 import { RecentEvents } from "../_components/RecentEvents";
 
 export default async function Page() {
@@ -19,9 +16,7 @@ export default async function Page() {
             Actions
             <ChevronDownIcon />
           </Button>
-          <Button>
-            Create event
-          </Button>
+          <Button>Create event</Button>
         </Flex>
       </Flex>
       <Separator orientation="horizontal" />

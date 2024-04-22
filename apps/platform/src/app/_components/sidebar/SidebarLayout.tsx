@@ -5,12 +5,14 @@ import { TopNavigation } from "./TopNavigation";
 
 export default function SidebarLayout({ user, children }: { user: User; children: React.ReactNode }) {
   return (
-    <Flex direction="column">
+    <>
       <TopNavigation />
-      <Flex>
-        <Sidebar user={user} />
-        <div className="h-screen flex-1 overflow-auto pt-[20px]">{children}</div>
+      <Flex direction="column" position="relative">
+        <Flex>
+          <Sidebar user={user} />
+          <div className="h-screen flex-1 overflow-auto md:pl-[256px] pt-[20px]">{children}</div>
+        </Flex>
       </Flex>
-    </Flex>
+    </>
   );
 }

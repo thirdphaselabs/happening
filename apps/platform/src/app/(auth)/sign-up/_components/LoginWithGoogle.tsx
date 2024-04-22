@@ -4,7 +4,7 @@ import { FaGoogle } from "react-icons/fa";
 import { type OAuthStrategy } from "@clerk/nextjs/server";
 import { useSignIn } from "@clerk/nextjs";
 import { useState } from "react";
-import { Button } from "@montisk/ui";
+import { Button } from "@plaventi/ui";
 
 export function LoginWithGoogle() {
   const [isLoading, setIsLoading] = useState(false);

@@ -35,8 +35,9 @@ model User {
   clerkId   String   @unique
   createdAt DateTime @default(now())
 
-  organisationId Int
-  organisation   Organisation @relation(fields: [organisationId], references: [id])
+  organisationId String
+  organisation   Organisation @relation(fields: [organisationId], references: [clerkOrganisationId])
+  events Event[]
 
   @@index([clerkId])
 }
@@ -49,12 +50,20 @@ model Organisation {
   domain              String   @unique
 
   users User[]
+  events Event[]
+
+  @@index([clerkOrganisationId])
 }
 
 model Event {
   id        String   @id @default(cuid())
   title     String   @unique
   createdAt DateTime @default(now())
+  userId String
+  user User @relation(fields: [userId], references: [clerkId])
+
+  organisationId String
+  organisation   Organisation @relation(fields: [organisationId], references: [clerkOrganisationId])
 }
 
 model Waitlist {

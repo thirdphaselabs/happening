@@ -1,9 +1,14 @@
-import { EventPersistance } from "../event.persistance";
+import { AuthWithOrg } from "../../../types/types";
+import { EventPersistence } from "../event.persistence";
+
+export type CreateEventArgs = {
+  title: string;
+};
 
 export class CreateEvent {
-  constructor(private eventPersistance: EventPersistance) {}
+  constructor(private readonly eventPersistence: EventPersistence) {}
 
-  async execute(args: { title: string }) {
-    return this.eventPersistance.create(args);
+  async execute(auth: AuthWithOrg, args: CreateEventArgs) {
+    return this.eventPersistence.create(auth, args);
   }
 }
