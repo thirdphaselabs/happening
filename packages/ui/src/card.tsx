@@ -1,6 +1,8 @@
-import { Badge, BadgeProps, Flex, Heading } from "@radix-ui/themes";
+import { DotsVerticalIcon, ImageIcon } from "@radix-ui/react-icons";
+import { Badge, BadgeProps, Button, DropdownMenu, Flex, Heading, IconButton } from "@radix-ui/themes";
 import clsx from "clsx";
 import Image from "next/image";
+import { useRouter } from "next/navigation";
 import React from "react";
 
 interface CardRootProps {
@@ -9,41 +11,35 @@ interface CardRootProps {
 }
 
 const CardRoot: React.FC<CardRootProps> = ({ children, onClick }) => (
-  <Flex direction="column" gap="3" onClick={onClick}>
+  <Flex direction="column" gap="3" onClick={onClick} className="min-h-[250px] w-full flex-grow">
     {children}
   </Flex>
 );
 
 interface CardImageProps {
-  src: string;
-  alt: string;
+  src: string | null;
+  alt?: string;
   hasNoPadding?: boolean;
 }
 
 const CardImage: React.FC<CardImageProps> = ({ src, alt, hasNoPadding = false }) => {
-  const cardHeight = 188;
-  const cardWidth = 342;
   const padding = 6;
-  const imageHeight = cardHeight - padding * 2;
-  const imageWidth = cardWidth - padding * 2;
+
   return (
     <Flex
       className={clsx(
-        `border-grayA3 bg-grayA2 hover:bg-skyA3 relative rounded-md border-[1px] border-solid transition-all`,
+        `border-grayA3 bg-grayA2 hover:bg-skyA3 relative h-full min-h-[250px] w-full items-center justify-center overflow-hidden rounded-md  border-[1px] border-solid transition-all`,
       )}
       style={{
-        height: `${cardHeight}px`,
-        width: `${cardWidth}px`,
         padding: hasNoPadding ? 0 : `${padding}px`,
       }}>
-      <Flex
-        className="relative overflow-hidden rounded-sm"
-        style={{
-          height: hasNoPadding ? cardHeight : `${imageHeight}px`,
-          width: hasNoPadding ? cardWidth : `${imageWidth}px`,
-        }}>
-        <Image src={src} alt={alt} layout="fill" />
-      </Flex>
+      {src ? (
+        <Image src={src} alt={alt ?? "Image"} layout="fill" objectFit="cover" />
+      ) : (
+        <IconButton size="4" variant="soft">
+          <ImageIcon height="18" width="18" />
+        </IconButton>
+      )}
     </Flex>
   );
 };
@@ -59,20 +55,55 @@ const CardHeader: React.FC<CardHeaderProps> = ({ children }) => (
 );
 
 interface CardActionsProps {
-  children: React.ReactNode;
+  children?: React.ReactNode;
+  identifier: string | null;
 }
 
-const CardActions: React.FC<CardActionsProps> = ({ children }) => <Flex gap="3">{children}</Flex>;
+const CardActions: React.FC<CardActionsProps> = ({ children, identifier }) => {
+  const router = useRouter();
+  return (
+    <Flex gap="3">
+      <DropdownMenu.Root>
+        <DropdownMenu.Trigger>
+          <IconButton variant="ghost" color="gray">
+            <DotsVerticalIcon />
+          </IconButton>
+        </DropdownMenu.Trigger>
+        <DropdownMenu.Content>
+          <DropdownMenu.Item shortcut="⌘ E" onClick={() => router.push(`/events/details/${identifier}`)}>
+            Edit
+          </DropdownMenu.Item>
+          <DropdownMenu.Item shortcut="⌘ D">Duplicate</DropdownMenu.Item>
+          <DropdownMenu.Separator />
+
+          <DropdownMenu.Item>Share</DropdownMenu.Item>
+          <DropdownMenu.Sub>
+            <DropdownMenu.SubTrigger>More</DropdownMenu.SubTrigger>
+            <DropdownMenu.SubContent>
+              <DropdownMenu.Item>Move to project…</DropdownMenu.Item>
+              <DropdownMenu.Item>Move to folder…</DropdownMenu.Item>
+
+              <DropdownMenu.Separator />
+              <DropdownMenu.Item>Advanced options…</DropdownMenu.Item>
+            </DropdownMenu.SubContent>
+          </DropdownMenu.Sub>
+
+          <DropdownMenu.Separator />
+          <DropdownMenu.Item shortcut="⌘ ⌫" color="red">
+            Archive
+          </DropdownMenu.Item>
+        </DropdownMenu.Content>
+      </DropdownMenu.Root>
+      {children}
+    </Flex>
+  );
+};
 
 type CardBadgeProps = {
   children: React.ReactNode;
-} & BadgeProps;
+};
 
-const CardBadge: React.FC<CardBadgeProps> = ({ children, ...rest }) => (
-  <Flex>
-    <Badge {...rest}>{children}</Badge>
-  </Flex>
-);
+const CardBadge: React.FC<CardBadgeProps> = ({ children }) => <Flex>{children}</Flex>;
 
 // Card Component with subcomponents
 export const Card = {

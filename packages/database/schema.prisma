@@ -55,10 +55,24 @@ model Organisation {
   @@index([clerkOrganisationId])
 }
 
+enum EventStatus {
+  DRAFT
+  ACTIVE
+  SOLD_OUT
+  PAST
+  CANCELLED
+}
+
 model Event {
   id        String   @id @default(cuid())
+  identifier String   @unique
   title     String   @unique
+  description String
+  status   EventStatus 
+  coverImageUrl String?
+
   createdAt DateTime @default(now())
+
   userId String
   user User @relation(fields: [userId], references: [clerkId])
 

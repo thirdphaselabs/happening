@@ -1,7 +1,6 @@
 import { ClerkProvider } from "@clerk/nextjs";
 import { themeConfig } from "@plaventi/ui";
 import { Theme } from "@radix-ui/themes";
-import "../styles/radix.css";
 import "../styles/input.css";
 
 import { cookies } from "next/headers";

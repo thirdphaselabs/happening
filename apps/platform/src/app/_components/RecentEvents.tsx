@@ -1,73 +1,45 @@
 "use client";
 import { Card } from "@plaventi/ui";
 import { DotsVerticalIcon } from "@radix-ui/react-icons";
-import { Flex, Heading, IconButton } from "@radix-ui/themes";
+import { Flex, Grid, Heading, IconButton } from "@radix-ui/themes";
+import Link from "next/link";
 import { useRouter } from "next/navigation";
 import { toast } from "sonner";
 import blackCoffee from "~/assets/black-coffee.png";
 import createEvent from "~/assets/create-event.svg";
 import food from "~/assets/food.png";
-import { api } from "~/trpc/provider";
 import { NotificationCallout } from "./Notification";
+import { api } from "~/trpc/provider";
+import { EventCard } from "~/modules/events/shared/components/event-card";
 
 export function RecentEvents() {
-  const router = useRouter();
+  const { data: events, isLoading, error } = api.event.all.useQuery();
+
+  if (error) {
+    return <p>Error: {error.message}</p>;
+  }
 
   return (
     <Flex direction="column" gap="6">
       <Heading size="5">Recent Events</Heading>
-      <Flex gap="6">
-        <Card.Root
-          onClick={() => {
-            toast.custom((id) => (
-              <NotificationCallout toastId={id} message="Creating events coming soon!" type="info" />
-            ));
-          }}>
-          <Card.Image src={createEvent} alt="Create Event" hasNoPadding />
-          <Card.Header>Create Event</Card.Header>
-          <Card.Badge>Upcoming</Card.Badge>
-        </Card.Root>
-        <Card.Root
-          onClick={() => {
-            toast.custom((id) => (
-              <NotificationCallout
-                toastId={id}
-                message="Event has been published"
-                type="success"
-                action={{
-                  text: "View event",
-                  action: () => {
-                    router.push("/events");
-                  },
-                }}
-              />
-            ));
-          }}>
-          <Card.Image src={blackCoffee.src} alt="Create Event" />
-          <Card.Header>
-            Black Coffee | Hi Ibiza{" "}
-            <Card.Actions>
-              <IconButton variant="ghost" color="gray">
-                <DotsVerticalIcon />
-              </IconButton>
-            </Card.Actions>
-          </Card.Header>
-
-          <Card.Badge color="green">Published</Card.Badge>
-        </Card.Root>
-        <Card.Root>
-          <Card.Image src={food.src} alt="Create Event" />
-          <Card.Header>
-            FoodieLand Night w/ Mark Stuart{" "}
-            <Card.Actions>
-              <IconButton variant="ghost" color="gray">
-                <DotsVerticalIcon />
-              </IconButton>
-            </Card.Actions>
-          </Card.Header>
-          <Card.Badge color="yellow">Draft</Card.Badge>
-        </Card.Root>
-      </Flex>
+      <Grid
+        columns={{
+          initial: "1",
+          md: "2",
+          lg: "3",
+          xl: "4",
+        }}
+        gap="6">
+        <Flex>
+          <Link href="/events/new" className="h-full w-full">
+            <Card.Root>
+              <Card.Image src={createEvent} alt="Create Event" hasNoPadding />
+              <Card.Header>Create Event</Card.Header>
+            </Card.Root>
+          </Link>
+        </Flex>
+        {events?.slice(0, 3).map((event) => <EventCard key={event.identifier} event={event} />)}
+      </Grid>
     </Flex>
   );
 }

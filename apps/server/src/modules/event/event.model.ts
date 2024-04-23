@@ -1,8 +1,3 @@
-import { z } from "zod";
+import { Prisma } from "@prisma/client";
 
-export const PlaventiEvent = z.object({
-  id: z.string(),
-  title: z.string(),
-});
-
-export type PlaventiEvent = z.infer<typeof PlaventiEvent>;
+export type PlaventiEvent = Prisma.EventGetPayload<{}>;

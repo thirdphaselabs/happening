@@ -21,7 +21,7 @@ export function NewExample() {
 
         if (!example) return;
 
-        await mutateAsync({ title: example });
+        await mutateAsync({ title: example, description: "test" });
 
         await utils.event.all.invalidate();
 

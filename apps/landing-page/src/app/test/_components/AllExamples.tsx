@@ -9,7 +9,7 @@ export function AllExamples({ initialExamples }: { initialExamples: Event[] }) {
   return (
     <>
       {examples.map((d) => (
-        <div key={d.id}>{d.title}</div>
+        <div key={d.identifier}>{d.title}</div>
       ))}
     </>
   );

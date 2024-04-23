@@ -1,0 +1,3 @@
+-- AlterTable
+ALTER TABLE "Event" ALTER COLUMN "coverImageUrl" DROP NOT NULL,
+ALTER COLUMN "coverImageUrl" DROP DEFAULT;
