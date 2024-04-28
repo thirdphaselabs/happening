@@ -12,6 +12,8 @@ export default authMiddleware({
   afterAuth: async (auth, req: NextRequest) => {
     const { userId, sessionClaims } = auth;
 
+    console.log({ userId, sessionClaims, reqUrl: req.url });
+
     if (req.nextUrl.pathname === "/developer") {
       return NextResponse.next();
     }

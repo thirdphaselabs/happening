@@ -11,11 +11,13 @@ import { createTRPCReact } from "@trpc/react-query";
 import React, { useState } from "react";
 import { transformer } from "./transformer";
 import { getUrl } from "./utils/getUrl";
+import { useAuth } from "@clerk/nextjs";
 
 export const api = createTRPCReact<AppRouter>({});
 
 export function TRPCReactProvider(props: { children: React.ReactNode; cookies: string }) {
   const [queryClient] = React.useState(() => new QueryClient());
+  const { getToken } = useAuth();
 
   const [trpcClient] = useState(() =>
     api.createClient({
@@ -23,10 +25,14 @@ export function TRPCReactProvider(props: { children: React.ReactNode; cookies: s
       links: [
         httpBatchLink({
           url: getUrl(),
-          fetch(url, options) {
+          async fetch(url, options) {
             return fetch(url, {
               ...options,
               credentials: "include",
+              headers: {
+                ...options?.headers,
+                Authorization: `Bearer ${await getToken()}`,
+              },
             });
           },
           maxURLLength: 2083,

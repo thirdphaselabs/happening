@@ -54,6 +54,8 @@ export const protectedProcedure = t.procedure.use(hasValidSessionToken);
 const hasValidSessionTokenAndOrganisation = t.middleware(async ({ ctx, next }) => {
   const auth = ctx.req.auth;
 
+  console.log({ auth });
+
   if (!auth) {
     throw new TRPCError({ code: "UNAUTHORIZED" });
   }

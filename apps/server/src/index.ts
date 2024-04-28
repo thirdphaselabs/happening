@@ -15,6 +15,7 @@ import { initEnv } from "./environment";
 import { UserRole } from "@plaventi/database";
 import { ClerkAuth } from "./middleware/clerk-auth";
 import { OnboardingStep } from "./types/types";
+import { imageRouter } from "./routers/image-router";
 
 declare global {
   namespace Express {
@@ -58,6 +59,8 @@ app.use(
     createContext,
   }),
 );
+
+app.use("/api/images", imageRouter);
 
 // Handle incoming OpenAPI requests
 app.use("/api", createOpenApiExpressMiddleware({ router: appRouter, createContext }));

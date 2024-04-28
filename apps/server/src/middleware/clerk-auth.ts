@@ -17,7 +17,7 @@ const clerkJwtPayloadSchema = z.object({
 });
 
 export function ClerkAuth(req: Request, res: Response, next: NextFunction) {
-  const header = req.headers.authorization?.split("Bearer ")[1];
+  const header = req.headers.authorization?.replace("Bearer ", "");
   const cookie = req.cookies["__session"];
 
   const token = header ?? cookie;
@@ -30,6 +30,8 @@ export function ClerkAuth(req: Request, res: Response, next: NextFunction) {
     next();
     return;
   }
+
+  console.log({ token, publicKey: environment.CLERK_PEM_PUBLIC_KEY });
 
   try {
     if (token) {
