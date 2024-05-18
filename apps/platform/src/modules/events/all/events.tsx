@@ -26,9 +26,11 @@ export function Events() {
             Actions
             <ChevronDownIcon />
           </Button>
-          <Link href="/events/new" className="hidden md:flex">
-            <Button>Create new event</Button>
-          </Link>
+          <Button>
+            <Link href="/event-builder" className="hidden md:flex">
+              Create new event
+            </Link>
+          </Button>
         </Flex>
       </Flex>
       <Separator orientation="horizontal" />
