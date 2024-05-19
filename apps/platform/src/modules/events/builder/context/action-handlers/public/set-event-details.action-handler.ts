@@ -1,4 +1,5 @@
-import { EventBuilderActionHandler, SetEventDetailsAction } from "../../event-builder.context";
+import { SetEventDetailsAction } from "../../event-builder.actions";
+import { EventBuilderActionHandler } from "../../event-builder.context";
 import { SectionStatus } from "../../types/types";
 
 export const setEventDetailsActionHandler: EventBuilderActionHandler<SetEventDetailsAction> = (
@@ -20,7 +21,6 @@ export const setEventDetailsActionHandler: EventBuilderActionHandler<SetEventDet
 };
 
 function computeStatus(payload: SetEventDetailsAction["payload"]): SectionStatus {
-  console.log({ name: payload.name, description: payload.description });
   const isComplete = payload.name !== undefined && payload.description !== undefined;
 
   return isComplete ? "complete" : "incomplete";

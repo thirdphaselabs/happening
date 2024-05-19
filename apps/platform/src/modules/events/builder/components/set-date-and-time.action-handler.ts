@@ -1,6 +1,6 @@
-import { SetDateAndTimeAction } from "../../event-builder.actions";
-import { EventBuilderActionHandler } from "../../event-builder.context";
-import { SectionStatus } from "../../types/types";
+import { SetDateAndTimeAction } from "../context/event-builder.actions";
+import { EventBuilderActionHandler } from "../context/event-builder.context";
+import { SectionStatus } from "../context/types/types";
 
 export const setDateAndTimeActionHandler: EventBuilderActionHandler<SetDateAndTimeAction> = (
   state,

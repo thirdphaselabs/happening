@@ -11,10 +11,10 @@ import { Flex, Card, Heading, Button, Skeleton, Separator, TextArea, Badge, Text
 import { useEventBuilderContext } from "../context/event-builder.context";
 import { ConditionalSkeleton } from "~/components/ConditionalSkeleton";
 import { format } from "util";
-import { formatDateWithOrdinal, formatDateWithWeekdayAndOrdinal } from "~/lib/utils";
+import { cn, formatDateWithOrdinal, formatDateWithWeekdayAndOrdinal } from "~/lib/utils";
 
 export function EventPreview() {
-  const { eventDetails, dateAndTime } = useEventBuilderContext();
+  const { eventDetails, dateAndTime, locationDetails, additionalInformation } = useEventBuilderContext();
 
   return (
     <Card className="bg-gray2 h-fit w-full p-6">
@@ -27,7 +27,7 @@ export function EventPreview() {
         </Flex>
         <Card className="h-full w-full p-0">
           <Flex direction="column" gap="4">
-            <Flex className="bg-gray2 h-[200px] rounded-b-md" justify="center" align="center">
+            <Flex className="bg-[#00698016] h-[200px] rounded-b-md" justify="center" align="center">
               <ImageIcon height="24" width="24" />
             </Flex>
             <Flex direction="column" gap="5" px="4" pb="4">
@@ -68,11 +68,11 @@ export function EventPreview() {
                 <Heading size="3">Location</Heading>
                 <Flex align="center" gap="2">
                   <SewingPinIcon className="text-gray10" />
-                  <Skeleton className="w-fit">
+                  <ConditionalSkeleton loading={!locationDetails?.venue}>
                     <Text size="2" color="gray">
-                      Manchester, UK
+                      {locationDetails?.venue ?? "Manchester, UK"}
                     </Text>
-                  </Skeleton>
+                  </ConditionalSkeleton>
                 </Flex>
                 <Button size="1" variant="ghost">
                   Show full address
@@ -81,34 +81,42 @@ export function EventPreview() {
               </Flex>
               <Flex direction="column" align="start" gap="2">
                 <Heading size="3">About this event</Heading>
-                <Skeleton className="w-fit">
-                  <TextArea rows={4} className="w-full" size="2" color="gray">
-                    Manchester, UK
-                  </TextArea>
-                </Skeleton>
+                {/* <ConditionalSkeleton loading={!additionalInformation?.description}>
+                  <Text
+                    className={cn("w-full", { "h-[64px]": !additionalInformation?.description })}
+                    size="2"
+                    color="gray">
+                    {additionalInformation?.description ?? "Manchester, UK"}
+                  </Text>
+                </ConditionalSkeleton> */}
+                {additionalInformation?.description?.split("\n").map((para) => {
+                  return (
+                    <Text size="2" color="gray">
+                      {para}
+                    </Text>
+                  );
+                })}
+                {!additionalInformation?.description && (
+                  <Skeleton className="h-[64px] w-full">
+                    <Text size="2" color="gray">
+                      Description
+                    </Text>
+                  </Skeleton>
+                )}
               </Flex>
               <Flex direction="column" justify="between" gap="2">
                 <Heading size="3">Tags</Heading>
                 <Flex align="center" gap="2">
-                  <Flex>
-                    <Skeleton className="w-fit">
-                      <Badge>Food</Badge>
-                    </Skeleton>
-                  </Flex>
-                  <Flex>
-                    <Skeleton className="w-fit">
-                      <Badge>Music</Badge>
-                    </Skeleton>
-                  </Flex>
-                  <Flex>
-                    <Skeleton className="w-fit">
-                      <Badge>Baby shower</Badge>
-                    </Skeleton>
-                  </Flex>
-                  <Flex>
-                    <Skeleton className="w-fit">
-                      <Badge>Wedding</Badge>
-                    </Skeleton>
+                  <Flex gap="3" wrap="wrap">
+                    {additionalInformation?.tags
+                      ?.sort((a, b) => a.label.localeCompare(b.label))
+                      .map((tag) => <Badge key={tag.id}>{tag.label}</Badge>)}
+                    {additionalInformation?.tags?.length === 0 &&
+                      Array.from({ length: 4 }).map((_, i) => (
+                        <Skeleton key={i} className="w-fit">
+                          <Badge size="2">Tag</Badge>
+                        </Skeleton>
+                      ))}
                   </Flex>
                 </Flex>
               </Flex>

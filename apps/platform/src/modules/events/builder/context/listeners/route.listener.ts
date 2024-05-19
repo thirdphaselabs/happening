@@ -50,6 +50,14 @@ function computeStageFromPathName(pathName: string): EventBuilderStage | null {
       return "details";
     case "/event-builder/date":
       return "date";
+    case "/event-builder/location":
+      return "location";
+    case "/event-builder/additional-information":
+      return "additional-information";
+    case "/event-builder/tickets":
+      return "tickets";
+    case "/event-builder/confirmation":
+      return "confirmation";
     default:
       return null;
   }

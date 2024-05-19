@@ -80,3 +80,7 @@
 * {
   font-family: var(--default-font-family);
 }
+
+.rt-BaseDialogScrollPadding.rt-DialogScrollPadding:has(.dialog-align-top) {
+  margin-top: 3rem;
+}
