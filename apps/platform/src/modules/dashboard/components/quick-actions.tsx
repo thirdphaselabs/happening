@@ -28,13 +28,11 @@ const quickActions = [
 export function QuickActions() {
   return (
     <Flex direction="column" gap="6">
-      <Heading size="5">Quick Actions</Heading>
+      <Heading size="6">Quick Actions</Heading>
       <Grid
         columns={{
           initial: "1",
           xs: "2",
-          lg: "3",
-          xl: "4",
         }}
         gap="6">
         {quickActions.map((a, i) => (
@@ -58,9 +56,9 @@ function QuickAction({
 }) {
   const isIndexOdd = index % 2 === 0;
   return (
-    <Card className="hover:bg-skyA3 relative p-5">
+    <Flex className="hover:bg-skyA3 relative rounded-xl bg-transparent bg-white p-5">
       <NextLink href={href}>
-        <Flex direction="column" gap="3" className="min-h-[160px]">
+        <Flex direction="column" gap="3" className="min-h-[130px]">
           {icon}
           <Heading size="3" color="gray" highContrast>
             {title}
@@ -75,7 +73,7 @@ function QuickAction({
         </Button>
       </NextLink>
       <Flex className="absolute bottom-0 right-0">{isIndexOdd ? <BlueGraphic /> : <YellowGraphic />}</Flex>
-    </Card>
+    </Flex>
   );
 }
 

@@ -1,16 +1,11 @@
 import { User } from "@clerk/nextjs/dist/types/server";
 import { Separator } from "@plaventi/ui";
-import {
-  Button,
-  ChevronDownIcon,
-  Flex,
-  Grid,
-  Heading
-} from "@radix-ui/themes";
+import { Button, ChevronDownIcon, Flex, Grid, Heading } from "@radix-ui/themes";
 import Link from "next/link";
-import { RecentEvents } from "~/app/_components/RecentEvents";
+import { UpcomingEvents } from "~/app/_components/RecentEvents";
 import { DashboardStat } from "../events/all/components/dashboard-stat";
 import { QuickActions } from "./components/quick-actions";
+import { ArrowTopRightIcon, PlusIcon } from "@radix-ui/react-icons";
 
 const stats = [
   {
@@ -35,36 +30,30 @@ const stats = [
 
 export function Dashboard({ user }: { user: User }) {
   return (
-    <Flex direction="column" gap="6">
+    <Flex direction="column" gap="6" pb="6">
       <Flex className="w-full" justify="between" align="center">
-        <Heading>Welcome, {user.firstName}</Heading>
+        <Heading weight="bold" size="7">
+          Welcome, {user.firstName}
+        </Heading>
         <Flex gap="4">
-          <Button color="gray" variant="soft">
-            Actions
-            <ChevronDownIcon />
-          </Button>
-          <Link href="/event-builder">
-            <Button className="hidden md:flex">Create event</Button>
+          <Link href="/events">
+            <Button color="gray" variant="soft">
+              <ArrowTopRightIcon />
+              View your events
+            </Button>
           </Link>
         </Flex>
       </Flex>
 
       <Separator orientation="horizontal" />
-      <Grid
-        columns={{
-          initial: "1",
-          md: "2",
-          lg: "3",
-        }}
-        gap="6"
-        className="w-full md:w-fit">
+      <Flex gap="4" wrap="wrap" className="w-full">
         {stats.map((stat) => (
           <DashboardStat key={stat.title} {...stat} />
         ))}
-      </Grid>
+      </Flex>
       <Separator orientation="horizontal" />
 
-      <RecentEvents />
+      <UpcomingEvents />
       <Separator orientation="horizontal" />
 
       <QuickActions />

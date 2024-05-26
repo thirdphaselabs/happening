@@ -2,7 +2,7 @@ import { ThemeProps } from "@radix-ui/themes";
 
 export const themeConfig: ThemeProps = {
   appearance: "light",
-  radius: "small",
+  radius: "large",
   accentColor: "sky",
   grayColor: "gray",
   panelBackground: "translucent",

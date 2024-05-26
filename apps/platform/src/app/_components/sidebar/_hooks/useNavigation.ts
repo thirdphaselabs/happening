@@ -5,6 +5,7 @@ import {
   BarChartIcon,
   CalendarIcon,
   ChatBubbleIcon,
+  Crosshair1Icon,
   GridIcon,
   HomeIcon,
 } from "@radix-ui/react-icons";
@@ -23,20 +24,20 @@ export const navigationItems: NavigationItem[] = [
     route: Route.Events,
   },
   {
-    title: "Tickets",
-    icon: TicketIcon,
-    route: Route.Tickets,
+    title: "Discovery",
+    icon: Crosshair1Icon,
+    route: Route.Discovery,
   },
-  {
-    title: "Analytics",
-    icon: BarChartIcon,
-    route: Route.Analytics,
-  },
-  {
-    title: "Messages",
-    icon: ChatBubbleIcon,
-    route: Route.Messages,
-  },
+  // {
+  //   title: "Analytics",
+  //   icon: BarChartIcon,
+  //   route: Route.Analytics,
+  // },
+  // {
+  //   title: "Messages",
+  //   icon: ChatBubbleIcon,
+  //   route: Route.Messages,
+  // },
 ];
 
 export default function useNavigation() {

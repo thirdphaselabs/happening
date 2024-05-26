@@ -19,7 +19,7 @@ export function EventBuilderNavigation() {
             <Button size="3" color="gray" variant="soft" disabled={!stage.previous}>
               Back
             </Button>
-            <Link href={`/event-builder/${stage.next}`} prefetch>
+            <Link href={`/events/create/${stage.next}`} prefetch>
               <Button
                 size="3"
                 disabled={!stage.next || !stage.isCurrentStageComplete || isLoading}

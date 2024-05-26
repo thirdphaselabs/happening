@@ -3,15 +3,14 @@
 .radix-themes {
   --default-font-size: 18px;
   --default-font-family: var(--font-plaventi);
+
+  --card-background-color: transparent;
+
   --font-weight-bold: 600;
 
-  .rt-Heading {
-    font-weight: var(--font-weight-medium);
-  }
-
   --container-1: 448px;
-  --container-2: 688px;
-  --container-3: 1144px;
+  --container-2: 820px;
+  --container-3: 960px;
   --container-4: 1800px;
 
   --sky-1: #f9fdff;
@@ -83,4 +82,17 @@
 
 .rt-BaseDialogScrollPadding.rt-DialogScrollPadding:has(.dialog-align-top) {
   margin-top: 3rem;
+}
+
+#create-event-name.rt-TextAreaInput {
+  text-indent: 0;
+  font-weight: 600;
+  border-radius: 0;
+  padding: 0px 0;
+  font-size: 40px;
+  height: fit-content;
+  border-radius: 0;
+  line-height: 1.1;
+  overflow: none;
+  resize: none;
 }

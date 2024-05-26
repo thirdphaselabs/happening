@@ -19,3 +19,11 @@ export function EventsManagerBadge() {
     </Flex>
   );
 }
+
+export function LogoOnlyBadge() {
+  return (
+    <Flex className="relative h-[24px] w-[18px]">
+      <Image src={logo} alt="Plaventi logo" objectFit="fit" layout="fill" />
+    </Flex>
+  );
+}

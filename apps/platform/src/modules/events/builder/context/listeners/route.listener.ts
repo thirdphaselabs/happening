@@ -16,7 +16,7 @@ export function useRouteListener(state: EventBuilderState, dispatch: Dispatch<Ev
     console.log("Stage", stage);
 
     if (!stage) {
-      router.push("/event-builder/details");
+      router.push("/events/create/details");
       dispatch({
         type: "SET_CURRENT_STAGE",
         payload: "details",
@@ -30,7 +30,7 @@ export function useRouteListener(state: EventBuilderState, dispatch: Dispatch<Ev
 
     const stageCompletedUpTo = computeStageCompletedUpTo(state);
 
-    router.push(`/event-builder/${stageCompletedUpTo}`);
+    router.push(`/events/create/${stageCompletedUpTo}`);
     dispatch({
       type: "SET_CURRENT_STAGE",
       payload: stageCompletedUpTo,
@@ -46,17 +46,17 @@ export function useRouteListener(state: EventBuilderState, dispatch: Dispatch<Ev
 function computeStageFromPathName(pathName: string): EventBuilderStage | null {
   console.log(pathName);
   switch (pathName) {
-    case "/event-builder/details":
+    case "/events/create/details":
       return "details";
-    case "/event-builder/date":
+    case "/events/create/date":
       return "date";
-    case "/event-builder/location":
+    case "/events/create/location":
       return "location";
-    case "/event-builder/additional-information":
+    case "/events/create/additional-information":
       return "additional-information";
-    case "/event-builder/tickets":
+    case "/events/create/tickets":
       return "tickets";
-    case "/event-builder/confirmation":
+    case "/events/create/confirmation":
       return "confirmation";
     default:
       return null;

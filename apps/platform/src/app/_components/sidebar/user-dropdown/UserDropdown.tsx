@@ -1,7 +1,7 @@
 "use client";
 
 import { useUser } from "@clerk/nextjs";
-import { Avatar, Button, ChevronDownIcon, DropdownMenu, Flex, Text } from "@radix-ui/themes";
+import { Avatar, Button, ChevronDownIcon, DropdownMenu, Flex, IconButton, Text } from "@radix-ui/themes";
 import clsx from "clsx";
 import { Logout } from "./Logout";
 
@@ -10,18 +10,11 @@ export function UserDropdown() {
   return (
     <DropdownMenu.Root>
       <DropdownMenu.Trigger>
-        <Button variant="ghost" color="gray" className="hidden focus:outline-none md:flex">
+        <IconButton variant="ghost" color="gray" className="hidden focus:outline-none md:flex">
           <Flex gap="2" align="center">
-            <Avatar size="1" fallback="RJ" color="sky" />
-            <Text
-              size="2"
-              color="gray"
-              className={clsx("", !isLoaded && "bg-gray3 h-[15px] w-[45px] animate-pulse rounded-sm")}>
-              {user?.firstName}
-            </Text>
-            <ChevronDownIcon />
+            <Avatar size="1" fallback="RJ" color="sky" radius="full" />
           </Flex>
-        </Button>
+        </IconButton>
       </DropdownMenu.Trigger>
       <DropdownMenu.Content>
         <DropdownMenu.Item>Account settings</DropdownMenu.Item>

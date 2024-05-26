@@ -1,17 +1,13 @@
-import { Flex } from "@radix-ui/themes";
-import Sidebar from "./Sidebar";
-import { User } from "@clerk/nextjs/dist/types/server";
-import { TopNavigation } from "./TopNavigation";
+import { Container, Flex } from "@radix-ui/themes";
+import { TopNavigation } from "../top-navbar/TopNavigation";
 
-export default function SidebarLayout({ user, children }: { user: User; children: React.ReactNode }) {
+export default function SidebarLayout({ children }: { children: React.ReactNode }) {
   return (
     <>
       <TopNavigation />
       <Flex direction="column" position="relative">
-        <Flex>
-          <Sidebar user={user} />
-          <div className="h-screen flex-1 overflow-auto md:pl-[256px] pt-[20px]">{children}</div>
-        </Flex>
+        {/* <Sidebar user={user} /> */}
+        <Flex className="h-screen flex-1 overflow-auto pt-[20px]">{children}</Flex>
       </Flex>
     </>
   );

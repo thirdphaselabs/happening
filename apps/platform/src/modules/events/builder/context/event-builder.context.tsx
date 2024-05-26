@@ -128,7 +128,7 @@ export function EventBuilderContextProvider({ children }: EventBuilderContextPro
   const addTicketGroup = useAddTicketGroup(dispatch);
   const removeTicketGroup = useRemoveTicketGroup(dispatch);
   const setIsLoading = useSetIsLoading(dispatch);
-  useRouteListener(state, dispatch);
+  // useRouteListener(state, dispatch);
 
   console.log("EventBuilderContextProvider", state);
 

@@ -8,5 +8,5 @@ export default function EventBuilderPageRoot() {
     stage: { current },
   } = useEventBuilderContext();
 
-  redirect(`/event-builder/${current}`);
+  redirect(`/events/create/${current}`);
 }

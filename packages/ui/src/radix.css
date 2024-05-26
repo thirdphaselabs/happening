@@ -3,10 +3,6 @@
   --default-font-family: var(--font-plaventi);
   --font-weight-bold: 600;
 
-  .rt-Heading {
-    font-weight: var(--font-weight-medium);
-  }
-
   .dark,
   .dark-theme {
     --blue-1: #09161a;
