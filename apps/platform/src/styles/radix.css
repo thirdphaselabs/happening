@@ -96,3 +96,7 @@
   overflow: none;
   resize: none;
 }
+
+.select-trigger-no-icon svg {
+  display: none;
+}
