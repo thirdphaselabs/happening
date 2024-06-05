@@ -20,7 +20,7 @@ import { useEffect, useRef } from "react";
 import { useForm } from "react-hook-form";
 import { set, z } from "zod";
 import { Calendar } from "~/components/ui/calendar";
-import { useEventBuilderContext } from "~/modules/events/builder/context/event-builder.context";
+import { useEventBuilderContext } from "../../create/context/event-builder.context";
 
 export default function EventBuilderDateView() {
   const { dateAndTime, setEventDetails, isLoading, setIsLoading } = useEventBuilderContext();
@@ -72,25 +72,6 @@ export default function EventBuilderDateView() {
             <TextFieldLabelContainer>
               <TextFieldLabel>Event end</TextFieldLabel>
             </TextFieldLabelContainer>
-
-            {/* <Popover.Root>
-              <Popover.Trigger>
-                <Button variant="surface" size="2" color="gray" className="w-full justify-start">
-                  <CalendarIcon width={16} height={16} />
-                  {dateAndTime?.date ? format(dateAndTime.date, "dd/MM/yyyy") : <span>DD/MM/YYYY</span>}
-                </Button>
-              </Popover.Trigger>
-              <Popover.Content side="top" align="start" className="w-max min-w-max p-0">
-                <Calendar
-                  mode="single"
-                  selected={dateAndTime?.date}
-                  onSelect={(val) => {
-                    console.log(val);
-                  }}
-                  className="w-max"
-                />
-              </Popover.Content>
-            </Popover.Root> */}
           </TextFieldRoot>
 
           <Checkbox />

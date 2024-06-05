@@ -1,7 +1,7 @@
 "use client";
 
 import { redirect } from "next/navigation";
-import { useEventBuilderContext } from "~/modules/events/builder/context/event-builder.context";
+import { useEventBuilderContext } from "~/modules/events/create/context/event-builder.context";
 
 export default function EventBuilderPageRoot() {
   const {

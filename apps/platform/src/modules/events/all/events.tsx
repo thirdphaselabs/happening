@@ -1,12 +1,13 @@
 "use client";
 
-import { Text, Flex, Grid, Heading, SegmentedControl } from "@radix-ui/themes";
+import { Text, Flex, Grid, Heading, SegmentedControl, Box } from "@radix-ui/themes";
 import Link from "next/link";
 import { api } from "~/trpc/provider";
 import { EventCard } from "../shared/components/event-card";
 import { Button, Separator } from "@plaventi/ui";
 import { useState } from "react";
 import { PlusIcon } from "@radix-ui/react-icons";
+import { formatDate } from "date-fns";
 
 export function Events() {
   const { data: events, isLoading, error } = api.event.all.useQuery();
@@ -36,18 +37,27 @@ export function Events() {
       </Flex>
       <Separator orientation="horizontal" />
       {events.length > 0 && (
-        <Grid
-          columns={{
-            initial: "1",
-            md: "2",
-            lg: "3",
-            xl: "4",
-          }}
-          gap="6">
+        <>
           {events.map((event) => (
-            <EventCard key={event.identifier} event={event} />
+            <Flex justify="between">
+              <Flex direction="column" gap="1" className="flex-grow">
+                <Heading size="3" color="gray" highContrast>
+                  {formatDate(new Date(), "d MMM")}
+                </Heading>
+                <Text size="3" color="gray">
+                  {formatDate(new Date(), "EEE")}
+                </Text>
+              </Flex>
+              <Flex mx="6" mt="2" position="relative" className="w-fit">
+                <Box className="bg-grayA6 z-[100] flex h-[12px] w-[12px] items-center justify-center rounded-full" />
+                <Box className="border-grayA5 absolute left-[5px] top-[11.5px] h-[290px] w-[2px] border-r-[1px] border-dashed" />
+              </Flex>
+              <Flex className="w-3/4">
+                <EventCard key={event.identifier} event={event} />
+              </Flex>
+            </Flex>
           ))}
-        </Grid>
+        </>
       )}
       {events.length === 0 && <EmptyState category={category} />}
     </Flex>

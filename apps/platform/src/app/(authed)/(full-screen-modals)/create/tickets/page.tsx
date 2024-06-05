@@ -24,7 +24,7 @@ import { useState } from "react";
 import { AddFreeTicketGroupDialog } from "~/modules/events/builder/components/add-free-ticket-group-dialog";
 import { AddPaidTicketGroupDialog } from "~/modules/events/builder/components/add-paid-ticket-group-dialog";
 import { TicketGroupDropdown } from "~/modules/events/builder/components/ticket-group-dropdown";
-import { useEventBuilderContext } from "~/modules/events/builder/context/event-builder.context";
+import { useEventBuilderContext } from "~/modules/events/create/context/event-builder.context";
 
 export default function EventBuilderTicketsPage() {
   const { tickets, updateNumberOfTicketGroups } = useEventBuilderContext();

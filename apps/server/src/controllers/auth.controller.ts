@@ -1,0 +1,136 @@
+import { Router, Request, Response, NextFunction } from "express";
+import { createRemoteJWKSet, jwtVerify } from "jose";
+import { Impersonator, User, WorkOS } from "@workos-inc/node";
+import { environment } from "../environment";
+import { withWorkOsAuth } from "../middleware/auth";
+import { sealData } from "iron-session";
+import { Profile } from "@prisma/client";
+import { prisma } from "@plaventi/database";
+
+const workos = new WorkOS(environment.WORKOS_API_KEY);
+const clientId = environment.WORKOS_CLIENT_ID;
+const JWKS = createRemoteJWKSet(new URL(workos.userManagement.getJwksUrl(clientId)));
+
+export type PlaventiSession = {
+  sessionId: string;
+  accessToken: string;
+  refreshToken: string;
+  user: User;
+  profile: Profile | null;
+  impersonator: Impersonator | undefined;
+  organisationId: string | null;
+};
+
+const authController = Router();
+
+authController.get("/", async (req: Request, res: Response) => {
+  const authorizationUrl = workos.userManagement.getAuthorizationUrl({
+    provider: "GoogleOAuth",
+    redirectUri: "http://localhost:3002/api/auth/callback",
+    clientId,
+  });
+
+  return res.json(authorizationUrl);
+});
+
+authController.get("/callback", async (req, res) => {
+  // The authorization code returned by AuthKit
+  const code = req.query.code;
+
+  if (!code || typeof code !== "string") {
+    return res.status(400).send("Invalid code");
+  }
+
+  const { user, accessToken, refreshToken, impersonator } = await workos.userManagement.authenticateWithCode({
+    code,
+    clientId,
+  });
+
+  const decodedAccessToken = await jwtVerify(accessToken, JWKS);
+
+  const sessionId = decodedAccessToken.payload.sid as string;
+  const organisationId = decodedAccessToken.payload.org_id as string | undefined;
+
+  const profile = await prisma.profile.findUnique({
+    where: {
+      workosId: user.id,
+    },
+  });
+
+  const sessionData: PlaventiSession = {
+    sessionId: sessionId,
+    accessToken,
+    refreshToken,
+    user,
+    impersonator,
+    profile: profile ?? null,
+    organisationId: organisationId ?? null,
+  };
+
+  // The refreshToken should never be accessible publicly,
+  // hence why we encrypt it in the cookie session.
+  // Alternatively you could persist the refresh token in a backend database
+  const encryptedSession = await sealData(sessionData, { password: environment.WORKOS_COOKIE_PASSWORD });
+
+  // Store the session in a cookie
+  res.cookie("wos-session", encryptedSession, {
+    path: "/",
+    httpOnly: true,
+    secure: true,
+    sameSite: "lax",
+  });
+
+  res.redirect("http://localhost:3003");
+});
+
+authController.get("/refresh", withWorkOsAuth, async (req: Request, res: Response) => {
+  const session = req.session;
+  const { accessToken, refreshToken } = await workos.userManagement.authenticateWithRefreshToken({
+    clientId,
+    refreshToken: session.refreshToken,
+  });
+
+  const decodedAccessToken = await jwtVerify(accessToken, JWKS);
+
+  const sessionId = decodedAccessToken.payload.sid as string;
+  const organisationId = decodedAccessToken.payload.org_id as string | undefined;
+
+  const profile = await prisma.profile.findUnique({
+    where: {
+      workosId: session.user.id,
+    },
+  });
+
+  const sessionData: PlaventiSession = {
+    sessionId: sessionId,
+    accessToken,
+    refreshToken,
+    user: session.user,
+    impersonator: session.impersonator,
+    profile,
+    organisationId: organisationId ?? null,
+  };
+
+  const encryptedSession = await sealData(sessionData, { password: environment.WORKOS_COOKIE_PASSWORD });
+
+  res.cookie("wos-session", encryptedSession, {
+    path: "/",
+    httpOnly: true,
+    secure: true,
+    sameSite: "lax",
+  });
+
+  res.json(sessionData);
+});
+
+authController.get("/logout", withWorkOsAuth, async (req: Request, res: Response) => {
+  const session = req.session;
+  console.log({ session });
+  res.clearCookie("wos-session");
+  const logoutUrl = workos.userManagement.getLogoutUrl({
+    sessionId: session.sessionId,
+  });
+  res.redirect(logoutUrl);
+});
+
+export { authController };

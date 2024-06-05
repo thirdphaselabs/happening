@@ -16,7 +16,6 @@ export default function ResponsiveSidebar({ children }: { children: ReactNode })
         <Dialog.Root
           open={open}
           onOpenChange={(value) => {
-            console.log(value);
             return setOpen(value);
           }}>
           <Dialog.Trigger asChild>

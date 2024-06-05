@@ -2,7 +2,8 @@
 
 import { TextFieldInput, TextFieldLabel, TextFieldLabelContainer, TextFieldRoot } from "@plaventi/ui";
 import { Flex, Heading, Text } from "@radix-ui/themes";
-import { useEventBuilderContext } from "~/modules/events/builder/context/event-builder.context";
+import { useEventBuilderContext } from "~/modules/events/create/context/event-builder.context";
+
 
 export default function EventBuilderTicketsPage() {
   const { locationDetails, setLocationDetails } = useEventBuilderContext();

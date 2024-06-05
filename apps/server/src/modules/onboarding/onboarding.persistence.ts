@@ -4,14 +4,14 @@ export class OnboardingPersistence {
   async getOnboarding(userId: string) {
     return prisma.onboarding.findUniqueOrThrow({
       where: {
-        clerkId: userId,
+        workosUserId: userId,
       },
     });
   }
   async getOrganisation(userId: string) {
     const onboarding = await prisma.onboarding.findUnique({
       where: {
-        clerkId: userId,
+        workosUserId: userId,
       },
     });
 
@@ -29,25 +29,25 @@ export class OnboardingPersistence {
   async beginOnboarding(userId: string) {
     await prisma.onboarding.create({
       data: {
-        clerkId: userId,
+        workosUserId: userId,
       },
     });
   }
   async createOrganization(
     userId: string,
-    args: { clerkOrganizationId: string; name: string; domain: string },
+    args: { workosOrganizationId: string; name: string; domain: string },
   ) {
     const organisation = await prisma.organisation.create({
       data: {
         name: args.name,
-        clerkOrganisationId: args.clerkOrganizationId,
+        workosOrganisationId: args.workosOrganizationId,
         domain: args.domain,
       },
     });
 
     await prisma.onboarding.update({
       where: {
-        clerkId: userId,
+        workosUserId: userId,
       },
       data: {
         organisationId: organisation.id,
@@ -58,7 +58,7 @@ export class OnboardingPersistence {
   async completePersonalDetails(userId: string, args: { firstName: string; lastName: string }) {
     return prisma.onboarding.update({
       where: {
-        clerkId: userId,
+        workosUserId: userId,
       },
       data: {
         firstName: args.firstName,

@@ -27,7 +27,6 @@ export class AuthService {
 
       return organisation;
     } catch (error) {
-      console.log(error);
       throw new TRPCError({
         code: "INTERNAL_SERVER_ERROR",
         message: "An error occurred while fetching active organization",
@@ -70,16 +69,15 @@ export class AuthService {
       }
 
       const user = await authPersistence.createUser({
-        clerkId,
+        workosUserId: clerkId,
         firstName: args.firstName,
         lastName: args.lastName,
-        clerkOrganisationId: organisation.orgId,
+        workosOrganisationId: organisation.orgId,
         userRole: mapClerkRoleToUserRole(orgMembership.role),
       });
 
       return user;
     } catch (error) {
-      console.log(error);
       throw new TRPCError({
         code: "INTERNAL_SERVER_ERROR",
         message: "An error occurred while creating user",
@@ -94,7 +92,6 @@ export class AuthService {
         },
       });
     } catch (error) {
-      console.log(error);
       throw new Error("An error occurred while completing onboarding");
     }
   }

@@ -239,6 +239,12 @@ importers:
       '@trpc/server':
         specifier: ^10.45.2
         version: 10.45.2
+      '@workos-inc/authkit-nextjs':
+        specifier: ^0.6.1
+        version: 0.6.1(next@14.1.3)(react-dom@18.2.0)(react@18.2.0)
+      '@workos-inc/node':
+        specifier: ^7.8.0
+        version: 7.8.0
       class-variance-authority:
         specifier: ^0.7.0
         version: 0.7.0
@@ -257,6 +263,12 @@ importers:
       input-otp:
         specifier: ^1.2.2
         version: 1.2.3(react-dom@18.2.0)(react@18.2.0)
+      iron-session:
+        specifier: ^8.0.1
+        version: 8.0.1
+      jose:
+        specifier: ^5.4.0
+        version: 5.4.0
       jsonwebtoken:
         specifier: ^9.0.2
         version: 9.0.2
@@ -387,6 +399,9 @@ importers:
       '@types/uuid':
         specifier: ^9.0.8
         version: 9.0.8
+      '@workos-inc/node':
+        specifier: ^7.8.0
+        version: 7.8.0
       body-parser:
         specifier: ^1.20.2
         version: 1.20.2
@@ -408,6 +423,12 @@ importers:
       imagekit:
         specifier: ^5.0.1
         version: 5.0.1
+      iron-session:
+        specifier: ^8.0.1
+        version: 8.0.1
+      jose:
+        specifier: ^5.4.0
+        version: 5.4.0
       jsonwebtoken:
         specifier: ^9.0.2
         version: 9.0.2
@@ -3225,6 +3246,35 @@ packages:
       - supports-color
     dev: true
 
+  /@workos-inc/authkit-nextjs@0.6.1(next@14.1.3)(react-dom@18.2.0)(react@18.2.0):
+    resolution: {integrity: sha512-X3cd2JZhIWVUzQjO687MyhRC/i+oKKsxX61U0nds86dbbYOCAJ9K4uqyd8tgg4veWa9yuASJQMFHsj+nVZPmzw==}
+    peerDependencies:
+      next: ^13.5.4 || ^14.0.3
+      react: ^18.0
+      react-dom: ^18.0
+    dependencies:
+      '@workos-inc/node': 6.8.0
+      iron-session: 8.0.1
+      jose: 5.4.0
+      next: 14.1.3(react-dom@18.2.0)(react@18.2.0)
+      path-to-regexp: 6.2.2
+      react: 18.2.0
+      react-dom: 18.2.0(react@18.2.0)
+    dev: false
+
+  /@workos-inc/node@6.8.0:
+    resolution: {integrity: sha512-uhlmK3DozCTBOBuy2IY2GvHbpYmDmolc2N5j8MpOUKMYyTWZpdkmETqg1Ky7mUSSPA203E3v6VIra9G4J7me1g==}
+    dependencies:
+      pluralize: 8.0.0
+    dev: false
+
+  /@workos-inc/node@7.8.0:
+    resolution: {integrity: sha512-irFrZ61TNGI5D0NYq+RdwI4xQuLiw7Wcjs7cA1jbN8lM7J7dLamBWzRPgRipmeMsQU8EnFVOfzphedXkbjFOxg==}
+    engines: {node: '>=19'}
+    dependencies:
+      pluralize: 8.0.0
+    dev: false
+
   /abbrev@1.1.1:
     resolution: {integrity: sha512-nne9/IiQ/hzIhY6pdDnbBtz7DjPTKrY00P/zvPSm5pOFkl6xuGrGnXn/VtTNNfNtAfZ9/1RtehkszU9qcTii0Q==}
     dev: false
@@ -3970,6 +4020,11 @@ packages:
 
   /cookie@0.5.0:
     resolution: {integrity: sha512-YZ3GUyn/o8gfKJlnlX7g7xq4gyO6OSuhGPKaaGssGB2qgDUS0gPgtTvoyZLTt9Ab6dC4hfc9dV5arkvc/OCmrw==}
+    engines: {node: '>= 0.6'}
+    dev: false
+
+  /cookie@0.6.0:
+    resolution: {integrity: sha512-U71cyTamuh1CRNCfpGY6to28lxvNwPG4Guz/EVjgf3Jmzv0vlDp1atT9eS5dDjMYHucpHbWns6Lwf3BKz6svdw==}
     engines: {node: '>= 0.6'}
     dev: false
 
@@ -5751,6 +5806,18 @@ packages:
     engines: {node: '>= 0.10'}
     dev: false
 
+  /iron-session@8.0.1:
+    resolution: {integrity: sha512-ZQKazQRn/J5YaXY+CQ69V9lx9boh4swl+BgnNC1knxyZgBjhiXuGpY60URRntMPib9QdrsN9qAOTqdMFMbGYXg==}
+    dependencies:
+      cookie: 0.6.0
+      iron-webcrypto: 1.0.0
+      uncrypto: 0.1.3
+    dev: false
+
+  /iron-webcrypto@1.0.0:
+    resolution: {integrity: sha512-anOK1Mktt8U1Xi7fCM3RELTuYbnFikQY5VtrDj7kPgpejV7d43tWKhzgioO0zpkazLEL/j/iayRqnJhrGfqUsg==}
+    dev: false
+
   /iron-webcrypto@1.1.0:
     resolution: {integrity: sha512-5vgYsCakNlaQub1orZK5QmNYhwYtcllTkZBp5sfIaCqY93Cf6l+v2rtE+E4TMbcfjxDMCdrO8wmp7+ZvhDECLA==}
     dev: false
@@ -6021,6 +6088,10 @@ packages:
   /jju@1.4.0:
     resolution: {integrity: sha512-8wb9Yw966OSxApiCt0K3yNJL8pnNeIv+OEq2YMidz4FKP6nonSRoOXc80iXY4JaN2FC11B9qsNmDsm+ZOfMROA==}
     dev: true
+
+  /jose@5.4.0:
+    resolution: {integrity: sha512-6rpxTHPAQyWMb9A35BroFl1Sp0ST3DpPcm5EVIxZxdH+e0Hv9fwhyB3XLKFUcHNpdSDnETmBfuPPTTlYz5+USw==}
+    dev: false
 
   /js-cookie@3.0.1:
     resolution: {integrity: sha512-+0rgsUXZu4ncpPxRL+lNEptWMOWl9etvPHc/koSRp6MPwpRYAhmk0dUG00J4bxVV3r9uUzfo24wW0knS07SKSw==}
@@ -6917,6 +6988,10 @@ packages:
     resolution: {integrity: sha512-JLyh7xT1kizaEvcaXOQwOc2/Yhw6KZOvPf1S8401UyLk86CU79LN3vl7ztXGm/pZ+YjoyAJ4rxmHwbkBXJX+yw==}
     dev: false
 
+  /path-to-regexp@6.2.2:
+    resolution: {integrity: sha512-GQX3SSMokngb36+whdpRXE+3f9V8UzyAorlYvOGx87ufGHehNTn5lCxrKtLyZ4Yl/wEKnNnr98ZzOwwDZV5ogw==}
+    dev: false
+
   /path-type@4.0.0:
     resolution: {integrity: sha512-gDKb8aZMDeD/tZWs9P6+q0J9Mwkdl6xMV8TjnGP3qJVJ06bdMgkbBlLU8IdfOsIsFz2BW1rNVT3XuNEl8zPAvw==}
     engines: {node: '>=8'}
@@ -6955,7 +7030,6 @@ packages:
   /pluralize@8.0.0:
     resolution: {integrity: sha512-Nc3IT5yHzflTfbjgqWcCPpo7DaKy4FnpB0l/zCAW0Tc7jxAiuqSxHasntB3D7887LSrA93kDJ9IXovxJYxyLCA==}
     engines: {node: '>=4'}
-    dev: true
 
   /possible-typed-array-names@1.0.0:
     resolution: {integrity: sha512-d7Uw+eZoloe0EHDIYoe+bQ5WXnGMOpmiZFTuMWCwpjzzkL2nTjcKiAk4hh8TjnGye2TwWOk3UXucZ+3rbmBa8Q==}

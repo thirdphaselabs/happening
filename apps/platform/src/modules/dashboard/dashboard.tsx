@@ -1,4 +1,3 @@
-import { User } from "@clerk/nextjs/dist/types/server";
 import { Separator } from "@plaventi/ui";
 import { Button, ChevronDownIcon, Flex, Grid, Heading } from "@radix-ui/themes";
 import Link from "next/link";
@@ -6,6 +5,7 @@ import { UpcomingEvents } from "~/app/_components/RecentEvents";
 import { DashboardStat } from "../events/all/components/dashboard-stat";
 import { QuickActions } from "./components/quick-actions";
 import { ArrowTopRightIcon, PlusIcon } from "@radix-ui/react-icons";
+import { Session } from "~/trpc/types";
 
 const stats = [
   {
@@ -28,7 +28,7 @@ const stats = [
   },
 ];
 
-export function Dashboard({ user }: { user: User }) {
+export function Dashboard({ user }: { user: Session["user"] }) {
   return (
     <Flex direction="column" gap="6" pb="6">
       <Flex className="w-full" justify="between" align="center">

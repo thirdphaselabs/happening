@@ -37,8 +37,6 @@ export class UserMetadataService {
   private async updateWithExistingMetadata(userId: string, update: Partial<UserPublicMetadata>) {
     const metadata = await clerkClient.users.getUser(userId);
 
-    console.log({ metadata });
-
     const updatedMetadata: UserPublicMetadata = {
       ...(metadata.publicMetadata ?? {}),
       ...update,
@@ -49,11 +47,7 @@ export class UserMetadataService {
       onboardingStep: OnboardingStep.Profile,
     };
 
-    console.log({ updatedMetadata });
-
     const parsedMetadata = userPublicMetadataSchema.parse(met);
-
-    console.log({ parsedMetadata });
 
     await clerkClient.users.updateUser(userId, {
       publicMetadata: parsedMetadata,

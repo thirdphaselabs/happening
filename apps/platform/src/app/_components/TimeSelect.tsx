@@ -2,6 +2,7 @@ import { Button } from "@plaventi/ui";
 import { Select } from "@radix-ui/themes";
 import { time } from "console";
 import React from "react";
+import { useEventBuilderContext } from "~/modules/events/create/context/event-builder.context";
 
 const generateTimeIntervals = () => {
   const intervals = [];
@@ -20,7 +21,7 @@ const generateTimeIntervals = () => {
   return intervals;
 };
 
-export function TimeSelect() {
+export function TimeSelect({ date }: { date: "start" | "end" }) {
   const timeIntervals = generateTimeIntervals();
   const [isOpen, setIsOpen] = React.useState(false);
   const currentHour = new Date().getHours();
@@ -31,8 +32,20 @@ export function TimeSelect() {
     return hour > currentHour || (hour === currentHour && minute > currentMinute);
   });
 
+  const { setDateAndTime } = useEventBuilderContext();
+
   return (
-    <Select.Root open={isOpen} onOpenChange={(val) => setIsOpen(val)} defaultValue={nearestTime ?? "00:00"}>
+    <Select.Root
+      open={isOpen}
+      onOpenChange={(val) => setIsOpen(val)}
+      defaultValue={nearestTime ?? "00:00"}
+      onValueChange={(val) => {
+        if (date === "start") {
+          setDateAndTime({ startTime: val });
+        } else {
+          setDateAndTime({ endTime: val });
+        }
+      }}>
       <Select.Trigger variant="soft" color="gray" className="w-[82px]" />
       <Select.Content>
         {timeIntervals.map((time) => (
@@ -42,23 +55,3 @@ export function TimeSelect() {
     </Select.Root>
   );
 }
-
-<Select.Root defaultValue="apple">
-  <Select.Trigger />
-  <Select.Content>
-    <Select.Group>
-      <Select.Label>Fruits</Select.Label>
-      <Select.Item value="orange">Orange</Select.Item>
-      <Select.Item value="apple">Apple</Select.Item>
-      <Select.Item value="grape" disabled>
-        Grape
-      </Select.Item>
-    </Select.Group>
-    <Select.Separator />
-    <Select.Group>
-      <Select.Label>Vegetables</Select.Label>
-      <Select.Item value="carrot">Carrot</Select.Item>
-      <Select.Item value="potato">Potato</Select.Item>
-    </Select.Group>
-  </Select.Content>
-</Select.Root>;

@@ -84,7 +84,7 @@
   margin-top: 3rem;
 }
 
-#create-event-name.rt-TextAreaInput {
+#create-event-name {
   text-indent: 0;
   font-weight: 600;
   border-radius: 0;
@@ -97,6 +97,24 @@
   resize: none;
 }
 
+#create-event-description {
+  text-indent: 0;
+  padding: 0px 0;
+}
+
 .select-trigger-no-icon svg {
+  display: none;
+}
+
+.message-text {
+  display: -webkit-box;
+  -webkit-line-clamp: 2;
+  -webkit-box-orient: vertical;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  max-height: 3em; /* Adjust based on your line-height */
+}
+
+.timezone-select .rt-ScrollAreaScrollbar {
   display: none;
 }

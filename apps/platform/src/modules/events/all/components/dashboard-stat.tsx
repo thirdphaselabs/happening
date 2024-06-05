@@ -13,7 +13,7 @@ export function DashboardStat({
   total: string;
 }) {
   return (
-    <Flex className="relative flex-grow rounded-xl bg-white  p-5">
+    <Flex className="relative flex-grow rounded-xl px-5">
       <Flex direction="column" gap="4">
         <Flex align="center" justify="between">
           <Text size="3" weight="medium" color="gray">

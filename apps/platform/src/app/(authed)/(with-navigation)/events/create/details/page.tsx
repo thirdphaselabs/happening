@@ -7,7 +7,7 @@ import { Card, Flex, Heading, Text, TextField } from "@radix-ui/themes";
 import { useRef } from "react";
 import { useForm } from "react-hook-form";
 import { set, z } from "zod";
-import { useEventBuilderContext } from "~/modules/events/builder/context/event-builder.context";
+import { useEventBuilderContext } from "~/modules/events/create/context/event-builder.context";
 
 export default function EventBuilderPage() {
   const { eventDetails, setEventDetails } = useEventBuilderContext();

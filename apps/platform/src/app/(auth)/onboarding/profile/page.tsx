@@ -12,6 +12,7 @@ import { EventsManagerBadge } from "~/app/_components/EventsManagerBadge";
 export default function OnboardingProfile() {
   const [formError, setFormError] = useState<string | null>(null);
   const { completePersonalDetails, isLoading, error } = useCompletePersonalDetails();
+  const [hasAgreed, setHasAgreed] = useState<boolean>(false);
 
   const handleSubmit = async (event: React.FormEvent<HTMLFormElement>) => {
     event.preventDefault();
@@ -80,7 +81,12 @@ export default function OnboardingProfile() {
 
             <Text as="label" size="2" color="gray">
               <Flex gap="2">
-                <Checkbox name="disclaimer" required />
+                <Checkbox
+                  value={hasAgreed ? "checked" : "unchecked"}
+                  name="disclaimer"
+                  required
+                  onCheckedChange={(val) => setHasAgreed(val !== "indeterminate" ? val : false)}
+                />
                 By checking this box you agree to the Terms & Conditions and Privacy Policy set out by
                 Plaventi.
               </Flex>

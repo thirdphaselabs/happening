@@ -1,17 +1,17 @@
-import { UserRole, prisma } from "@plaventi/database";
+import { ProfileRole, prisma } from "@plaventi/database";
 
 export class AuthPersistence {
-  async getUserByClerkId(clerkUserId: string) {
-    return prisma.user.findUniqueOrThrow({
+  async getUserByClerkId(workosUserId: string) {
+    return prisma.profile.findUniqueOrThrow({
       where: {
-        clerkId: clerkUserId,
+        workosId: workosUserId,
       },
     });
   }
-  async getOrganizationByUserId(userId: string) {
-    const user = await prisma.user.findUniqueOrThrow({
+  async getOrganizationByUserId(workosUserId: string) {
+    const user = await prisma.profile.findUniqueOrThrow({
       where: {
-        clerkId: userId,
+        workosId: workosUserId,
       },
       include: {
         organisation: true,
@@ -23,21 +23,21 @@ export class AuthPersistence {
   async createUser(args: {
     firstName: string;
     lastName: string;
-    clerkId: string;
-    clerkOrganisationId: string;
-    userRole: UserRole;
+    workosUserId: string;
+    workosOrganisationId: string;
+    userRole: ProfileRole;
   }) {
     const organisation = await prisma.organisation.findUniqueOrThrow({
       where: {
-        clerkOrganisationId: args.clerkOrganisationId,
+        workosOrganisationId: args.workosOrganisationId,
       },
     });
 
-    return prisma.user.create({
+    return prisma.profile.create({
       data: {
         firstName: args.firstName,
         lastName: args.lastName,
-        clerkId: args.clerkId,
+        workosId: args.workosUserId,
         userRole: args.userRole,
         organisation: {
           connect: {

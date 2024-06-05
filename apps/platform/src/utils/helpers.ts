@@ -1,4 +1,4 @@
-import type { OnboardingStep } from "~/trpc/types";
+import type { OnboardingStatus } from "~/trpc/types";
 
 export function invariant(condition: unknown, message: string): asserts condition {
   if (!condition) {
@@ -24,15 +24,15 @@ export function computeOnboardingPath(onboardingStep: unknown) {
   }
 }
 
-export function computeOnboardingStepFromPath(path: string): OnboardingStep {
+export function computeOnboardingStepFromPath(path: string): OnboardingStatus {
   switch (path) {
     case "/onboarding/profile":
-      return "Profile" as OnboardingStep;
+      return "Profile" as OnboardingStatus;
     case "/onboarding/company":
-      return "CreateCompany" as OnboardingStep;
+      return "CreateCompany" as OnboardingStatus;
     case "/onboarding/invite":
-      return "InviteTeam" as OnboardingStep;
+      return "InviteTeam" as OnboardingStatus;
     default:
-      return "Profile" as OnboardingStep;
+      return "Profile" as OnboardingStatus;
   }
 }

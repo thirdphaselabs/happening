@@ -7,7 +7,7 @@ datasource db {
   url      = env("DATABASE_URL")
 }
 
-enum UserRole {
+enum ProfileRole {
   PLAVENTI_ADMIN
   ORGANIZER_ADMIN
   ORGANIZER
@@ -16,43 +16,53 @@ enum UserRole {
 
 
 model Onboarding {
-  id              Int      @id @default(autoincrement())
-  clerkId         String   @unique
+  id              String      @id @default(cuid())
+  workosUserId         String   @unique
   firstName       String?
   lastName        String?
   role            String?
-  userRole        UserRole @default(MEMBER)
+  profileRole      ProfileRole @default(MEMBER)
   organisationId  Int?
   createdAt       DateTime @default(now())
   updatedAt       DateTime @updatedAt
 }
 
-model User {
-  id        Int      @id @default(autoincrement())
+enum OnboardingStatus {
+  PROFILE
+  ORGANISATION
+  INVITE
+  COMPLETE
+  COMPLETED
+}
+
+model Profile {
+  id        String      @id @default(cuid())
   firstName String
   lastName  String
-  userRole  UserRole 
-  clerkId   String   @unique
+  userRole  ProfileRole 
+  workosId   String   @unique
   createdAt DateTime @default(now())
+  onboardingStatus OnboardingStatus @default(PROFILE)
 
   organisationId String
-  organisation   Organisation @relation(fields: [organisationId], references: [clerkOrganisationId])
-  events Event[]
+  organisation   Organisation @relation(fields: [organisationId], references: [id])
+  createdEvents Event[]
+  guestLists GuestListAttendee[]
 
-  @@index([clerkId])
+  @@index([workosId])
 }
 
 model Organisation {
-  id                  Int      @id @default(autoincrement())
-  clerkOrganisationId String   @unique
+  id                  String      @id @default(cuid())
+  workosOrganisationId String   @unique
   name                String   
   createdAt           DateTime @default(now())
   domain              String   @unique
 
-  users User[]
+  profiles Profile[]
   events Event[]
 
-  @@index([clerkOrganisationId])
+  @@index([id])
 }
 
 enum EventStatus {
@@ -63,6 +73,11 @@ enum EventStatus {
   CANCELLED
 }
 
+enum EventVisibility {
+  PUBLIC
+  PRIVATE
+}
+
 model Event {
   id        String   @id @default(cuid())
   identifier String   @unique
@@ -70,14 +85,92 @@ model Event {
   description String
   status   EventStatus 
   coverImageUrl String?
-
+  isApprovalRequired Boolean @default(false)
+  visibility EventVisibility @default(PUBLIC)
   createdAt DateTime @default(now())
 
-  userId String
-  user User @relation(fields: [userId], references: [clerkId])
+  location EventLocation?
+  timing EventDate?
+  ticketing Ticketing?
+  guestList GuestList?
+
+  createdByProfileId String
+  createdBy Profile @relation(fields: [createdByProfileId], references: [id])
 
   organisationId String
-  organisation   Organisation @relation(fields: [organisationId], references: [clerkOrganisationId])
+  organisation   Organisation @relation(fields: [organisationId], references: [workosOrganisationId])
+}
+
+enum LocationType {
+  VENUE
+  ONLINE
+}
+
+model EventLocation {
+  id        String      @id @default(cuid())
+  type     LocationType
+  venue      String?
+  address   String?
+  city      String?
+  country   String?
+  postalCode String?
+  latitude  Float?
+  longitude Float?
+  onlineLocationLink String?
+  createdAt DateTime @default(now())
+
+  eventId String @unique
+  event   Event @relation(fields: [eventId], references: [identifier])
+}
+
+model EventDate {
+  id        String      @id @default(cuid())
+  startDate DateTime
+  endDate DateTime  
+  isStartTimeVisible Boolean
+  isEndTimeVisible Boolean
+  createdAt DateTime @default(now())
+  timezone String
+
+  eventId String @unique
+  event   Event @relation(fields: [eventId], references: [identifier])
+}
+
+enum TicketType {
+  FREE
+  PAID
+}
+
+model Ticketing {
+  id        String      @id @default(cuid())
+  type      TicketType
+  price     Float?
+  createdAt DateTime @default(now())
+
+  eventId String @unique
+  event   Event @relation(fields: [eventId], references: [identifier])
+}
+
+model GuestList {
+  id        String   @id @default(cuid())
+  requiresApproval Boolean @default(false)
+  isVisible Boolean @default(true)
+  attendees GuestListAttendee[]
+  createdAt DateTime @default(now())
+
+  eventId String @unique
+  event   Event @relation(fields: [eventId], references: [identifier])
+}
+
+model GuestListAttendee {
+  id        String   @id @default(cuid())
+  isApproved Boolean
+  createdAt DateTime @default(now())
+
+  profileId      String @unique
+  profile        Profile @relation(fields: [profileId], references: [id])
+  guestListId String
+  guestList   GuestList @relation(fields: [guestListId], references: [id])
 }
 
 model Waitlist {

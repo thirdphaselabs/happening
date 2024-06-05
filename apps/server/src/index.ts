@@ -1,33 +1,25 @@
+import { json, urlencoded } from "body-parser";
 import cors from "cors";
 import express, { Application } from "express";
-import { json, urlencoded } from "body-parser";
 
-import "./types/types";
 import swaggerUi from "swagger-ui-express";
+import "./types/types";
 
-import { openApiDocument } from "./trpc/openapi";
-import { createOpenApiExpressMiddleware } from "trpc-openapi";
-import { appRouter } from "./trpc/routers/root";
-import { createContext } from "./trpc/context";
-import cookieParser from "cookie-parser";
 import { createExpressMiddleware } from "@trpc/server/adapters/express";
+import cookieParser from "cookie-parser";
+import { createOpenApiExpressMiddleware } from "trpc-openapi";
+import { PlaventiSession, authController } from "./controllers/auth.controller";
+import { imageController } from "./controllers/image.controller";
 import { initEnv } from "./environment";
-import { UserRole } from "@plaventi/database";
 import { ClerkAuth } from "./middleware/clerk-auth";
-import { OnboardingStep } from "./types/types";
-import { imageRouter } from "./routers/image-router";
+import { createContext } from "./trpc/context";
+import { openApiDocument } from "./trpc/openapi";
+import { appRouter } from "./trpc/routers/root";
 
 declare global {
   namespace Express {
     interface Request {
-      auth: {
-        userId?: string;
-        sessionId?: string;
-        role?: UserRole;
-        onboardingComplete?: boolean;
-        onboardingStep?: OnboardingStep;
-        organisationId?: string;
-      };
+      session: PlaventiSession;
     }
   }
 }
@@ -49,7 +41,7 @@ app.get("/health", (_req, res) => {
   res.send("ok");
 });
 
-app.use(ClerkAuth);
+// app.use(ClerkAuth);
 
 // Handle incoming tRPC requests
 app.use(
@@ -60,7 +52,8 @@ app.use(
   }),
 );
 
-app.use("/api/images", imageRouter);
+app.use("/api/auth", authController);
+app.use("/api/images", imageController);
 
 // Handle incoming OpenAPI requests
 app.use("/api", createOpenApiExpressMiddleware({ router: appRouter, createContext }));

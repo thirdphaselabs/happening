@@ -169,8 +169,6 @@ function PasswordStep() {
   const router = useRouter();
   const { user, isLoaded } = useUser();
 
-  console.log({ user, isLoaded });
-
   const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
     clearError();
     setError(null);
@@ -192,7 +190,6 @@ function PasswordStep() {
         return;
       }
     } catch (error) {
-      console.log({ error });
       const { clerkErrorType, errorMessage } = getExpectedClerkError(error, [
         ClerkErrorType.IncorrectPassword,
         ClerkErrorType.AccountNotFound,
@@ -377,7 +374,6 @@ export function ResetPassword() {
           setError("An error occurred. Please try again.");
           break;
       }
-      console.log({ error });
       setIsLoading(false);
     }
   };

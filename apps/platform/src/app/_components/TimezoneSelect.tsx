@@ -1,10 +1,10 @@
-import React, { ReactNode, useEffect, useState } from "react";
+import React, { ReactNode, memo, useEffect, useState } from "react";
 import moment from "moment-timezone";
 import { Avatar, Box, Checkbox, Flex, Popover, ScrollArea, Select, Text, TextArea } from "@radix-ui/themes";
-import { ChatBubbleIcon, GlobeIcon } from "@radix-ui/react-icons";
+import { ChatBubbleIcon, ClockIcon, GlobeIcon } from "@radix-ui/react-icons";
 import { Button, TextFieldInput } from "@plaventi/ui";
 
-export function TimezoneSelect() {
+export function TimezoneSelectInner() {
   const getTimeZoneOffset = (tz: string) => {
     const offset = moment.tz(tz).utcOffset();
     const absOffset = Math.abs(offset);
@@ -25,7 +25,6 @@ export function TimezoneSelect() {
     return { tz, offset, name };
   });
 
-  console.log(tzData);
   const [selectedTz, setSelectedTz] = useState(tzData[0].tz);
 
   const [search, setSearch] = useState<string | null>(null);
@@ -76,19 +75,19 @@ export function TimezoneSelect() {
     // </Select.Root>
     <Popover.Root open={isOpen} onOpenChange={(val) => setIsOpen(val)}>
       <Popover.Trigger>
-        <Flex className="hover:bg-skyA2 w-[150px] overflow-hidden rounded-xl" onClick={() => setIsOpen(true)}>
+        <Flex className="hover:bg-skyA2 w-[200px] overflow-hidden rounded-xl" onClick={() => setIsOpen(true)}>
           <Flex
             direction="column"
             className="bg-skyA2 hover:bg-grayA4 w-full rounded-xl px-[10px] py-2"
             justify="center"
             gap="1">
-            <GlobeIcon color="gray" className="!flex" />
+            <ClockIcon color="gray" className="!flex" />
             <Flex direction="column">
               <Text
                 size="2"
                 color="gray"
                 weight="medium"
-                className="w-[100px] overflow-hidden text-ellipsis whitespace-nowrap">
+                className="w-[140px] overflow-hidden text-ellipsis whitespace-nowrap">
                 {getTimeZoneName(selectedTz)}
               </Text>
               <Text size="1" color="gray">
@@ -98,7 +97,7 @@ export function TimezoneSelect() {
           </Flex>
         </Flex>
       </Popover.Trigger>
-      <Popover.Content width="360px" className="relative px-2 py-1">
+      <Popover.Content width="360px" className="relative px-2 py-1" align="end">
         <Flex direction="column" className="" gap="1">
           <TextFieldInput
             placeholder="Search timezone"
@@ -109,29 +108,30 @@ export function TimezoneSelect() {
             value={search ?? ""}
             onChange={(e) => setSearch(e.target.value)}
           />
-          <ScrollArea type="always" scrollbars="vertical" style={{ height: 400 }}>
-            <Flex direction="column" pr="2">
-              {tzData
-                .filter((tz) => {
-                  if (!search) return true;
-                  return tz.name.toLowerCase().includes(search.toLowerCase());
-                })
-                .map(({ tz, offset, name }) => (
-                  <Button
-                    color="gray"
-                    variant="surface"
-                    className="hover:bg-skyA3 w-full justify-between gap-4 shadow-none"
-                    onClick={() => {
-                      setSelectedTz(tz);
-                      setIsOpen(false);
-                      setSearch(null);
-                    }}>
-                    <Text size="2">{name}</Text>
-                    <Text size="2" color="gray">
-                      {offset}
-                    </Text>
-                  </Button>
-                ))}
+          <ScrollArea type="always" scrollbars="vertical" style={{ height: 400 }} className="timezone-select">
+            <Flex direction="column">
+              {isOpen &&
+                tzData
+                  .filter((tz) => {
+                    if (!search) return true;
+                    return tz.name.toLowerCase().includes(search.toLowerCase());
+                  })
+                  .map(({ tz, offset, name }) => (
+                    <Button
+                      color="gray"
+                      variant="surface"
+                      className="hover:bg-skyA3 w-full justify-between gap-4 shadow-none"
+                      onClick={() => {
+                        setSelectedTz(tz);
+                        setIsOpen(false);
+                        setSearch(null);
+                      }}>
+                      <Text size="2">{name}</Text>
+                      <Text size="2" color="gray">
+                        {offset}
+                      </Text>
+                    </Button>
+                  ))}
             </Flex>
           </ScrollArea>
         </Flex>
@@ -139,3 +139,5 @@ export function TimezoneSelect() {
     </Popover.Root>
   );
 }
+
+export const TimezoneSelect = memo(TimezoneSelectInner);

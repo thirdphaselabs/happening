@@ -9,12 +9,11 @@ export function Logout() {
   const router = useRouter();
   return (
     <DropdownMenu.Item
-    color="red"
+      color="red"
       onClick={() => {
-        console.log("signOut", signOut);
         if (!signOut) throw new Error("signOut is not defined");
         signOut();
-        router.push("/");
+        router.push("http://localhost:3002/api/auth/logout");
       }}>
       Log out
     </DropdownMenu.Item>

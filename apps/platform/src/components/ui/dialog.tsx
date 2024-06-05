@@ -18,7 +18,7 @@ function DialogContainer({ children, ...props }: BaseDialog.ContentProps) {
 }
 
 function DialogContent({ children }: { children: React.ReactNode }) {
-  return <Box className="w-full p-8 pt-6">{children}</Box>;
+  return <Box className="w-full px-6 pb-6 pt-6">{children}</Box>;
 }
 
 function DialogHeader({ isSubmitButtonDisabled }: { isSubmitButtonDisabled: boolean }) {

@@ -1,0 +1,48 @@
+import { getIronSession } from "iron-session";
+import { cookies } from "next/headers";
+import { Session } from "~/trpc/types";
+import WorkOS from "@workos-inc/node";
+import { createRemoteJWKSet, jwtVerify } from "jose";
+
+const workos = new WorkOS(
+  "sk_test_a2V5XzAxSEdKOFZSTkgxWTExRlRRRDA3Mzg2MjlYLHFXRWNlcGo4S211c2R3UmxKc3B1NVJQWHA",
+);
+
+const JWKS = createRemoteJWKSet(
+  new URL(workos.userManagement.getJwksUrl("client_01HGJ8VS4K0JGVVNY1FP0BSBFZ")),
+);
+
+type GetSessionReturnType<T extends boolean> = T extends true ? Session : Session | null;
+
+async function verifyAccessToken(accessToken: string) {
+  try {
+    await jwtVerify(accessToken, JWKS);
+    return true;
+  } catch (e) {
+    console.warn("Failed to verify session:", e);
+    return false;
+  }
+}
+
+export async function getSession<T extends boolean>(options?: {
+  ensureSignedIn?: T;
+}): Promise<GetSessionReturnType<T>> {
+  const { ensureSignedIn = false } = options ?? {};
+
+  const session = await getIronSession<Session>(cookies(), {
+    password: "mcRI+dvCYeIAUu4DPlzhEkq+6nLFpW6xY0CD20hFWPytKeDtMGqU0XN6d7c/PEMp3dyNB21U5LyBHxcmxak3tA==",
+    cookieName: "wos-session",
+  });
+
+  const hasValidSession = await verifyAccessToken(session.accessToken);
+
+  if (!hasValidSession) {
+    if (ensureSignedIn) {
+      throw new Error("User is not signed in");
+    } else {
+      return null as GetSessionReturnType<T>;
+    }
+  }
+
+  return session as GetSessionReturnType<T>;
+}

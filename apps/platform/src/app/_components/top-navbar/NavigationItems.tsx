@@ -24,7 +24,7 @@ export default function NavigationItems() {
                 color="gray"
                 highContrast={isActive}
                 className={cn(
-                  "transition-default hover:text-gray12 gap-2 font-semibold tracking-tight hover:bg-transparent",
+                  "transition-default hover:text-gray12 gap-2 font-medium  hover:bg-transparent",
                 )}>
                 <item.icon height="16" width="16" />
                 {item.title}

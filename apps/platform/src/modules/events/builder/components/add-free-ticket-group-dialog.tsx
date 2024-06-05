@@ -66,9 +66,6 @@ export function AddFreeTicketGroupDialog() {
   const formErrors = form.formState.errors;
   const formValues = form.getValues();
 
-  console.log("formErrors", formErrors);
-  console.log("formValues", formValues);
-
   const [startDateOpen, setStartDateOpen] = useState(false);
   const [endDateOpen, setEndDateOpen] = useState(false);
   return (

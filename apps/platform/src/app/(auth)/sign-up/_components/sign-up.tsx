@@ -132,13 +132,10 @@ function EmailStep() {
         default:
           break;
       }
-      console.log("create signup error", err);
     }
     try {
       await signUp.update({ emailAddress });
-    } catch (err) {
-      console.log("update signup error", err);
-    }
+    } catch (err) {}
 
     if (!result) {
       router.push("/sign-in");

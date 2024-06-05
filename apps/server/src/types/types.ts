@@ -1,3 +1,5 @@
+import { Profile } from "@prisma/client";
+
 export type UserId = string;
 export type OrganizationId = string;
 
@@ -6,13 +8,6 @@ export type AuthWithUser = {
 };
 
 export type AuthWithOrg = {
-  userId: UserId;
+  profile: Profile;
   organizationId: OrganizationId;
 };
-
-export enum OnboardingStep {
-  Profile = "Profile",
-  Create = "CreateCompany",
-  Invite = "InviteTeam",
-  Complete = "Complete",
-}

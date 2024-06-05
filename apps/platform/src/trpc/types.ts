@@ -4,8 +4,10 @@ import type { inferRouterInputs, inferRouterOutputs } from "@trpc/server";
 export type RouterInput = inferRouterInputs<AppRouter>;
 export type RouterOutput = inferRouterOutputs<AppRouter>;
 
-export type OnboardingStep = RouterOutput["onboarding"]["getCurrentOnboardingStep"]["onboardingStep"];
+export type OnboardingStatus = RouterOutput["onboarding"]["getCurrentOnboardingStep"]["onboardingStep"];
 export type PlaventiEvent = RouterOutput["event"]["byIdentifier"];
+
+export type Session = RouterOutput["auth"]["session"];
 
 export type PageParams<K extends string> = {
   params: {

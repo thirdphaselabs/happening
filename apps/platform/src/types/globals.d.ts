@@ -1,17 +1,17 @@
-import { OnboardingStep, Role } from "~/trpc/types";
+import { OnboardingStatus, Role } from "~/trpc/types";
 
 declare global {
   export interface CustomJwtSessionClaims {
     metadata: {
       onboardingComplete?: boolean;
-      onboardingStep?: OnboardingStep;
+      onboardingStep?: OnboardingStatus;
       role?: Role;
     };
   }
 
   export interface UserPublicMetadata {
     onboardingComplete?: boolean;
-    onboardingStep?: OnboardingStep;
+    onboardingStep?: OnboardingStatus;
   }
 }
 

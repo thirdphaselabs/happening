@@ -24,7 +24,11 @@ export function UpcomingEvents() {
             xl: "4",
           }}
           gap="6">
-          {events?.slice(0, 3).map((event) => <EventCard key={event.identifier} event={event} />)}
+          {events?.slice(0, 3).map((event) => (
+            <Flex minWidth="450px">
+              <EventCard key={event.identifier} event={event} />
+            </Flex>
+          ))}
         </Grid>
       )}
       {events?.length === 0 && <EmptyState />}

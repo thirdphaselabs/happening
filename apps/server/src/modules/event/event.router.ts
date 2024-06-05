@@ -8,12 +8,14 @@ import { updateEventDTO } from "./dto/update-event.dto";
 import { EventService } from "./event.service";
 import { toEventDTO } from "./mappers/toEventDTO.mapper";
 import { throwOnNotFound } from "../../helpers/throw-on-not-found";
+import { workOsProcedure } from "../../trpc/procedures";
+import { workOsWithOrgProcedure } from "../../trpc/procedures/workOsProcedure";
 
 const eventService = new EventService();
 
 export const eventsRouter = createTRPCRouter({
-  all: organisationProcedure.output(eventDTOs).query(async ({ ctx }) => {
-    const events = await eventService.get(authOrg(ctx.auth));
+  all: workOsWithOrgProcedure.output(eventDTOs).query(async ({ ctx }) => {
+    const events = await eventService.get(ctx.session);
 
     return events.map(toEventDTO);
   }),
@@ -30,7 +32,7 @@ export const eventsRouter = createTRPCRouter({
     }),
 
   create: organisationProcedure
-    .input(createEventDTO.omit({ identifier: true }))
+    .input(eventDTO.omit({ identifier: true }))
     .output(eventDTO)
     .mutation(async ({ ctx, input }) => {
       const event = await eventService.create(authOrg(ctx.auth), input);

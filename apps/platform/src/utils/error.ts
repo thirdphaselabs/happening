@@ -51,7 +51,6 @@ type ClerkError = z.infer<typeof clerkErrorSchema>;
 
 function parseClerkError(error: unknown): ClerkError | null {
   try {
-    console.log({ error });
     // @ts-ignore
     return clerkErrorSchema.parse({ errors: error.errors });
   } catch {
@@ -65,10 +64,7 @@ export function getExpectedClerkError(
 ): { clerkErrorType: ClerkErrorType; errorMessage: null } | { clerkErrorType: null; errorMessage: string } {
   const clerkError = parseClerkError(error);
 
-  console.log({ clerkError });
-
   for (const type of expected) {
-    console.log({ cCode: clerkError?.errors[0].code, t: clerkErrorTypeToCode[type] });
     if (clerkError?.errors[0].code === clerkErrorTypeToCode[type]) {
       return { clerkErrorType: type, errorMessage: null };
     }

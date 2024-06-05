@@ -1,54 +1,50 @@
 import clerkClient from "@clerk/clerk-sdk-node";
+import { OnboardingStatus, Profile } from "@prisma/client";
 import { TRPCError } from "@trpc/server";
+import { PlaventiSession } from "../../controllers/auth.controller";
+import { AuthContext } from "../../trpc/procedures/adminProcedures";
 import { AuthService } from "../auth/auth.service";
 import { UserMetadataService } from "../user-metadata/user-metadata.service";
 import { OnboardingPersistence } from "./onboarding.persistence";
-import { UserRole } from "@prisma/client";
-import { mapClerkRoleToUserRole, roleToClerkRole } from "../role/role-mapper";
-import { AuthContext } from "../../trpc/procedures/adminProcedures";
-import { OnboardingStep } from "../../types/types";
 
 const onboardingPersistence = new OnboardingPersistence();
 const authService = new AuthService();
 const userMetadataService = new UserMetadataService();
 
 export class OnboardingService {
-  async beginOnboarding(
-    auth: AuthContext,
-    { organisations }: { organisations: { orgId: string; orgMembershipId: string }[] },
-  ) {
-    if (organisations.length > 1) {
-      throw new TRPCError({
-        code: "BAD_REQUEST",
-        message: "User can only be part of one organization",
-      });
-    }
+  async beginOnboarding(auth: PlaventiSession) {
+    // if (organisations.length > 1) {
+    //   throw new TRPCError({
+    //     code: "BAD_REQUEST",
+    //     message: "User can only be part of one organization",
+    //   });
+    // }
 
-    const organisation = organisations[0];
+    // const organisation = organisations[0];
 
-    if (organisation) {
-      const organisationMembers = await clerkClient.organizations.getOrganizationMembershipList({
-        organizationId: organisation.orgId,
-      });
+    // if (organisation) {
+    //   const organisationMembers = await clerkClient.organizations.getOrganizationMembershipList({
+    //     organizationId: organisation.orgId,
+    //   });
 
-      const orgMembership = organisationMembers.find((member) => member.id === organisation.orgMembershipId);
+    //   const orgMembership = organisationMembers.find((member) => member.id === organisation.orgMembershipId);
 
-      if (!orgMembership) {
-        throw new TRPCError({
-          code: "BAD_REQUEST",
-          message: "User is not part of the organization",
-        });
-      }
-    }
+    //   if (!orgMembership) {
+    //     throw new TRPCError({
+    //       code: "BAD_REQUEST",
+    //       message: "User is not part of the organization",
+    //     });
+    //   }
+    // }
 
-    await onboardingPersistence.beginOnboarding(auth.userId);
+    await onboardingPersistence.beginOnboarding(auth.user.id);
   }
   async inviteTeamMembers(
-    auth: AuthContext,
+    auth: PlaventiSession,
     input: { invites: { email: string }[]; organisations: { orgId: string; orgMembershipId: string }[] },
   ) {
     try {
-      const organisation = await onboardingPersistence.getOrganisation(auth.userId);
+      const organisation = await onboardingPersistence.getOrganisation(auth.user.id);
 
       if (!organisation) {
         throw new TRPCError({
@@ -57,16 +53,16 @@ export class OnboardingService {
         });
       }
 
-      await Promise.all(
-        input.invites.map(async (invite) => {
-          clerkClient.organizations.createOrganizationInvitation({
-            organizationId: organisation.clerkOrganisationId,
-            emailAddress: invite.email,
-            inviterUserId: auth.userId,
-            role: roleToClerkRole(UserRole.ORGANIZER),
-          });
-        }),
-      );
+      // await Promise.all(
+      //   input.invites.map(async (invite) => {
+      //     clerkClient.organizations.createOrganizationInvitation({
+      //       organizationId: organisation.clerkOrganisationId,
+      //       emailAddress: invite.email,
+      //       inviterUserId: auth.userId,
+      //       role: roleToClerkRole(UserRole.ORGANIZER),
+      //     });
+      //   }),
+      // );
 
       await this.completeOnboarding(auth, { organisations: input.organisations });
 
@@ -76,7 +72,6 @@ export class OnboardingService {
         nextStep,
       };
     } catch (error) {
-      console.log(error);
       throw new TRPCError({
         code: "INTERNAL_SERVER_ERROR",
         message: "An error occurred while inviting team members",
@@ -84,17 +79,17 @@ export class OnboardingService {
     }
   }
 
-  async createOrganization(auth: AuthContext, { name, domain }: { name: string; domain: string }) {
+  async createOrganization(auth: PlaventiSession, { name, domain }: { name: string; domain: string }) {
     try {
-      const clerkUser = await clerkClient.users.getUser(auth.userId);
+      const clerkUser = await clerkClient.users.getUser(auth.user.id);
 
       const clerkOrganization = await clerkClient.organizations.createOrganization({
         name,
         createdBy: clerkUser.id,
       });
 
-      await onboardingPersistence.createOrganization(auth.userId, {
-        clerkOrganizationId: clerkOrganization.id,
+      await onboardingPersistence.createOrganization(auth.user.id, {
+        workosOrganizationId: clerkOrganization.id,
         name,
         domain,
       });
@@ -106,7 +101,6 @@ export class OnboardingService {
       };
       // return clerkOrganization;
     } catch (error) {
-      console.log(error);
       throw new TRPCError({
         code: "INTERNAL_SERVER_ERROR",
         message: "An error occurred while creating organization",
@@ -117,26 +111,23 @@ export class OnboardingService {
     try {
       await userMetadataService.resetOnboardingMetadata(auth.userId);
     } catch (error) {
-      console.log(error);
       throw new Error("An error occurred while resetting onboarding");
     }
   }
   async completePersonalDetails(
-    auth: AuthContext,
+    auth: PlaventiSession,
     input: {
       firstName: string;
       lastName: string;
-      organisations: { orgId: string; orgMembershipId: string }[];
     },
   ) {
     try {
-      await onboardingPersistence.completePersonalDetails(auth.userId, input);
-      const nextStep = await this.updateToNextStep({ ...auth, onboardingStep: OnboardingStep.Profile });
+      await onboardingPersistence.completePersonalDetails(auth.user.id, input);
+      const nextStep = await this.updateToNextStep(auth);
       return {
         nextStep,
       };
     } catch (error) {
-      console.log(error);
       throw new TRPCError({
         code: "INTERNAL_SERVER_ERROR",
         message: "An error occurred while completing personal details",
@@ -144,13 +135,12 @@ export class OnboardingService {
     }
   }
 
-  async getCurrentOnboardingStep(auth: AuthContext) {
+  async getCurrentOnboardingStep(auth: PlaventiSession) {
     try {
       return {
-        onboardingStep: auth.onboardingStep,
+        onboardingStep: auth.profile?.onboardingStatus || OnboardingStatus.PROFILE,
       };
     } catch (error) {
-      console.log(error);
       throw new TRPCError({
         code: "INTERNAL_SERVER_ERROR",
         message: "An error occurred while fetching onboarding step",
@@ -158,60 +148,61 @@ export class OnboardingService {
     }
   }
 
-  async completeCurrentOnboardingStep(auth: AuthContext) {
+  async completeCurrentOnboardingStep(session: PlaventiSession) {
     try {
-      const nextStep = this.computeNextStep(auth.onboardingStep || OnboardingStep.Profile);
+      const nextStep = this.computeNextStep(session.profile);
 
-      await userMetadataService.updateOnboardingStep(auth.userId, nextStep);
+      await userMetadataService.updateOnboardingStep(session.user.id, nextStep);
 
       return {
         nextStep,
       };
     } catch (error) {
-      console.log(error);
       throw new Error("An error occurred while updating onboarding step");
     }
   }
 
   async completeOnboarding(
-    { userId }: AuthContext,
+    { user }: PlaventiSession,
     { organisations }: { organisations: { orgId: string; orgMembershipId: string }[] },
   ) {
     try {
-      const { firstName, lastName } = await onboardingPersistence.getOnboarding(userId);
+      const { firstName, lastName } = await onboardingPersistence.getOnboarding(user.id);
       if (!firstName || !lastName) {
         throw new TRPCError({
           code: "BAD_REQUEST",
           message: "Personal details are missing",
         });
       }
-      await authService.createUser(userId, { firstName, lastName, organisations });
-      await userMetadataService.completeOnboarding(userId);
+      await authService.createUser(user.id, { firstName, lastName, organisations });
+      await userMetadataService.completeOnboarding(user.id);
     } catch (error) {
-      console.log(error);
       throw new Error("An error occurred while completing onboarding");
     }
   }
 
-  private async updateToNextStep({ userId, role, onboardingStep }: AuthContext) {
-    const nextStep = this.computeNextStep(onboardingStep);
-    console.log("Updating onboarding step to", nextStep);
+  private async updateToNextStep({ user, profile }: PlaventiSession) {
+    const nextStep = this.computeNextStep(profile);
 
-    await userMetadataService.updateOnboardingStep(userId, nextStep);
+    await userMetadataService.updateOnboardingStep(user.id, nextStep);
 
     return nextStep;
   }
 
-  private computeNextStep(currentStep: OnboardingStep): OnboardingStep {
-    switch (currentStep) {
-      case OnboardingStep.Profile:
-        return OnboardingStep.Create;
-      case OnboardingStep.Create:
-        return OnboardingStep.Invite;
-      case OnboardingStep.Invite:
-        return OnboardingStep.Complete;
-      default:
-        return OnboardingStep.Profile;
+  private computeNextStep(profile: Profile | null): OnboardingStatus {
+    if (!profile) return OnboardingStatus.PROFILE;
+
+    switch (profile.onboardingStatus) {
+      case OnboardingStatus.PROFILE:
+        return OnboardingStatus.ORGANISATION;
+      case OnboardingStatus.ORGANISATION:
+        return OnboardingStatus.INVITE;
+      case OnboardingStatus.INVITE:
+        return OnboardingStatus.COMPLETE;
+      case OnboardingStatus.COMPLETE:
+        return OnboardingStatus.COMPLETED;
+      case OnboardingStatus.COMPLETED:
+        return OnboardingStatus.COMPLETED;
     }
   }
 }

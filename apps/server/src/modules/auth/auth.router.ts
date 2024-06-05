@@ -1,16 +1,20 @@
 import { z } from "zod";
-// import "@types/qs";
-// import "@types/express-serve-static-core";
 import { createTRPCRouter } from "../../trpc/context";
-import { protectedProcedure, publicProcedure } from "../../trpc/procedures";
+import { protectedProcedure, publicProcedure, workOsProcedure } from "../../trpc/procedures";
 import { TRPCError } from "@trpc/server";
 import { AuthService } from "./auth.service";
 import { UserMetadataService } from "../user-metadata/user-metadata.service";
+import { environment } from "../../environment";
+import { PlaventiSession } from "../../controllers/auth.controller";
 
 const authService = new AuthService();
 const userMetadataService = new UserMetadataService();
 
 export const authRouter = createTRPCRouter({
+  session: workOsProcedure.query(async ({ ctx }) => {
+    return ctx.session as PlaventiSession;
+  }),
+
   getPublicMetadata: protectedProcedure.query(async ({ ctx }) => {
     try {
       const metadata = await userMetadataService.getMetadata(ctx.auth.userId);
@@ -28,7 +32,7 @@ export const authRouter = createTRPCRouter({
       const organisation = await authService.getActiveOrganization(ctx.auth.userId);
 
       return {
-        clerkOrganisationId: organisation?.clerkOrganisationId,
+        workosOrganisationId: organisation?.workosOrganisationId,
         name: organisation?.name,
       };
     } catch (error) {

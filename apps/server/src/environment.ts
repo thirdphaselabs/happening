@@ -5,6 +5,10 @@ const envSchema = z.object({
   DATABASE_URL: z.string().trim().min(1),
   CLERK_SECRET_KEY: z.string().trim().min(1),
   CLERK_PEM_PUBLIC_KEY: z.string().trim().min(1),
+  WORKOS_API_KEY: z.string().trim().min(1),
+  WORKOS_CLIENT_ID: z.string().trim().min(1),
+  WORKOS_COOKIE_PASSWORD: z.string().trim().min(1),
+  APP_URL: z.string().trim().min(1),
 });
 
 export function initEnv() {

@@ -3,22 +3,22 @@
 import { TRPCError } from "@trpc/server";
 import { z } from "zod";
 import { createTRPCRouter } from "../../trpc/context";
-import { protectedProcedure } from "../../trpc/procedures";
+import { protectedProcedure, workOsProcedure } from "../../trpc/procedures";
 import { OnboardingService } from "./onboarding.service";
-import { OnboardingStep } from "../../types/types";
+import { OnboardingStatus } from "@prisma/client";
 
 const onboardingService = new OnboardingService();
 
 export const onboardingRouter = createTRPCRouter({
-  getCurrentOnboardingStep: protectedProcedure
+  getCurrentOnboardingStep: workOsProcedure
     .output(
       z.object({
-        onboardingStep: z.nativeEnum(OnboardingStep),
+        onboardingStep: z.nativeEnum(OnboardingStatus),
       }),
     )
     .query(async ({ ctx }) => {
       try {
-        const { onboardingStep } = await onboardingService.getCurrentOnboardingStep(ctx.auth);
+        const { onboardingStep } = await onboardingService.getCurrentOnboardingStep(ctx.session);
         return { onboardingStep };
       } catch (error) {
         throw new TRPCError({
@@ -27,15 +27,15 @@ export const onboardingRouter = createTRPCRouter({
         });
       }
     }),
-  completeCurrentOnboardingStep: protectedProcedure
+  completeCurrentOnboardingStep: workOsProcedure
     .output(
       z.object({
-        nextStep: z.nativeEnum(OnboardingStep),
+        nextStep: z.nativeEnum(OnboardingStatus),
       }),
     )
     .mutation(async ({ ctx }) => {
       try {
-        const result = await onboardingService.completeCurrentOnboardingStep(ctx.auth);
+        const result = await onboardingService.completeCurrentOnboardingStep(ctx.session);
         return { nextStep: result.nextStep };
       } catch (error) {
         throw new TRPCError({
@@ -45,7 +45,7 @@ export const onboardingRouter = createTRPCRouter({
       }
     }),
 
-  completeOnboarding: protectedProcedure
+  completeOnboarding: workOsProcedure
     .input(
       z.object({
         organisations: z.object({ orgId: z.string(), orgMembershipId: z.string() }).array(),
@@ -53,7 +53,7 @@ export const onboardingRouter = createTRPCRouter({
     )
     .mutation(async ({ ctx, input: { organisations } }) => {
       try {
-        await onboardingService.completeOnboarding(ctx.auth, { organisations });
+        await onboardingService.completeOnboarding(ctx.session, { organisations });
       } catch (error) {
         throw new TRPCError({
           code: "INTERNAL_SERVER_ERROR",
@@ -62,24 +62,23 @@ export const onboardingRouter = createTRPCRouter({
       }
     }),
 
-  completePersonalDetails: protectedProcedure
+  completePersonalDetails: workOsProcedure
     .input(
       z.object({
         firstName: z.string(),
         lastName: z.string(),
-        organisations: z.object({ orgId: z.string(), orgMembershipId: z.string() }).array(),
       }),
     )
     .mutation(async ({ ctx, input }) => {
       try {
-        await onboardingService.beginOnboarding(ctx.auth, { organisations: input.organisations });
-        const { nextStep } = await onboardingService.completePersonalDetails(ctx.auth, input);
+        await onboardingService.beginOnboarding(ctx.session);
+        const { nextStep } = await onboardingService.completePersonalDetails(ctx.session, input);
 
         return {
           nextStep,
         };
       } catch (error) {
-        console.log(error);
+        console.error(error);
         throw new TRPCError({
           code: "INTERNAL_SERVER_ERROR",
           message: "An error occurred while completing personal details",
@@ -87,7 +86,7 @@ export const onboardingRouter = createTRPCRouter({
       }
     }),
 
-  createOrganization: protectedProcedure
+  createOrganization: workOsProcedure
     .input(
       z.object({
         name: z.string(),
@@ -96,7 +95,7 @@ export const onboardingRouter = createTRPCRouter({
     )
     .mutation(async ({ ctx, input: { name, domain } }) => {
       try {
-        const nextStep = await onboardingService.createOrganization(ctx.auth, {
+        const nextStep = await onboardingService.createOrganization(ctx.session, {
           name,
           domain,
         });
@@ -112,7 +111,7 @@ export const onboardingRouter = createTRPCRouter({
       }
     }),
 
-  inviteTeamMembers: protectedProcedure
+  inviteTeamMembers: workOsProcedure
     .input(
       z.object({
         organisations: z.object({ orgId: z.string(), orgMembershipId: z.string() }).array(),
@@ -126,11 +125,11 @@ export const onboardingRouter = createTRPCRouter({
     )
     .mutation(async ({ ctx, input }) => {
       try {
-        const { nextStep } = await onboardingService.inviteTeamMembers(ctx.auth, {
+        const { nextStep } = await onboardingService.inviteTeamMembers(ctx.session, {
           invites: input.invites,
           organisations: input.organisations,
         });
-        await onboardingService.completeOnboarding(ctx.auth, { organisations: input.organisations });
+        await onboardingService.completeOnboarding(ctx.session, { organisations: input.organisations });
 
         return {
           nextStep,

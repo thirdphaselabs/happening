@@ -17,7 +17,7 @@ import { format } from "date-fns";
 import { useState } from "react";
 import { Calendar } from "~/components/ui/calendar";
 import { Combobox } from "~/components/ui/combobox";
-import { useEventBuilderContext } from "~/modules/events/builder/context/event-builder.context";
+import { useEventBuilderContext } from "~/modules/events/create/context/event-builder.context";
 
 const availableTags = [
   {

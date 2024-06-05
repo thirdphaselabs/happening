@@ -1,18 +1,26 @@
 "use client";
 
-import { useUser } from "@clerk/nextjs";
-import { Avatar, Button, ChevronDownIcon, DropdownMenu, Flex, IconButton, Text } from "@radix-ui/themes";
-import clsx from "clsx";
+import { Avatar, DropdownMenu, Flex, IconButton } from "@radix-ui/themes";
+import { buildOrganizationFallbackInitials } from "~/lib/utils";
+import { useUser } from "~/modules/auth/user.context";
 import { Logout } from "./Logout";
 
 export function UserDropdown() {
-  const { user, isLoaded } = useUser();
+  const { session } = useUser();
   return (
     <DropdownMenu.Root>
       <DropdownMenu.Trigger>
         <IconButton variant="ghost" color="gray" className="hidden focus:outline-none md:flex">
           <Flex gap="2" align="center">
-            <Avatar size="1" fallback="RJ" color="sky" radius="full" />
+            <Avatar
+              size="1"
+              src={session.user.profilePictureUrl ?? undefined}
+              fallback={buildOrganizationFallbackInitials({
+                name: `${session.user.firstName} ${session.user.lastName}`,
+              })}
+              color="sky"
+              radius="full"
+            />
           </Flex>
         </IconButton>
       </DropdownMenu.Trigger>

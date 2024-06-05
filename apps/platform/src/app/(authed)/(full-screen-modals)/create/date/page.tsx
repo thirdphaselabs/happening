@@ -6,8 +6,9 @@ import { Avatar, Box, Button, Checkbox, Flex, Heading, Popover, Text, TextArea }
 import { format } from "date-fns";
 import { useState } from "react";
 import { Calendar } from "~/components/ui/calendar";
-import { useEventBuilderContext } from "~/modules/events/builder/context/event-builder.context";
+
 import EventBuilderDateView from "~/modules/events/builder/views/date";
+import { useEventBuilderContext } from "~/modules/events/create/context/event-builder.context";
 
 export default function EventBuilderPage() {
   const { dateAndTime, setDateAndTime } = useEventBuilderContext();
@@ -70,6 +71,7 @@ export default function EventBuilderPage() {
               </Popover.Trigger>
               <Popover.Content side="top" align="start" className="w-max min-w-max p-0">
                 <Calendar
+                  style={{ accentColor: "#21bce2", backgroundColor: ''  }}
                   mode="single"
                   selected={dateAndTime?.endDate}
                   onSelect={(val) => {

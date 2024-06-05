@@ -25,8 +25,6 @@ export function useCreateOrganization() {
       return;
     }
 
-    console.log(userMemberships.data);
-
     if (userMemberships.data.length > 0) {
       setError("You are already part of a organization");
       setIsLoading(false);
