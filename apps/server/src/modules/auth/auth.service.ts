@@ -2,6 +2,7 @@ import clerkClient from "@clerk/clerk-sdk-node";
 import { TRPCError } from "@trpc/server";
 import { mapClerkRoleToUserRole } from "../role/role-mapper";
 import { AuthPersistence } from "./auth.persistance";
+import { User } from "@workos-inc/node";
 
 export enum AuthenticationMethod {
   Email = "email",
@@ -33,50 +34,15 @@ export class AuthService {
       });
     }
   }
-  async createUser(
-    clerkId: string,
-    args: {
-      firstName: string;
-      lastName: string;
-      organisations: { orgId: string; orgMembershipId: string }[];
-    },
-  ) {
+  async createProfile(user: User) {
     try {
-      if (args.organisations.length > 1) {
-        throw new TRPCError({
-          code: "BAD_REQUEST",
-          message: "User can only be part of one organization",
-        });
-      }
-
-      const organisation = args.organisations[0];
-
-      if (!organisation) {
-        throw new Error("Organisation not found");
-      }
-
-      const organisationMembers = await clerkClient.organizations.getOrganizationMembershipList({
-        organizationId: organisation.orgId,
+      const profile = await authPersistence.createUser({
+        workosUserId: user.id,
+        firstName: user.firstName,
+        lastName: user.lastName,
       });
 
-      const orgMembership = organisationMembers.find((member) => member.id === organisation.orgMembershipId);
-
-      if (!orgMembership) {
-        throw new TRPCError({
-          code: "BAD_REQUEST",
-          message: "User is not part of the organization",
-        });
-      }
-
-      const user = await authPersistence.createUser({
-        workosUserId: clerkId,
-        firstName: args.firstName,
-        lastName: args.lastName,
-        workosOrganisationId: organisation.orgId,
-        userRole: mapClerkRoleToUserRole(orgMembership.role),
-      });
-
-      return user;
+      return profile;
     } catch (error) {
       throw new TRPCError({
         code: "INTERNAL_SERVER_ERROR",

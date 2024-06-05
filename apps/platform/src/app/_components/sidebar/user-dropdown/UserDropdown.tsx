@@ -6,7 +6,7 @@ import { useUser } from "~/modules/auth/user.context";
 import { Logout } from "./Logout";
 
 export function UserDropdown() {
-  const { session } = useUser();
+  const { user } = useUser();
   return (
     <DropdownMenu.Root>
       <DropdownMenu.Trigger>
@@ -14,9 +14,9 @@ export function UserDropdown() {
           <Flex gap="2" align="center">
             <Avatar
               size="1"
-              src={session.user.profilePictureUrl ?? undefined}
+              src={user.profilePictureUrl ?? undefined}
               fallback={buildOrganizationFallbackInitials({
-                name: `${session.user.firstName} ${session.user.lastName}`,
+                name: `${user.firstName} ${user.lastName}`,
               })}
               color="sky"
               radius="full"

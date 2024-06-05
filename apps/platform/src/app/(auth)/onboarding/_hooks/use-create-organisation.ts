@@ -1,6 +1,6 @@
-import { useOrganizationList, useUser } from "@clerk/nextjs";
 import { useRouter } from "next/navigation";
 import { useState } from "react";
+import { useUser } from "~/modules/auth/user.context";
 import { api } from "~/trpc/provider";
 import { assertError } from "~/utils/error";
 import { computeOnboardingPath } from "~/utils/helpers";
@@ -9,35 +9,21 @@ export function useCreateOrganization() {
   const [isLoading, setIsLoading] = useState<boolean>(false);
   const [error, setError] = useState<string | null>(null);
   const { mutateAsync } = api.onboarding.createOrganization.useMutation();
-  const { user } = useUser();
-  const { isLoaded, userMemberships } = useOrganizationList({
-    userMemberships: {
-      infinite: true,
-    },
-  });
+  const { user, refresh } = useUser();
+
   const router = useRouter();
 
   const createCompany = async ({ name, domain }: { name: string; domain: string }) => {
     setIsLoading(true);
-    if (!isLoaded || !userMemberships.data) {
-      setError("Please wait");
-      setIsLoading(false);
-      return;
-    }
-
-    if (userMemberships.data.length > 0) {
-      setError("You are already part of a organization");
-      setIsLoading(false);
-      return;
-    }
 
     try {
+      console.log("name", name);
+      const hostName = new URL(domain).hostname;
       const { nextStep } = await mutateAsync({
         name,
-        domain,
+        domain: hostName,
       });
-      await user?.reload();
-      const hostName = new URL(domain).hostname;
+      await refresh();
       router.push(`${computeOnboardingPath(nextStep)}?domain=${hostName}`);
     } catch (error) {
       assertError(error);

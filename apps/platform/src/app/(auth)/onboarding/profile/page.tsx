@@ -8,8 +8,10 @@ import { toast } from "sonner";
 import { assertError } from "~/utils/error";
 import { useCompletePersonalDetails } from "../_hooks/use-complete-personal-details";
 import { EventsManagerBadge } from "~/app/_components/EventsManagerBadge";
+import { useUser } from "~/modules/auth/user.context";
 
 export default function OnboardingProfile() {
+  const { profile } = useUser();
   const [formError, setFormError] = useState<string | null>(null);
   const { completePersonalDetails, isLoading, error } = useCompletePersonalDetails();
   const [hasAgreed, setHasAgreed] = useState<boolean>(false);
@@ -62,6 +64,7 @@ export default function OnboardingProfile() {
                 placeholder="Enter your first name"
                 name="firstName"
                 type="text"
+                defaultValue={profile.firstName ?? ""}
                 required
               />
             </label>
@@ -74,6 +77,7 @@ export default function OnboardingProfile() {
                 size="3"
                 placeholder="Enter your last name"
                 name="lastName"
+                defaultValue={profile.lastName ?? ""}
                 type="text"
                 required
               />

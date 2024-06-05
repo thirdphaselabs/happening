@@ -5,8 +5,8 @@ import { environment } from "../environment";
 import { sealData, unsealData } from "iron-session";
 import WorkOS, { Session, SessionResponse } from "@workos-inc/node";
 import { NextFunction, Request, Response } from "express";
-import { PlaventiSession } from "../controllers/auth.controller";
 import { prisma } from "@plaventi/database";
+import { PlaventiSession } from "../modules/auth/auth.controller";
 
 const clientId = environment.WORKOS_CLIENT_ID;
 
@@ -49,6 +49,10 @@ export async function withWorkOsAuth(req: Request, res: Response, next: NextFunc
         workosId: session.user.id,
       },
     });
+
+    if (!profile) {
+      return res.status(401);
+    }
 
     const sessionData: PlaventiSession = {
       sessionId: sessionId,

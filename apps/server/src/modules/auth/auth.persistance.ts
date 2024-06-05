@@ -14,36 +14,19 @@ export class AuthPersistence {
         workosId: workosUserId,
       },
       include: {
-        organisation: true,
+        team: true,
       },
     });
 
-    return user.organisation;
+    return user.team;
   }
-  async createUser(args: {
-    firstName: string;
-    lastName: string;
-    workosUserId: string;
-    workosOrganisationId: string;
-    userRole: ProfileRole;
-  }) {
-    const organisation = await prisma.organisation.findUniqueOrThrow({
-      where: {
-        workosOrganisationId: args.workosOrganisationId,
-      },
-    });
-
+  async createUser(args: { firstName: string | null; lastName: string | null; workosUserId: string }) {
     return prisma.profile.create({
       data: {
         firstName: args.firstName,
         lastName: args.lastName,
         workosId: args.workosUserId,
-        userRole: args.userRole,
-        organisation: {
-          connect: {
-            id: organisation.id,
-          },
-        },
+        userRole: ProfileRole.MEMBER,
       },
     });
   }

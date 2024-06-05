@@ -1,6 +1,6 @@
-import { useOrganizationList, useUser } from "@clerk/nextjs";
 import { useRouter } from "next/navigation";
 import { useState } from "react";
+import { useUser } from "~/modules/auth/user.context";
 import { api } from "~/trpc/provider";
 import { assertError } from "~/utils/error";
 import { computeOnboardingPath } from "~/utils/helpers";
@@ -9,21 +9,17 @@ export function useInviteTeam() {
   const [isLoading, setIsLoading] = useState<boolean>(false);
   const [error, setError] = useState<string | null>(null);
   const { mutateAsync } = api.onboarding.inviteTeamMembers.useMutation();
-  const { user } = useUser();
+  const { refresh } = useUser();
   const router = useRouter();
 
-  const inviteTeam = async (args: {
-    invites: { email: string }[];
-    organisations: { orgId: string; orgMembershipId: string }[];
-  }) => {
+  const inviteTeam = async (args: { invites: { email: string }[] }) => {
     setIsLoading(true);
 
     try {
       const { nextStep } = await mutateAsync({
         invites: args.invites,
-        organisations: args.organisations,
       });
-      await user?.reload();
+      await refresh();
       router.push(computeOnboardingPath(nextStep));
     } catch (error) {
       assertError(error);

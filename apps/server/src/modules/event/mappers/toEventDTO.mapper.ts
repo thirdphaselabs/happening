@@ -8,5 +8,6 @@ export function toEventDTO(event: PlaventiEvent): EventDTO {
     status: event.status,
     description: event.description,
     coverImageUrl: event.coverImageUrl,
-  };
+    isApprovalRequired: event.isApprovalRequired,
+  } as EventDTO;
 }

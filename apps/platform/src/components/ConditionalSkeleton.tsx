@@ -10,6 +10,6 @@ export function ConditionalSkeleton({
   loading: boolean;
   children: ReactNode;
   className?: string;
-}) {
-  return loading ? <Skeleton className={cn("w-fit", className)}>{children}</Skeleton> : children;
+}): JSX.Element {
+  return loading ? <Skeleton className={cn("w-fit", className)}>{children}</Skeleton> : <>{children}</>;
 }

@@ -21,12 +21,17 @@ export function UserContextProvider({ children, session: serverSession }: UserCo
   const [session, setSession] = useState<Session>(serverSession);
 
   const refresh = useCallback(async () => {
-    const res = await fetch("http://localhost:3002/api/auth/refresh");
+    const res = await fetch("http://localhost:3002/api/auth/refresh", {
+      credentials: "include",
+    });
     const newSession = await res.json();
     setSession(newSession);
   }, []);
 
   const value = useMemo(() => ({ user: session.user, profile: session.profile, refresh }), [session]);
+
+  console.log("UserContextProvider", value);
+
   return <UserContext.Provider value={value}>{children}</UserContext.Provider>;
 }
 

@@ -8,13 +8,14 @@ import "./types/types";
 import { createExpressMiddleware } from "@trpc/server/adapters/express";
 import cookieParser from "cookie-parser";
 import { createOpenApiExpressMiddleware } from "trpc-openapi";
-import { PlaventiSession, authController } from "./controllers/auth.controller";
+import { PlaventiSession, authController } from "./modules/auth/auth.controller";
+import { authWebhooks } from "./modules/auth/auth.webhooks";
 import { imageController } from "./controllers/image.controller";
 import { initEnv } from "./environment";
-import { ClerkAuth } from "./middleware/clerk-auth";
 import { createContext } from "./trpc/context";
 import { openApiDocument } from "./trpc/openapi";
 import { appRouter } from "./trpc/routers/root";
+import { SessionWithOrg } from "./types/types";
 
 declare global {
   namespace Express {
@@ -54,6 +55,7 @@ app.use(
 
 app.use("/api/auth", authController);
 app.use("/api/images", imageController);
+app.use("/api/webhooks/auth", authWebhooks);
 
 // Handle incoming OpenAPI requests
 app.use("/api", createOpenApiExpressMiddleware({ router: appRouter, createContext }));

@@ -16,6 +16,7 @@ export const setAdditionalInformationActionHandler: EventBuilderActionHandler<se
     additionalInformation: {
       ...updatedAdditionalInformation,
       status: computeStatus(updatedAdditionalInformation),
+      requiresApproval: action.payload.requiresApproval ?? false,
     },
   };
 };

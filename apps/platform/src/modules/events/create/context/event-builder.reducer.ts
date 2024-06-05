@@ -9,9 +9,7 @@ import { setCurrentStageActionHandler } from "./action-handlers/private/set-curr
 import { setLocationDetailsActionHandler } from "./action-handlers/public/set-location-details.action-handler";
 import { setAdditionalInformationActionHandler } from "./action-handlers/public/set-additional-information.action-handler";
 import { setTicketPriceActionHandler } from "./action-handlers/public/add-ticket-group.action-handler";
-import { removeTicketGroupActionHandler } from "./action-handlers/public/remove-ticket-group.action-handler";
-import { updateNumberOfTicketGroupsActionHandler } from "./action-handlers/public/update-number-of-ticket-groups.action-handler";
-import { setDateAndTimeActionHandler } from "../../builder/components/set-date-and-time.action-handler";
+import { setDateAndTimeActionHandler } from "./action-handlers/public/set-date-and-time.action-handler";
 
 export function eventBuilderReducer(state: EventBuilderState, action: EventBuilderAction): EventBuilderState {
   switch (action.type) {
@@ -33,10 +31,6 @@ export function eventBuilderReducer(state: EventBuilderState, action: EventBuild
       return setAdditionalInformationActionHandler(state, action);
     case "SET_TICKET_PRICE":
       return setTicketPriceActionHandler(state, action);
-    case "REMOVE_TICKET_GROUP":
-      return removeTicketGroupActionHandler(state, action);
-    case "UPDATE_NUMBER_OF_TICKET_GROUPS":
-      return updateNumberOfTicketGroupsActionHandler(state, action);
     default:
       return state;
   }

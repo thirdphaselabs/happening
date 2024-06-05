@@ -1,6 +1,5 @@
 "use client";
 
-import { useUser } from "@clerk/nextjs";
 import { Button, TextFieldLabel, TextFieldRoot, Separator } from "@plaventi/ui";
 import { Cross1Icon, Link1Icon, PlusIcon } from "@radix-ui/react-icons";
 import { Checkbox, Flex, IconButton, Text, TextField } from "@radix-ui/themes";
@@ -12,6 +11,7 @@ import { assertError } from "~/utils/error";
 import { OnboardingSectionHeader } from "../_components/OnboardingSectionHeader";
 import { useInviteTeam } from "../_hooks/use-invite-team";
 import { InviteContextProvider, useInviteContext } from "./_components/invite-context";
+import { useUser } from "~/modules/auth/user.context";
 
 export default function OnboardingInvites() {
   return (
@@ -26,7 +26,7 @@ function OnboardingInvitesInner() {
   const [formError, setFormError] = useState<string | null>(null);
   const { inviteTeam, isLoading, error } = useInviteTeam();
 
-  const { user } = useUser();
+  const { user, refresh } = useUser();
   const router = useRouter();
   const searchParams = useSearchParams();
   const domain = searchParams.get("domain");
@@ -35,29 +35,13 @@ function OnboardingInvitesInner() {
 
   const handleSubmit = async (event: React.FormEvent<HTMLFormElement>) => {
     event.preventDefault();
-    if (!user) {
-      toast.custom((id) => <NotificationCallout toastId={id} type="error" message="Still loading" />);
-      return;
-    }
-    const organisations = user.organizationMemberships.map((membership) => {
-      return {
-        orgId: membership.organization.id,
-        orgMembershipId: membership.id,
-      };
-    });
-
     try {
       const inviteOne = [...(invites.one ? [{ email: invites.one.email }] : [])];
       const inviteTwo = [...(invites.two ? [{ email: invites.two.email }] : [])];
       const inviteThree = [...(invites.three ? [{ email: invites.three.email }] : [])];
       await inviteTeam({
         invites: [...inviteOne, ...inviteTwo, ...inviteThree],
-        organisations,
       });
-
-      await user.reload();
-
-      router.push("/");
     } catch (error) {
       assertError(error);
       setFormError(error.message);

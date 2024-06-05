@@ -3,7 +3,7 @@ import { getSession } from "~/app/actions";
 import { Dashboard } from "~/modules/dashboard/dashboard";
 
 export default async function Page() {
-  const user = await getSession();
+  const user = await getSession({ ensureSignedIn: true });
 
   return (
     <Container size="2">

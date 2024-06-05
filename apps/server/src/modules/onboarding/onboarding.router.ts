@@ -3,7 +3,7 @@
 import { TRPCError } from "@trpc/server";
 import { z } from "zod";
 import { createTRPCRouter } from "../../trpc/context";
-import { protectedProcedure, workOsProcedure } from "../../trpc/procedures";
+import { workOsProcedure } from "../../trpc/procedures";
 import { OnboardingService } from "./onboarding.service";
 import { OnboardingStatus } from "@prisma/client";
 
@@ -45,22 +45,16 @@ export const onboardingRouter = createTRPCRouter({
       }
     }),
 
-  completeOnboarding: workOsProcedure
-    .input(
-      z.object({
-        organisations: z.object({ orgId: z.string(), orgMembershipId: z.string() }).array(),
-      }),
-    )
-    .mutation(async ({ ctx, input: { organisations } }) => {
-      try {
-        await onboardingService.completeOnboarding(ctx.session, { organisations });
-      } catch (error) {
-        throw new TRPCError({
-          code: "INTERNAL_SERVER_ERROR",
-          message: "An error occurred while completing onboarding",
-        });
-      }
-    }),
+  completeOnboarding: workOsProcedure.mutation(async ({ ctx }) => {
+    try {
+      await onboardingService.completeOnboarding(ctx.session);
+    } catch (error) {
+      throw new TRPCError({
+        code: "INTERNAL_SERVER_ERROR",
+        message: "An error occurred while completing onboarding",
+      });
+    }
+  }),
 
   completePersonalDetails: workOsProcedure
     .input(
@@ -71,7 +65,6 @@ export const onboardingRouter = createTRPCRouter({
     )
     .mutation(async ({ ctx, input }) => {
       try {
-        await onboardingService.beginOnboarding(ctx.session);
         const { nextStep } = await onboardingService.completePersonalDetails(ctx.session, input);
 
         return {
@@ -100,10 +93,9 @@ export const onboardingRouter = createTRPCRouter({
           domain,
         });
 
-        return {
-          nextStep,
-        };
+        return nextStep;
       } catch (error) {
+        console.error(error);
         throw new TRPCError({
           code: "INTERNAL_SERVER_ERROR",
           message: "An error occurred while creating organization",
@@ -114,7 +106,6 @@ export const onboardingRouter = createTRPCRouter({
   inviteTeamMembers: workOsProcedure
     .input(
       z.object({
-        organisations: z.object({ orgId: z.string(), orgMembershipId: z.string() }).array(),
         invites: z
           .object({
             email: z.string(),
@@ -127,9 +118,8 @@ export const onboardingRouter = createTRPCRouter({
       try {
         const { nextStep } = await onboardingService.inviteTeamMembers(ctx.session, {
           invites: input.invites,
-          organisations: input.organisations,
         });
-        await onboardingService.completeOnboarding(ctx.session, { organisations: input.organisations });
+        await onboardingService.completeOnboarding(ctx.session);
 
         return {
           nextStep,
@@ -141,9 +131,9 @@ export const onboardingRouter = createTRPCRouter({
         });
       }
     }),
-  resetOnboarding: protectedProcedure.mutation(async ({ ctx }) => {
+  resetOnboarding: workOsProcedure.mutation(async ({ ctx }) => {
     try {
-      await onboardingService.resetOnboarding(ctx.auth);
+      await onboardingService.resetOnboarding(ctx.session);
     } catch (error) {
       throw new TRPCError({
         code: "INTERNAL_SERVER_ERROR",

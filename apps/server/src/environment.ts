@@ -8,6 +8,7 @@ const envSchema = z.object({
   WORKOS_API_KEY: z.string().trim().min(1),
   WORKOS_CLIENT_ID: z.string().trim().min(1),
   WORKOS_COOKIE_PASSWORD: z.string().trim().min(1),
+  WORKOS_WEBHOOK_SECRET: z.string().trim().min(1),
   APP_URL: z.string().trim().min(1),
 });
 

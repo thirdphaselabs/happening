@@ -129,7 +129,9 @@ function EmailStep() {
         <TextFieldRoot>
           <TextFieldLabelContainer>
             <TextFieldLabel>Email</TextFieldLabel>
-            {errorCode && <TextFieldError>You already have an account. Please sign in.</TextFieldError>}
+            {errorCode && (
+              <TextFieldError isVisible>You already have an account. Please sign in.</TextFieldError>
+            )}
           </TextFieldLabelContainer>
           <TextField.Root
             size="3"
@@ -228,7 +230,9 @@ function PasswordStep() {
         <label>
           <TextFieldLabelContainer>
             <TextFieldLabel>Email</TextFieldLabel>
-            {errorCode && <TextFieldError>You already have an account. Please sign in.</TextFieldError>}
+            {errorCode && (
+              <TextFieldError isVisible>You already have an account. Please sign in.</TextFieldError>
+            )}
           </TextFieldLabelContainer>
 
           <TextField.Root

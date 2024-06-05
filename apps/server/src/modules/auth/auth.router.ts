@@ -1,35 +1,20 @@
 import { z } from "zod";
 import { createTRPCRouter } from "../../trpc/context";
-import { protectedProcedure, publicProcedure, workOsProcedure } from "../../trpc/procedures";
+import { publicProcedure, workOsProcedure } from "../../trpc/procedures";
 import { TRPCError } from "@trpc/server";
 import { AuthService } from "./auth.service";
-import { UserMetadataService } from "../user-metadata/user-metadata.service";
 import { environment } from "../../environment";
-import { PlaventiSession } from "../../controllers/auth.controller";
+import { PlaventiSession } from "./auth.controller";
 
 const authService = new AuthService();
-const userMetadataService = new UserMetadataService();
 
 export const authRouter = createTRPCRouter({
   session: workOsProcedure.query(async ({ ctx }) => {
     return ctx.session as PlaventiSession;
   }),
-
-  getPublicMetadata: protectedProcedure.query(async ({ ctx }) => {
+  getActiveOrganization: workOsProcedure.query(async ({ ctx }) => {
     try {
-      const metadata = await userMetadataService.getMetadata(ctx.auth.userId);
-
-      return metadata;
-    } catch (error) {
-      throw new TRPCError({
-        code: "INTERNAL_SERVER_ERROR",
-        message: "An error occurred while fetching user metadata",
-      });
-    }
-  }),
-  getActiveOrganization: protectedProcedure.query(async ({ ctx }) => {
-    try {
-      const organisation = await authService.getActiveOrganization(ctx.auth.userId);
+      const organisation = await authService.getActiveOrganization(ctx.session.user.id);
 
       return {
         workosOrganisationId: organisation?.workosOrganisationId,
@@ -42,9 +27,9 @@ export const authRouter = createTRPCRouter({
       });
     }
   }),
-  completeOnboarding: protectedProcedure.mutation(async ({ ctx }) => {
+  completeOnboarding: workOsProcedure.mutation(async ({ ctx }) => {
     try {
-      await authService.completeOnboarding(ctx.auth.userId);
+      await authService.completeOnboarding(ctx.session.user.id);
     } catch (error) {
       throw new TRPCError({
         code: "INTERNAL_SERVER_ERROR",

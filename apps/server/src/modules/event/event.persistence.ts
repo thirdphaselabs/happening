@@ -1,33 +1,45 @@
 import { EventStatus, prisma } from "@plaventi/database";
-import { AuthWithOrg } from "../../types/types";
-import { CreateEventDTO } from "./dto/create-event.dto";
-import { PlaventiEvent } from "./event.model";
+import { SessionWithOrg } from "../../types/types";
+import { EventDTO } from "./dto/event.dto";
 import { GetEventDTO } from "./dto/get-event.dto";
 import { UpdateEventDTO } from "./dto/update-event.dto";
-import { EventDTO } from "./dto/event.dto";
-import { PlaventiSession } from "../../controllers/auth.controller";
+import { PlaventiEvent } from "./event.model";
 
 export class EventPersistence {
-  all(auth: PlaventiSession): Promise<Array<PlaventiEvent>> {
+  all(auth: SessionWithOrg): Promise<Array<PlaventiEvent>> {
     return prisma.event.findMany({
       where: {
         createdByProfileId: auth.profile.id,
-        organisationId: auth.organizationId,
+        teamId: auth.organisationId,
+      },
+      include: {
+        guestList: {
+          include: {
+            attendees: true,
+          },
+        },
       },
     });
   }
 
-  getByIdentifier(auth: AuthWithOrg, args: GetEventDTO): Promise<PlaventiEvent | null> {
+  getByIdentifier(auth: SessionWithOrg, args: GetEventDTO): Promise<PlaventiEvent | null> {
     return prisma.event.findFirst({
       where: {
         identifier: args.identifier,
         createdByProfileId: auth.profile.id,
-        organisationId: auth.organizationId,
+        teamId: auth.organisationId,
+      },
+      include: {
+        guestList: {
+          include: {
+            attendees: true,
+          },
+        },
       },
     });
   }
 
-  create(auth: AuthWithOrg, args: EventDTO): Promise<PlaventiEvent> {
+  create(auth: SessionWithOrg, args: EventDTO): Promise<PlaventiEvent> {
     return prisma.event.create({
       data: {
         identifier: args.identifier,
@@ -75,25 +87,39 @@ export class EventPersistence {
             id: auth.profile.id,
           },
         },
-        organisation: {
+        team: {
           connect: {
-            id: auth.organizationId,
+            id: auth.organisationId,
+          },
+        },
+      },
+      include: {
+        guestList: {
+          include: {
+            attendees: true,
           },
         },
       },
     });
   }
 
-  update(auth: AuthWithOrg, args: UpdateEventDTO): Promise<PlaventiEvent> {
+  update(auth: SessionWithOrg, args: UpdateEventDTO): Promise<PlaventiEvent> {
     return prisma.event.update({
       where: {
         identifier: args.identifier,
-        organisationId: auth.organizationId,
+        teamId: auth.organisationId,
         createdByProfileId: auth.profile.id,
       },
       data: {
         title: args.title,
         description: args.description,
+      },
+      include: {
+        guestList: {
+          include: {
+            attendees: true,
+          },
+        },
       },
     });
   }

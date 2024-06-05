@@ -1,5 +1,5 @@
-import { PlaventiSession } from "../../controllers/auth.controller";
-import { AuthWithOrg } from "../../types/types";
+import { PlaventiSession } from "../auth/auth.controller";
+import { AuthWithOrg, SessionWithOrg } from "../../types/types";
 import { CreateEventDTO } from "./dto/create-event.dto";
 import { EventDTO } from "./dto/event.dto";
 import { GetEventDTO } from "./dto/get-event.dto";
@@ -17,15 +17,15 @@ export class EventService {
     this.createEvent = new CreateEvent(this.eventPersistence);
   }
 
-  get(auth: PlaventiSession): Promise<Array<PlaventiEvent>> {
+  get(auth: SessionWithOrg): Promise<Array<PlaventiEvent>> {
     return this.eventPersistence.all(auth);
   }
 
-  getByIdentifier(auth: AuthWithOrg, args: GetEventDTO): Promise<PlaventiEvent | null> {
+  getByIdentifier(auth: SessionWithOrg, args: GetEventDTO): Promise<PlaventiEvent | null> {
     return this.eventPersistence.getByIdentifier(auth, args);
   }
 
-  create(auth: AuthWithOrg, args: Omit<EventDTO, "identifier">): Promise<PlaventiEvent> {
+  create(auth: SessionWithOrg, args: Omit<EventDTO, "identifier">): Promise<PlaventiEvent> {
     const identifier = args.title.toLowerCase().replace(/ /g, "-");
     return this.createEvent.execute(auth, {
       ...args,
@@ -33,7 +33,7 @@ export class EventService {
     });
   }
 
-  update(auth: AuthWithOrg, args: UpdateEventDTO) {
+  update(auth: SessionWithOrg, args: UpdateEventDTO) {
     return this.eventPersistence.update(auth, args);
   }
 }

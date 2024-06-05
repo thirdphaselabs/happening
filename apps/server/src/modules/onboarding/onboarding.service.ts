@@ -1,70 +1,39 @@
 import clerkClient from "@clerk/clerk-sdk-node";
 import { OnboardingStatus, Profile } from "@prisma/client";
 import { TRPCError } from "@trpc/server";
-import { PlaventiSession } from "../../controllers/auth.controller";
-import { AuthContext } from "../../trpc/procedures/adminProcedures";
+import { PlaventiSession } from "../auth/auth.controller";
 import { AuthService } from "../auth/auth.service";
-import { UserMetadataService } from "../user-metadata/user-metadata.service";
+import { TeamService } from "../team/team.service";
 import { OnboardingPersistence } from "./onboarding.persistence";
 
-const onboardingPersistence = new OnboardingPersistence();
-const authService = new AuthService();
-const userMetadataService = new UserMetadataService();
+import { DomainDataState, WorkOS } from "@workos-inc/node";
+import { environment } from "../../environment";
+
+const workos = new WorkOS(environment.WORKOS_API_KEY);
 
 export class OnboardingService {
-  async beginOnboarding(auth: PlaventiSession) {
-    // if (organisations.length > 1) {
-    //   throw new TRPCError({
-    //     code: "BAD_REQUEST",
-    //     message: "User can only be part of one organization",
-    //   });
-    // }
+  private readonly authService: AuthService;
+  private readonly teamService: TeamService;
+  private readonly onboardingPersistence: OnboardingPersistence;
 
-    // const organisation = organisations[0];
-
-    // if (organisation) {
-    //   const organisationMembers = await clerkClient.organizations.getOrganizationMembershipList({
-    //     organizationId: organisation.orgId,
-    //   });
-
-    //   const orgMembership = organisationMembers.find((member) => member.id === organisation.orgMembershipId);
-
-    //   if (!orgMembership) {
-    //     throw new TRPCError({
-    //       code: "BAD_REQUEST",
-    //       message: "User is not part of the organization",
-    //     });
-    //   }
-    // }
-
-    await onboardingPersistence.beginOnboarding(auth.user.id);
+  constructor() {
+    this.authService = new AuthService();
+    this.teamService = new TeamService();
+    this.onboardingPersistence = new OnboardingPersistence();
   }
-  async inviteTeamMembers(
-    auth: PlaventiSession,
-    input: { invites: { email: string }[]; organisations: { orgId: string; orgMembershipId: string }[] },
-  ) {
-    try {
-      const organisation = await onboardingPersistence.getOrganisation(auth.user.id);
 
-      if (!organisation) {
+  async inviteTeamMembers(auth: PlaventiSession, input: { invites: { email: string }[] }) {
+    try {
+      if (!auth.organisationId) {
         throw new TRPCError({
-          code: "NOT_FOUND",
+          code: "BAD_REQUEST",
           message: "Organization not found",
         });
       }
 
-      // await Promise.all(
-      //   input.invites.map(async (invite) => {
-      //     clerkClient.organizations.createOrganizationInvitation({
-      //       organizationId: organisation.clerkOrganisationId,
-      //       emailAddress: invite.email,
-      //       inviterUserId: auth.userId,
-      //       role: roleToClerkRole(UserRole.ORGANIZER),
-      //     });
-      //   }),
-      // );
+      const organisation = await this.teamService.getTeam(auth.organisationId);
 
-      await this.completeOnboarding(auth, { organisations: input.organisations });
+      await this.completeOnboarding(auth);
 
       const nextStep = await this.updateToNextStep(auth);
 
@@ -79,37 +48,30 @@ export class OnboardingService {
     }
   }
 
-  async createOrganization(auth: PlaventiSession, { name, domain }: { name: string; domain: string }) {
+  async createOrganization(auth: PlaventiSession, args: { name: string; domain: string }) {
     try {
-      const clerkUser = await clerkClient.users.getUser(auth.user.id);
+      const hasCreatedTeam = await this.teamService.hasUserCreatedTeam(auth);
 
-      const clerkOrganization = await clerkClient.organizations.createOrganization({
-        name,
-        createdBy: clerkUser.id,
-      });
-
-      await onboardingPersistence.createOrganization(auth.user.id, {
-        workosOrganizationId: clerkOrganization.id,
-        name,
-        domain,
-      });
+      if (!hasCreatedTeam) {
+        await this.teamService.createTeam(auth, args);
+      }
 
       const nextStep = await this.updateToNextStep(auth);
 
       return {
         nextStep,
       };
-      // return clerkOrganization;
     } catch (error) {
+      console.error(error);
       throw new TRPCError({
         code: "INTERNAL_SERVER_ERROR",
         message: "An error occurred while creating organization",
       });
     }
   }
-  async resetOnboarding(auth: AuthContext) {
+  async resetOnboarding(auth: PlaventiSession) {
     try {
-      await userMetadataService.resetOnboardingMetadata(auth.userId);
+      // await userMetadataService.resetOnboardingMetadata(auth.userId);
     } catch (error) {
       throw new Error("An error occurred while resetting onboarding");
     }
@@ -122,12 +84,13 @@ export class OnboardingService {
     },
   ) {
     try {
-      await onboardingPersistence.completePersonalDetails(auth.user.id, input);
+      await this.onboardingPersistence.completePersonalDetails(auth.profile.id, input);
       const nextStep = await this.updateToNextStep(auth);
       return {
         nextStep,
       };
     } catch (error) {
+      console.error(error);
       throw new TRPCError({
         code: "INTERNAL_SERVER_ERROR",
         message: "An error occurred while completing personal details",
@@ -152,7 +115,7 @@ export class OnboardingService {
     try {
       const nextStep = this.computeNextStep(session.profile);
 
-      await userMetadataService.updateOnboardingStep(session.user.id, nextStep);
+      await this.onboardingPersistence.updateToNextStep(session.user.id, nextStep);
 
       return {
         nextStep,
@@ -162,29 +125,18 @@ export class OnboardingService {
     }
   }
 
-  async completeOnboarding(
-    { user }: PlaventiSession,
-    { organisations }: { organisations: { orgId: string; orgMembershipId: string }[] },
-  ) {
+  async completeOnboarding(session: PlaventiSession) {
     try {
-      const { firstName, lastName } = await onboardingPersistence.getOnboarding(user.id);
-      if (!firstName || !lastName) {
-        throw new TRPCError({
-          code: "BAD_REQUEST",
-          message: "Personal details are missing",
-        });
-      }
-      await authService.createUser(user.id, { firstName, lastName, organisations });
-      await userMetadataService.completeOnboarding(user.id);
+      await this.updateToNextStep(session);
     } catch (error) {
       throw new Error("An error occurred while completing onboarding");
     }
   }
 
-  private async updateToNextStep({ user, profile }: PlaventiSession) {
+  private async updateToNextStep({ profile }: PlaventiSession) {
     const nextStep = this.computeNextStep(profile);
 
-    await userMetadataService.updateOnboardingStep(user.id, nextStep);
+    await this.onboardingPersistence.updateToNextStep(profile.id, nextStep);
 
     return nextStep;
   }
@@ -194,12 +146,10 @@ export class OnboardingService {
 
     switch (profile.onboardingStatus) {
       case OnboardingStatus.PROFILE:
-        return OnboardingStatus.ORGANISATION;
-      case OnboardingStatus.ORGANISATION:
+        return OnboardingStatus.TEAM;
+      case OnboardingStatus.TEAM:
         return OnboardingStatus.INVITE;
       case OnboardingStatus.INVITE:
-        return OnboardingStatus.COMPLETE;
-      case OnboardingStatus.COMPLETE:
         return OnboardingStatus.COMPLETED;
       case OnboardingStatus.COMPLETED:
         return OnboardingStatus.COMPLETED;

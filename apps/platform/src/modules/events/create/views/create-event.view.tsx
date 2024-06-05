@@ -33,8 +33,7 @@ import { useEventBuilderContext } from "../context/event-builder.context";
 import { EventName } from "../components/event-name";
 import { EventDescription } from "../components/event-description";
 import { DateSelect } from "../components/date-select";
-import { AddPaidTicketGroupDialog } from "../../builder/components/add-paid-ticket-group-dialog";
-
+import { AddPaidTicketGroupDialog } from "../components/add-paid-ticket-group-dialog";
 
 export function CreateEvent() {
   const { setEventDetails, eventDetails, createEvent } = useEventBuilderContext();

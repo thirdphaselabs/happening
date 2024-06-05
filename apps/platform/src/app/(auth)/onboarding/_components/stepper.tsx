@@ -7,10 +7,9 @@ import { OnboardingStatus } from "~/trpc/types";
 
 const stepPaths: Record<OnboardingStatus, string> = {
   PROFILE: "/onboarding/profile",
-  ORGANISATION: "/onboarding/company",
+  TEAM: "/onboarding/company",
   INVITE: "/onboarding/invite",
-  COMPLETE: "/onboarding/create",
-  COMPLETED: "/onboarding/completed",
+  COMPLETED: "/",
 };
 
 function Switch({ currentIndex, index }: { currentIndex: number; index: number }) {

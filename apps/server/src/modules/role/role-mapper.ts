@@ -1,30 +1,16 @@
-import { UserRole } from "@plaventi/database";
+import { ProfileRole } from "@plaventi/database";
 
-
-export function mapClerkRoleToUserRole(clerkRole: string): UserRole {
+export function mapClerkRoleToUserRole(clerkRole: string): ProfileRole {
   switch (clerkRole) {
     case "org:plaventiadmin":
-      return UserRole.PLAVENTI_ADMIN;
+      return ProfileRole.PLAVENTI_ADMIN;
     case "org:admin":
-      return UserRole.ORGANIZER_ADMIN
+      return ProfileRole.ORGANIZER_ADMIN;
     case "org:organizer":
-      return UserRole.ORGANIZER;
+      return ProfileRole.ORGANIZER;
     case "org:member":
-      return UserRole.MEMBER;
+      return ProfileRole.MEMBER;
     default:
       throw new Error("Invalid clerk role");
-  }
-}
-
-export function roleToClerkRole(role: UserRole) {
-  switch (role) {
-    case UserRole.PLAVENTI_ADMIN:
-      return "org:plaventiadmin";
-    case UserRole.ORGANIZER_ADMIN:
-      return "org:admin";
-    case UserRole.ORGANIZER:
-      return "org:organizer";
-    case UserRole.MEMBER:
-      return "org:member";
   }
 }

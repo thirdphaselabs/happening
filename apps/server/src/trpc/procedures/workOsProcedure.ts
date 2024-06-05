@@ -1,6 +1,6 @@
 import { ProfileRole } from "@prisma/client";
 import { TRPCError } from "@trpc/server";
-import { OnboardingStep } from "../../types/types";
+import { SessionWithOrg } from "../../types/types";
 import { t } from "../context";
 // Javascript Object Signing and Encryption (JOSE)
 // https://www.npmjs.com/package/jose
@@ -8,16 +8,8 @@ import WorkOS from "@workos-inc/node";
 import { Request } from "express";
 import { unsealData } from "iron-session";
 import { createRemoteJWKSet, jwtVerify } from "jose";
-import { PlaventiSession } from "../../controllers/auth.controller";
+import { PlaventiSession } from "../../modules/auth/auth.controller";
 import { environment } from "../../environment";
-
-export type AuthContext = {
-  sessionId: string;
-  userId: string;
-  role?: ProfileRole;
-  onboardingComplete: boolean;
-  onboardingStep: OnboardingStep;
-};
 
 const workos = new WorkOS(environment.WORKOS_API_KEY);
 
@@ -87,10 +79,16 @@ const hasValidSessionWithOrg = t.middleware(async ({ ctx, next }) => {
     throw new TRPCError({ code: "UNAUTHORIZED", message: "Session is invalid" });
   }
 
+  const sessionWithOrg: SessionWithOrg = {
+    ...session,
+    organisationId: session.organisationId,
+    profile: session.profile,
+  };
+
   return next({
     ctx: {
       ...ctx,
-      session,
+      session: sessionWithOrg,
     },
   });
 });

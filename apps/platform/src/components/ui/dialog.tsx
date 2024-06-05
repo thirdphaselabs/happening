@@ -1,5 +1,6 @@
 import { Cross2Icon } from "@radix-ui/react-icons";
 import { Button, Dialog as BaseDialog, Flex, IconButton, Box, Heading } from "@radix-ui/themes";
+import { cn } from "~/lib/utils";
 
 function DialogRoot({ children, ...props }: BaseDialog.RootProps) {
   return <BaseDialog.Root {...props}>{children}</BaseDialog.Root>;
@@ -17,8 +18,8 @@ function DialogContainer({ children, ...props }: BaseDialog.ContentProps) {
   );
 }
 
-function DialogContent({ children }: { children: React.ReactNode }) {
-  return <Box className="w-full px-6 pb-6 pt-6">{children}</Box>;
+function DialogContent({ children, className }: { children: React.ReactNode; className?: string }) {
+  return <Box className={cn("w-full px-6 pb-6 pt-6", className)}>{children}</Box>;
 }
 
 function DialogHeader({ isSubmitButtonDisabled }: { isSubmitButtonDisabled: boolean }) {

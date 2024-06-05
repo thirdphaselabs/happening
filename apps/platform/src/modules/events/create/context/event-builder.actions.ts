@@ -21,11 +21,6 @@ export type SetLocationDetailsAction = {
   payload: NonNullable<Partial<EventBuilderState["locationDetails"]>>;
 };
 
-export type UpdateNumberOfTicketGroupsAction = {
-  type: "UPDATE_NUMBER_OF_TICKET_GROUPS";
-  payload: { category: "paid" | "free"; quantity: number };
-};
-
 export type SetTicketPrice = {
   type: "SET_TICKET_PRICE";
   payload:
@@ -70,7 +65,6 @@ export type EventBuilderAction =
   | SetDateAndTimeAction
   | SetLocationDetailsAction
   | setAdditionalInformationAction
-  | UpdateNumberOfTicketGroupsAction
   | SetTicketPrice
   | RemoveTicketGroupAction
   | UpdateCurrentStageCompletionAction

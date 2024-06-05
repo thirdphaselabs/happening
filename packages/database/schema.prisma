@@ -14,45 +14,32 @@ enum ProfileRole {
   MEMBER
 }
 
-
-model Onboarding {
-  id              String      @id @default(cuid())
-  workosUserId         String   @unique
-  firstName       String?
-  lastName        String?
-  role            String?
-  profileRole      ProfileRole @default(MEMBER)
-  organisationId  Int?
-  createdAt       DateTime @default(now())
-  updatedAt       DateTime @updatedAt
-}
-
 enum OnboardingStatus {
   PROFILE
-  ORGANISATION
+  TEAM
   INVITE
-  COMPLETE
   COMPLETED
 }
 
 model Profile {
   id        String      @id @default(cuid())
-  firstName String
-  lastName  String
+  firstName String?
+  lastName  String?
   userRole  ProfileRole 
   workosId   String   @unique
   createdAt DateTime @default(now())
   onboardingStatus OnboardingStatus @default(PROFILE)
 
-  organisationId String
-  organisation   Organisation @relation(fields: [organisationId], references: [id])
+  teamId String?
+  hasCreatedTeam Boolean @default(false)
+  team   Team? @relation(fields: [teamId], references: [id])
   createdEvents Event[]
   guestLists GuestListAttendee[]
 
   @@index([workosId])
 }
 
-model Organisation {
+model Team {
   id                  String      @id @default(cuid())
   workosOrganisationId String   @unique
   name                String   
@@ -97,8 +84,8 @@ model Event {
   createdByProfileId String
   createdBy Profile @relation(fields: [createdByProfileId], references: [id])
 
-  organisationId String
-  organisation   Organisation @relation(fields: [organisationId], references: [workosOrganisationId])
+  teamId String
+  team   Team @relation(fields: [teamId], references: [id])
 }
 
 enum LocationType {

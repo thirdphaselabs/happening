@@ -1,5 +1,6 @@
 import { NextRequest, NextResponse } from "next/server";
 import { getSession } from "./app/actions";
+import { computeOnboardingPath } from "./utils/helpers";
 
 const publicRoutes = ["/login"];
 
@@ -12,19 +13,21 @@ export async function middleware(request: NextRequest) {
     return NextResponse.next();
   }
 
-  if (!session) {
+  if (!session || !session.profile) {
     const loginUrl = new URL("/login", request.nextUrl);
     return NextResponse.redirect(loginUrl);
   }
 
   const profile = session.profile;
+  const onboardingStatusToPath = computeOnboardingPath(profile.onboardingStatus);
 
-  if (request.nextUrl.pathname === "/onboarding/profile") {
+  if (request.nextUrl.pathname === onboardingStatusToPath) {
     return NextResponse.next();
   }
 
-  if (!profile) {
-    const onboarding = new URL("/onboarding/profile", request.nextUrl);
+  if (profile.onboardingStatus) {
+    console.log("onboardingStatus", { onboardingStatus: onboardingStatusToPath, profile });
+    const onboarding = new URL(onboardingStatusToPath, request.nextUrl);
     return NextResponse.redirect(onboarding);
   }
 
