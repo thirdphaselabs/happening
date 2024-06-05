@@ -18,13 +18,12 @@ export function useCreateOrganization() {
 
     try {
       console.log("name", name);
-      const hostName = new URL(domain).hostname;
       const { nextStep } = await mutateAsync({
         name,
-        domain: hostName,
+        domain,
       });
       await refresh();
-      router.push(`${computeOnboardingPath(nextStep)}?domain=${hostName}`);
+      router.push(`${computeOnboardingPath(nextStep)}?domain=${domain}`);
     } catch (error) {
       assertError(error);
       setError(error.message);

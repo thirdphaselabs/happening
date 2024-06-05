@@ -3,10 +3,10 @@ import { createRemoteJWKSet, jwtVerify } from "jose";
 import { Impersonator, User, WorkOS } from "@workos-inc/node";
 import { environment } from "../../environment";
 import { withWorkOsAuth } from "../../middleware/auth";
-import { exponentialBackOff } from "../../helpers/exponential-backoff";
+import { getProfileWithBackOff } from "./helpers/get-profile-with-backoff";
 import { sealData } from "iron-session";
-import { Profile } from "@prisma/client";
 import { prisma } from "@plaventi/database";
+import { Profile } from "../profile/entities/profile.entity";
 
 const workos = new WorkOS(environment.WORKOS_API_KEY);
 const clientId = environment.WORKOS_CLIENT_ID;
@@ -51,14 +51,7 @@ authController.get("/callback", async (req, res) => {
 
   const sessionId = decodedAccessToken.payload.sid as string;
 
-  const profile = await prisma.profile.findUnique({
-    where: {
-      workosId: user.id,
-    },
-    include: {
-      team: true,
-    },
-  });
+  const profile = await getProfileWithBackOff(user.id);
 
   if (!profile) {
     return res.status(400).send("Profile not found");
@@ -101,33 +94,14 @@ authController.get("/refresh", withWorkOsAuth, async (req: Request, res: Respons
 
   const sessionId = decodedAccessToken.payload.sid as string;
 
-  const profile = await prisma.profile
-    .findUnique({
-      where: {
-        workosId: session.user.id,
-      },
-      include: {
-        team: true,
-      },
-    })
-    .catch(async (error) => {
-      const profile = await exponentialBackOff({
-        retries: 3,
-        delay: 1000,
-        callback: async () => {
-          return await prisma.profile.findUnique({
-            where: {
-              workosId: session.user.id,
-            },
-            include: {
-              team: true,
-            },
-          });
-        },
-      });
-
-      return profile;
-    });
+  const profile = await prisma.profile.findUnique({
+    where: {
+      workosId: session.user.id,
+    },
+    include: {
+      team: true,
+    },
+  });
 
   if (!profile) {
     return res.status(400).send("Profile not found");

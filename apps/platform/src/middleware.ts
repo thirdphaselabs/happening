@@ -25,7 +25,7 @@ export async function middleware(request: NextRequest) {
     return NextResponse.next();
   }
 
-  if (profile.onboardingStatus) {
+  if (profile.onboardingStatus !== "COMPLETED") {
     console.log("onboardingStatus", { onboardingStatus: onboardingStatusToPath, profile });
     const onboarding = new URL(onboardingStatusToPath, request.nextUrl);
     return NextResponse.redirect(onboarding);

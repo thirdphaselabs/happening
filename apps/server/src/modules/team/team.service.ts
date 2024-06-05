@@ -86,4 +86,14 @@ export class TeamService {
       },
     });
   }
+
+  async isDomainAssociatedWithTeam(domain: string) {
+    const teamWithDomain = await prisma.team.findFirst({
+      where: {
+        domain,
+      },
+    });
+
+    return !!teamWithDomain;
+  }
 }

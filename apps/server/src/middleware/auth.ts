@@ -7,6 +7,7 @@ import WorkOS, { Session, SessionResponse } from "@workos-inc/node";
 import { NextFunction, Request, Response } from "express";
 import { prisma } from "@plaventi/database";
 import { PlaventiSession } from "../modules/auth/auth.controller";
+import { profileInclude } from "../modules/profile/entities/profile.entity";
 
 const clientId = environment.WORKOS_CLIENT_ID;
 
@@ -48,6 +49,7 @@ export async function withWorkOsAuth(req: Request, res: Response, next: NextFunc
       where: {
         workosId: session.user.id,
       },
+      include: profileInclude,
     });
 
     if (!profile) {

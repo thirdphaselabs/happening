@@ -5,11 +5,10 @@ import { Flex, Box, Separator } from "@radix-ui/themes";
 import { usePathname } from "next/navigation";
 import { OnboardingStatus } from "~/trpc/types";
 
-const stepPaths: Record<OnboardingStatus, string> = {
+const stepPaths: Record<Exclude<OnboardingStatus, "COMPLETED">, string> = {
   PROFILE: "/onboarding/profile",
   TEAM: "/onboarding/company",
   INVITE: "/onboarding/invite",
-  COMPLETED: "/",
 };
 
 function Switch({ currentIndex, index }: { currentIndex: number; index: number }) {
@@ -54,7 +53,9 @@ function Completed() {
 export function Stepper() {
   const pathName = usePathname();
 
-  const currentStep = Object.keys(stepPaths).find((step) => stepPaths[step as OnboardingStatus] === pathName);
+  const currentStep = Object.keys(stepPaths).find(
+    (step) => stepPaths[step as Exclude<OnboardingStatus, "COMPLETED">] === pathName,
+  );
 
   return (
     <Flex width="100%" justify="center" align="center">
