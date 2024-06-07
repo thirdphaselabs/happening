@@ -1,5 +1,4 @@
 import { EventStatus, LocationType, TicketType } from "@prisma/client";
-import { start } from "repl";
 import { z } from "zod";
 
 export const eventDTO = z.object({
@@ -36,12 +35,10 @@ export const eventDTO = z.object({
     isVisible: z.boolean(),
     attendees: z.array(
       z.object({
-        userId: z.string(),
         isApproved: z.boolean(),
-        user: z.object({
+        profile: z.object({
           firstName: z.string(),
           lastName: z.string(),
-          email: z.string(),
           profilePictureUrl: z.string().nullable(),
         }),
       }),

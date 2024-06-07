@@ -3,44 +3,49 @@ import { SessionWithOrg } from "../../types/types";
 import { EventDTO } from "./dto/event.dto";
 import { GetEventDTO } from "./dto/get-event.dto";
 import { UpdateEventDTO } from "./dto/update-event.dto";
-import { PlaventiEvent } from "./event.model";
+import { toEventModel } from "./mappers/toEventModel.mapper";
+import { PlaventiEvent, plaventiEventInclude } from "./event.model";
 
 export class EventPersistence {
-  all(auth: SessionWithOrg): Promise<Array<PlaventiEvent>> {
-    return prisma.event.findMany({
+  async all(auth: SessionWithOrg): Promise<Array<PlaventiEvent>> {
+    const events = await prisma.event.findMany({
       where: {
         createdByProfileId: auth.profile.id,
-        teamId: auth.organisationId,
+        teamId: auth.team.id,
       },
-      include: {
-        guestList: {
-          include: {
-            attendees: true,
-          },
-        },
-      },
+      include: plaventiEventInclude,
     });
+
+    return events.map(toEventModel);
   }
 
-  getByIdentifier(auth: SessionWithOrg, args: GetEventDTO): Promise<PlaventiEvent | null> {
-    return prisma.event.findFirst({
+  async isIdentifierInUse(identifier: string): Promise<boolean> {
+    const existing = await prisma.event.findUnique({
+      where: {
+        identifier,
+      },
+    });
+
+    return !!existing;
+  }
+
+  async getByIdentifier(auth: SessionWithOrg, args: GetEventDTO): Promise<PlaventiEvent | null> {
+    const event = await prisma.event.findFirst({
       where: {
         identifier: args.identifier,
         createdByProfileId: auth.profile.id,
-        teamId: auth.organisationId,
+        teamId: auth.team.id,
       },
-      include: {
-        guestList: {
-          include: {
-            attendees: true,
-          },
-        },
-      },
+      include: plaventiEventInclude,
     });
+
+    if (!event) return null;
+
+    return toEventModel(event);
   }
 
-  create(auth: SessionWithOrg, args: EventDTO): Promise<PlaventiEvent> {
-    return prisma.event.create({
+  async create(auth: SessionWithOrg, args: EventDTO): Promise<PlaventiEvent> {
+    const createdEvent = await prisma.event.create({
       data: {
         identifier: args.identifier,
         title: args.title,
@@ -89,38 +94,30 @@ export class EventPersistence {
         },
         team: {
           connect: {
-            id: auth.organisationId,
+            id: auth.team.id,
           },
         },
       },
-      include: {
-        guestList: {
-          include: {
-            attendees: true,
-          },
-        },
-      },
+      include: plaventiEventInclude,
     });
+
+    return toEventModel(createdEvent);
   }
 
-  update(auth: SessionWithOrg, args: UpdateEventDTO): Promise<PlaventiEvent> {
-    return prisma.event.update({
+  async update(auth: SessionWithOrg, args: UpdateEventDTO): Promise<PlaventiEvent> {
+    const updatedEvent = await prisma.event.update({
       where: {
         identifier: args.identifier,
-        teamId: auth.organisationId,
+        teamId: auth.team.id,
         createdByProfileId: auth.profile.id,
       },
       data: {
         title: args.title,
         description: args.description,
       },
-      include: {
-        guestList: {
-          include: {
-            attendees: true,
-          },
-        },
-      },
+      include: plaventiEventInclude,
     });
+
+    return toEventModel(updatedEvent);
   }
 }

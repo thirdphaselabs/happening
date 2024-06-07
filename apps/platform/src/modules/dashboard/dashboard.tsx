@@ -1,30 +1,46 @@
-import { Separator } from "@plaventi/ui";
+import { Separator, TicketIcon } from "@plaventi/ui";
 import { Button, ChevronDownIcon, Flex, Grid, Heading } from "@radix-ui/themes";
 import Link from "next/link";
 import { UpcomingEvents } from "~/app/_components/RecentEvents";
-import { DashboardStat } from "../events/all/components/dashboard-stat";
+import { DashboardStat, Stat } from "../events/all/components/dashboard-stat";
 import { QuickActions } from "./components/quick-actions";
-import { ArrowTopRightIcon, PlusIcon } from "@radix-ui/react-icons";
+import { ArrowTopRightIcon, CalendarIcon, PersonIcon, PlusIcon } from "@radix-ui/react-icons";
 import { Session } from "~/trpc/types";
+import { lastDayOfWeek } from "date-fns";
+import { PiCurrencyDollar } from "react-icons/pi";
 
-const stats = [
+const stats: Array<Stat> = [
   {
-    title: "Total events",
+    title: "Events",
     value: "87",
     percentageDifference: "11",
+    lastWeek: "0",
     total: "100",
+    icon: CalendarIcon,
   },
   {
-    title: "Total attendees",
+    title: "Tickets",
+    value: "0",
+    percentageDifference: "11",
+    lastWeek: "0",
+    total: "100",
+    icon: TicketIcon,
+  },
+  {
+    title: "Attendees",
     value: "13,328",
     percentageDifference: "18",
+    lastWeek: "0",
     total: "100",
+    icon: PersonIcon,
   },
   {
-    title: "Total revenue",
+    title: "Revenue",
     value: "$59,623",
     percentageDifference: "33",
+    lastWeek: "0",
     total: "100",
+    icon: PiCurrencyDollar,
   },
 ];
 

@@ -63,7 +63,7 @@ export async function withWorkOsAuth(req: Request, res: Response, next: NextFunc
       user: session.user,
       impersonator: session.impersonator,
       profile,
-      organisationId: session.organisationId,
+      organisationId: profile.team?.workosOrganisationId ?? null,
     };
 
     req.session = sessionData;

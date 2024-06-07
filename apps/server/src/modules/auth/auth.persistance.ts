@@ -23,8 +23,8 @@ export class AuthPersistence {
   async createUser(args: { firstName: string | null; lastName: string | null; workosUserId: string }) {
     return prisma.profile.create({
       data: {
-        firstName: args.firstName,
-        lastName: args.lastName,
+        firstName: args.firstName ?? "plaventi-placeholder",
+        lastName: args.lastName ?? "plaventi-placeholder",
         workosId: args.workosUserId,
         userRole: ProfileRole.MEMBER,
       },

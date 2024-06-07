@@ -22,6 +22,28 @@ export function Events() {
     return <p>Error: {error.message}</p>;
   }
 
+  const eventsByCategory = events.filter((event) => {
+    if (category === "upcoming") {
+      return new Date(event.timing.startDate).getTime() > new Date().getTime();
+    }
+    if (category === "past") {
+      return new Date(event.timing.startDate).getTime() < new Date().getTime();
+    }
+  });
+
+  const eventsGroupedByStartDate = eventsByCategory.reduce(
+    (acc, event) => {
+      const startDate = new Date(event.timing.startDate);
+      const key = startDate.toDateString();
+      if (!acc[key]) {
+        acc[key] = [];
+      }
+      acc[key].push(event);
+      return acc;
+    },
+    {} as Record<string, typeof events>,
+  );
+
   return (
     <Flex direction="column" gap="6" mt="6">
       <Flex className="w-full" justify="between" align="center">
@@ -35,30 +57,34 @@ export function Events() {
           </SegmentedControl.Root>
         </Flex>
       </Flex>
-      <Separator orientation="horizontal" />
-      {events.length > 0 && (
-        <>
-          {events.map((event) => (
+      {events.length > 0 &&
+        Object.entries(eventsGroupedByStartDate)
+          .sort((a, b) => {
+            return new Date(a[0]).getTime() - new Date(b[0]).getTime();
+          })
+          .map(([date, events]) => (
             <Flex justify="between">
               <Flex direction="column" gap="1" className="flex-grow">
                 <Heading size="3" color="gray" highContrast>
-                  {formatDate(new Date(), "d MMM")}
+                  {formatDate(new Date(date), "d MMM")}
                 </Heading>
                 <Text size="3" color="gray">
-                  {formatDate(new Date(), "EEE")}
+                  {formatDate(new Date(date), "EEE")}
                 </Text>
               </Flex>
               <Flex mx="6" mt="2" position="relative" className="w-fit">
-                <Box className="bg-grayA6 z-[100] flex h-[12px] w-[12px] items-center justify-center rounded-full" />
-                <Box className="border-grayA5 absolute left-[5px] top-[11.5px] h-[290px] w-[2px] border-r-[1px] border-dashed" />
+                <Box className="bg-grayA6 z-[100] flex h-[8px] w-[8px] items-center justify-center rounded-full" />
+                <Box className="border-grayA5 absolute left-[2.5px] top-[11.1px] h-[400px] w-[2px] border-r-[1px] border-dashed" />
               </Flex>
-              <Flex className="w-3/4">
-                <EventCard key={event.identifier} event={event} />
+              <Flex direction="column" className="w-3/4" gap="6">
+                {events.map((event) => (
+                  <Flex>
+                    <EventCard key={event.identifier} event={event} />
+                  </Flex>
+                ))}
               </Flex>
             </Flex>
           ))}
-        </>
-      )}
       {events.length === 0 && <EmptyState category={category} />}
     </Flex>
   );

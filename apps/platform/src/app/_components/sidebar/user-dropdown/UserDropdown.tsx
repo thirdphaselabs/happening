@@ -25,7 +25,7 @@ export function UserDropdown() {
         </IconButton>
       </DropdownMenu.Trigger>
       <DropdownMenu.Content>
-        <DropdownMenu.Item>Account settings</DropdownMenu.Item>
+        <DropdownMenu.Item color="gray">Account settings</DropdownMenu.Item>
         <DropdownMenu.Separator />
         <Logout />
       </DropdownMenu.Content>

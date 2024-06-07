@@ -1,4 +1,5 @@
 import type { OnboardingStatus } from "~/trpc/types";
+import { Routes } from "./routing/routes";
 
 export function invariant(condition: unknown, message: string): asserts condition {
   if (!condition) {
@@ -13,12 +14,12 @@ export function never(message: string): never {
 export function computeOnboardingPath(onboardingStep: OnboardingStatus) {
   switch (onboardingStep) {
     case "PROFILE":
-      return "/onboarding/profile";
+      return Routes.Onboarding.Profile;
     case "TEAM":
-      return "/onboarding/team";
+      return Routes.Onboarding.Team;
     case "INVITE":
-      return "/onboarding/invite";
+      return Routes.Onboarding.Invite;
     case "COMPLETED":
-      return "/";
+      return Routes.Dashboard;
   }
 }

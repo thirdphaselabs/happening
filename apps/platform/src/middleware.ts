@@ -1,34 +1,28 @@
 import { NextRequest, NextResponse } from "next/server";
 import { getSession } from "./app/actions";
 import { computeOnboardingPath } from "./utils/helpers";
+import { Routes } from "./utils/routing/routes";
+import { onboardingRoutingHandler } from "./utils/routing/handlers/onboarding.routing-handler";
 
 const publicRoutes = ["/login"];
 
 export async function middleware(request: NextRequest) {
   const session = await getSession();
+  const requestedPathname = request.nextUrl.pathname;
 
-  console.log("session", session);
-
-  if (publicRoutes.includes(request.nextUrl.pathname)) {
+  if (publicRoutes.includes(requestedPathname)) {
     return NextResponse.next();
   }
 
   if (!session || !session.profile) {
-    const loginUrl = new URL("/login", request.nextUrl);
+    const loginUrl = new URL(Routes.Login, request.nextUrl);
     return NextResponse.redirect(loginUrl);
   }
 
-  const profile = session.profile;
-  const onboardingStatusToPath = computeOnboardingPath(profile.onboardingStatus);
+  console.log({ requestedPathname });
 
-  if (request.nextUrl.pathname === onboardingStatusToPath) {
-    return NextResponse.next();
-  }
-
-  if (profile.onboardingStatus !== "COMPLETED") {
-    console.log("onboardingStatus", { onboardingStatus: onboardingStatusToPath, profile });
-    const onboarding = new URL(onboardingStatusToPath, request.nextUrl);
-    return NextResponse.redirect(onboarding);
+  if (requestedPathname.startsWith("onboarding") || session.profile.onboardingStatus !== "COMPLETED") {
+    return onboardingRoutingHandler({ request, session });
   }
 
   return NextResponse.next();

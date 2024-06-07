@@ -2,30 +2,25 @@
 import { PlusIcon } from "@radix-ui/react-icons";
 import { Button, Flex, Grid, Heading, Text } from "@radix-ui/themes";
 import Link from "next/link";
+import { useMyEvents } from "~/modules/events/events.context";
 import { EventCard } from "~/modules/events/shared/components/event-card";
-import { api } from "~/trpc/provider";
 
 export function UpcomingEvents() {
-  const { data: events, isLoading, error } = api.event.all.useQuery();
-
-  if (error) {
-    return <p>Error: {error.message}</p>;
-  }
+  const { events } = useMyEvents();
 
   return (
-    <Flex direction="column" gap="6">
+    <Flex direction="column" gap="6" width="100%">
       <Heading size="6">Upcoming Events</Heading>
       {(events?.length ?? 0) > 0 && (
         <Grid
+          width="100%"
           columns={{
             initial: "1",
             md: "2",
-            lg: "3",
-            xl: "4",
           }}
           gap="6">
           {events?.slice(0, 3).map((event) => (
-            <Flex minWidth="450px">
+            <Flex minWidth="350px">
               <EventCard key={event.identifier} event={event} />
             </Flex>
           ))}

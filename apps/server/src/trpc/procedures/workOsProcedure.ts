@@ -1,15 +1,12 @@
-import { ProfileRole } from "@prisma/client";
 import { TRPCError } from "@trpc/server";
-import { SessionWithOrg } from "../../types/types";
-import { t } from "../context";
-// Javascript Object Signing and Encryption (JOSE)
-// https://www.npmjs.com/package/jose
 import WorkOS from "@workos-inc/node";
 import { Request } from "express";
 import { unsealData } from "iron-session";
 import { createRemoteJWKSet, jwtVerify } from "jose";
-import { PlaventiSession } from "../../modules/auth/auth.controller";
 import { environment } from "../../environment";
+import { PlaventiSession } from "../../modules/auth/auth.controller";
+import { SessionWithOrg } from "../../types/types";
+import { t } from "../context";
 
 const workos = new WorkOS(environment.WORKOS_API_KEY);
 
@@ -52,7 +49,7 @@ const hasValidSession = t.middleware(async ({ ctx, next }) => {
 
   // If the session is valid, move on to the next function
   if (!hasValidSession) {
-    throw new TRPCError({ code: "UNAUTHORIZED", message: "Session is invalid" });
+    throw new TRPCError({ code: "UNAUTHORIZED", message: "Session is invalid pal" });
   }
 
   return next({
@@ -75,14 +72,14 @@ const hasValidSessionWithOrg = t.middleware(async ({ ctx, next }) => {
   const hasValidSession = await verifyAccessToken(session.accessToken);
 
   // If the session is valid, move on to the next function
-  if (!hasValidSession || !session.organisationId || !session.profile) {
-    throw new TRPCError({ code: "UNAUTHORIZED", message: "Session is invalid" });
+  if (!hasValidSession || !session.profile || !session.profile.team) {
+    throw new TRPCError({ code: "UNAUTHORIZED", message: "Session is invalid mate" });
   }
 
   const sessionWithOrg: SessionWithOrg = {
     ...session,
-    organisationId: session.organisationId,
     profile: session.profile,
+    team: session.profile.team,
   };
 
   return next({

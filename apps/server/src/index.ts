@@ -15,7 +15,6 @@ import { initEnv } from "./environment";
 import { createContext } from "./trpc/context";
 import { openApiDocument } from "./trpc/openapi";
 import { appRouter } from "./trpc/routers/root";
-import { SessionWithOrg } from "./types/types";
 
 declare global {
   namespace Express {

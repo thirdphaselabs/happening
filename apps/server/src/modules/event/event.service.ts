@@ -1,6 +1,4 @@
-import { PlaventiSession } from "../auth/auth.controller";
-import { AuthWithOrg, SessionWithOrg } from "../../types/types";
-import { CreateEventDTO } from "./dto/create-event.dto";
+import { SessionWithOrg } from "../../types/types";
 import { EventDTO } from "./dto/event.dto";
 import { GetEventDTO } from "./dto/get-event.dto";
 import { UpdateEventDTO } from "./dto/update-event.dto";
@@ -25,8 +23,9 @@ export class EventService {
     return this.eventPersistence.getByIdentifier(auth, args);
   }
 
-  create(auth: SessionWithOrg, args: Omit<EventDTO, "identifier">): Promise<PlaventiEvent> {
-    const identifier = args.title.toLowerCase().replace(/ /g, "-");
+  async create(auth: SessionWithOrg, args: Omit<EventDTO, "identifier">): Promise<PlaventiEvent> {
+    const identifier = await this.createUniqueIdentifier(args.title, 0);
+
     return this.createEvent.execute(auth, {
       ...args,
       identifier,
@@ -35,5 +34,18 @@ export class EventService {
 
   update(auth: SessionWithOrg, args: UpdateEventDTO) {
     return this.eventPersistence.update(auth, args);
+  }
+
+  private async createUniqueIdentifier(eventTitle: string, attempt = 0): Promise<string> {
+    if (attempt === 5) {
+      throw new Error("Max attempts reached creating unique identifer");
+    }
+    const identifier = `${eventTitle.toLowerCase().replace(/ /g, "-")}${attempt !== 0 ? attempt : ""}`;
+    const isIdentifierInUse = await this.eventPersistence.isIdentifierInUse(identifier);
+    if (isIdentifierInUse) {
+      return this.createUniqueIdentifier(identifier, attempt + 1);
+    }
+
+    return identifier;
   }
 }

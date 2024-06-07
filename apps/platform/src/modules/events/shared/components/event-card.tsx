@@ -1,17 +1,16 @@
-import { Flex, Card, Heading, IconButton, Tooltip, Text } from "@radix-ui/themes";
-import { PlaventiEvent } from "~/trpc/types";
-import { EventStatusBadge } from "./event-status-badge";
-import Image from "next/image";
-import placeholder from "~/assets/invited-placeholder.png";
-import { ArrowRightIcon, GlobeIcon, PersonIcon, SewingPinIcon } from "@radix-ui/react-icons";
-import Link from "next/link";
 import { Button } from "@plaventi/ui";
+import { ArrowRightIcon, GlobeIcon, PersonIcon, SewingPinIcon } from "@radix-ui/react-icons";
+import { Badge, Flex, Heading, IconButton, Text, Tooltip } from "@radix-ui/themes";
+import Image from "next/image";
+import Link from "next/link";
+import placeholder from "~/assets/invited-placeholder.png";
+import { PlaventiEvent } from "~/trpc/types";
 
 export function EventCard({ event }: { event: PlaventiEvent }) {
   return (
     <Flex className="w-full">
       <Link href={`/events/details/${event.identifier}`} className="w-full">
-        <Flex className="rounded-xl bg-white px-4 py-3">
+        <Flex className="hover:border-grayA4 rounded-xl border-[1px] border-solid border-white/50 bg-white/50 p-3 pl-4 transition duration-200 ease-in-out hover:shadow-sm">
           <Flex justify="between" className="w-full">
             <Flex direction="column" gap="2">
               <Flex align="center" gap="1">
@@ -28,19 +27,26 @@ export function EventCard({ event }: { event: PlaventiEvent }) {
                 {event.title}
               </Heading>
 
-              <Flex align="center" gap="1">
-                <SewingPinIcon color="gray" />
-                <Text color="gray" size="3">
-                  Manchester
-                </Text>
+              <Flex direction="column" gap="1">
+                <Flex align="center" gap="1" mt="2px">
+                  <Flex width="20px">
+                    <SewingPinIcon color="gray" height="16" width="16" className="text-gray9" />
+                  </Flex>
+                  <Text color="gray" size="3" className="text-gray9 tracking-tight">
+                    Manchester
+                  </Text>
+                </Flex>
+                <Flex align="center" gap="1">
+                  <Flex width="20px">
+                    <PersonIcon color="gray" height="16" width="16" className="text-gray9" />
+                  </Flex>
+                  <Text color="gray" size="3" className="text-gray9 tracking-tight">
+                    No guests
+                  </Text>
+                </Flex>
               </Flex>
-              <Flex align="center" gap="1">
-                <PersonIcon color="gray" />
-                <Text color="gray" size="3">
-                  No guests
-                </Text>
-              </Flex>
-              <Button mt="2" variant="soft" color="gray">
+
+              <Button variant="soft" color="gray" mt="1">
                 Manage Event
                 <ArrowRightIcon />
               </Button>

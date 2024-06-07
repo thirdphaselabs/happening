@@ -1,36 +1,33 @@
 import { prisma } from "@plaventi/database";
 import { PlaventiSession } from "../auth/auth.controller";
+import {
+  HasAlreadyCreatedTeamError,
+  FailedToCreateTeamError,
+  FailedToCreateWorkOSOrganizationError,
+  FailedToCreateWorkOSOrganizationMembershipError,
+} from "./errors/team.errors";
 
 import { DomainDataState, Organization, WorkOS } from "@workos-inc/node";
 
 const workos = new WorkOS(process.env.WORKOS_API_KEY);
 
-export class HasAlreadyCreatedTeamError extends Error {
-  constructor() {
-    super("User has already created a team");
-  }
-}
-
-export class FailedToCreateWorkOSOrganizationError extends Error {
-  constructor() {
-    super("Failed to create WorkOS organization");
-  }
-}
-
-export class FailedToCreateWorkOSOrganizationMembershipError extends Error {
-  constructor() {
-    super("Failed to create WorkOS organization membership");
-  }
-}
-
-export class FailedToCreateTeamError extends Error {
-  constructor() {
-    super("Failed to create team");
-  }
-}
-
 export class TeamService {
   async getTeam(teamId: string) {}
+
+  async sendInviteToTeam(session: PlaventiSession, workosOrganisationId: string, emails: string[]) {
+    for (const email of emails) {
+      try {
+        await workos.userManagement.sendInvitation({
+          email,
+          organizationId: workosOrganisationId,
+          inviterUserId: session.user.id,
+          roleSlug: "member",
+        });
+      } catch (error) {
+        console.error(error);
+      }
+    }
+  }
 
   async hasUserCreatedTeam(session: PlaventiSession) {
     const updateCount = await prisma.profile.updateMany({

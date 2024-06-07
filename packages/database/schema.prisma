@@ -23,8 +23,8 @@ enum OnboardingStatus {
 
 model Profile {
   id        String      @id @default(cuid())
-  firstName String?
-  lastName  String?
+  firstName String
+  lastName  String
   userRole  ProfileRole 
   workosId   String   @unique
   createdAt DateTime @default(now())
@@ -68,7 +68,7 @@ enum EventVisibility {
 model Event {
   id        String   @id @default(cuid())
   identifier String   @unique
-  title     String   @unique
+  title     String
   description String
   status   EventStatus 
   coverImageUrl String?

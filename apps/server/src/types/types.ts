@@ -1,4 +1,4 @@
-import { Profile } from "@prisma/client";
+import { Profile, Team } from "@prisma/client";
 import { Impersonator, User } from "@workos-inc/node";
 
 export type UserId = string;
@@ -19,6 +19,6 @@ export type SessionWithOrg = {
   refreshToken: string;
   user: User;
   profile: Profile;
+  team: Team;
   impersonator: Impersonator | undefined;
-  organisationId: string;
 };

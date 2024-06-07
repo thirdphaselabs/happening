@@ -31,7 +31,9 @@ export class OnboardingService {
         });
       }
 
-      const organisation = await this.teamService.getTeam(auth.organisationId);
+      const emails = input.invites.map((invite) => invite.email);
+
+      await this.teamService.sendInviteToTeam(auth, auth.organisationId, emails);
 
       await this.completeOnboarding(auth);
 
