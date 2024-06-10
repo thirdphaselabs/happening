@@ -1,8 +1,20 @@
 "use client";
 
-import { Button } from "@plaventi/ui";
-import { Pencil1Icon } from "@radix-ui/react-icons";
-import { Flex, Heading, Inset } from "@radix-ui/themes";
+import { Button, Separator } from "@plaventi/ui";
+import { ArrowTopRightIcon, GlobeIcon, Pencil1Icon } from "@radix-ui/react-icons";
+import {
+  Box,
+  Container,
+  Flex,
+  Heading,
+  IconButton,
+  Inset,
+  Link,
+  SegmentedControl,
+  Tabs,
+  Tooltip,
+  Text,
+} from "@radix-ui/themes";
 import { api } from "~/trpc/provider";
 import { EditEventDialog } from "./components/edit-event-dialog";
 import Image from "next/image";
@@ -20,28 +32,8 @@ export function EventDetails({ identifier }: { identifier: string }) {
   }
 
   return (
-    <>
-      <Inset>
-        <Flex>
-          <Image src={blackCoffee} alt="Event Image" width={200} height={200} />
-        </Flex>
-      </Inset>
-      <Flex direction="column">
-        <Flex>
-          <Heading>Event Details</Heading>
-
-          <EditEventDialog
-            event={event}
-            trigger={
-              <Button>
-                <Pencil1Icon /> Edit
-              </Button>
-            }
-          />
-        </Flex>
-        <p>{event.title}</p>
-        <p>{event.description}</p>
-      </Flex>
-    </>
+    <Flex direction="column" gap="6" mt="6" className="w-full">
+      Ovew
+    </Flex>
   );
 }

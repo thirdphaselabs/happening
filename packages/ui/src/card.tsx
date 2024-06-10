@@ -70,7 +70,7 @@ const CardActions: React.FC<CardActionsProps> = ({ children, identifier }) => {
           </IconButton>
         </DropdownMenu.Trigger>
         <DropdownMenu.Content>
-          <DropdownMenu.Item shortcut="⌘ E" onClick={() => router.push(`/events/details/${identifier}`)}>
+          <DropdownMenu.Item shortcut="⌘ E" onClick={() => router.push(`/events/${identifier}`)}>
             Edit
           </DropdownMenu.Item>
           <DropdownMenu.Item shortcut="⌘ D">Duplicate</DropdownMenu.Item>

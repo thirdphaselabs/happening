@@ -47,7 +47,7 @@ export function Events() {
   return (
     <Flex direction="column" gap="6" mt="6">
       <Flex className="w-full" justify="between" align="center">
-        <Heading size="7">Events</Heading>
+        <Heading size="8">Events</Heading>
         <Flex gap="4">
           <SegmentedControl.Root
             value={category}
@@ -85,7 +85,7 @@ export function Events() {
               </Flex>
             </Flex>
           ))}
-      {events.length === 0 && <EmptyState category={category} />}
+      {eventsByCategory.length === 0 && <EmptyState category={category} />}
     </Flex>
   );
 }

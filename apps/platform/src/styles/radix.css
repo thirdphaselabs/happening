@@ -9,7 +9,7 @@
   --font-weight-bold: 600;
 
   --container-1: 448px;
-  --container-2: 820px;
+  --container-2: 800px;
   --container-3: 960px;
   --container-4: 1800px;
 
@@ -117,4 +117,8 @@
 
 .timezone-select .rt-ScrollAreaScrollbar {
   display: none;
+}
+
+.rt-BaseTabList {
+  box-shadow: none;
 }

@@ -1,5 +1,5 @@
 import type { Config } from "tailwindcss";
-import { gray, grayA, sky, skyA } from "@plaventi/ui/src/colours";
+import { gray, grayA, sky, skyA, gold, goldA, iris, irisA, green, greenA } from "@plaventi/ui/src/colours";
 
 const config = {
   darkMode: ["class"],
@@ -49,6 +49,12 @@ const config = {
         ...grayA,
         ...sky,
         ...skyA,
+        ...gold,
+        ...goldA,
+        ...iris,
+        ...irisA,
+        ...green,
+        ...greenA,
         border: "hsl(var(--border))",
         input: "hsl(var(--input))",
         ring: "hsl(var(--ring))",

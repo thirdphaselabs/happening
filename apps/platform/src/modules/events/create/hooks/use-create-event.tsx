@@ -10,7 +10,7 @@ export function useCreateEvent() {
   const router = useRouter();
   const { mutateAsync, isLoading, error } = api.event.create.useMutation({
     onSuccess: ({ identifier }) => {
-      router.push(`/events/details/${identifier}`);
+      router.push(`/events/${identifier}`);
       toast.custom((id) => (
         <NotificationCallout toastId={id} message="Event has been created" type="success" />
       ));

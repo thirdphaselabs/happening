@@ -23,3 +23,7 @@ export function computeOnboardingPath(onboardingStep: OnboardingStatus) {
       return Routes.Dashboard;
   }
 }
+
+export function isString(value: unknown): value is string {
+  return typeof value === "string";
+}

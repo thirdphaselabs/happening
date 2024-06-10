@@ -9,7 +9,7 @@ import { PlaventiEvent } from "~/trpc/types";
 export function EventCard({ event }: { event: PlaventiEvent }) {
   return (
     <Flex className="w-full">
-      <Link href={`/events/details/${event.identifier}`} className="w-full">
+      <Link href={`/events/${event.identifier}/overview`} className="w-full">
         <Flex className="hover:border-grayA4 rounded-xl border-[1px] border-solid border-white/50 bg-white/50 p-3 pl-4 transition duration-200 ease-in-out hover:shadow-sm">
           <Flex justify="between" className="w-full">
             <Flex direction="column" gap="2">
