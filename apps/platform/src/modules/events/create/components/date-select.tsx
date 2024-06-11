@@ -6,43 +6,41 @@ import { Calendar } from "~/components/ui/calendar";
 import { useEventBuilderContext } from "../context/event-builder.context";
 import { TextFieldInput } from "@plaventi/ui";
 
-export function DateSelect({ date }: { date: "start" | "end" }) {
+export function DateSelect({
+  date,
+  variant = "surface",
+  defaultValue,
+  onSelect,
+}: {
+  variant?: "surface" | "soft";
+  defaultValue?: Date;
+  date: "start" | "end";
+  onSelect: (val: Date | undefined) => void;
+}) {
   const [endDateOpen, setEndDateOpen] = useState(false);
-  const { setDateAndTime, dateAndTime } = useEventBuilderContext();
-
-  const dateValue = date === "start" ? dateAndTime?.startDate : dateAndTime?.endDate;
 
   return (
     <Popover.Root open={endDateOpen} onOpenChange={(val) => setEndDateOpen(val)}>
       <Popover.Trigger>
-        <Button
-          style={{ all: "unset" }}
-          variant="surface"
-          size="2"
-          color="gray"
-          className="w-full justify-start">
+        <button
+          style={{ all: "unset", flexGrow: 1, display: "flex", width: "100%" }}
+          className="flex w-full flex-grow justify-start">
           <TextFieldInput
-            value={dateValue ? formatDate(dateValue, "EEE, d MMM") : formatDate(new Date(), "EEE, d MMM")}
-            variant="soft"
+            value={
+              defaultValue ? formatDate(defaultValue, "EEE, d MMM") : formatDate(new Date(), "EEE, d MMM")
+            }
+            variant={variant}
             color="gray"
-            size="2"
             className="flex-grow text-[16px]"
           />
-        </Button>
+        </button>
       </Popover.Trigger>
       <Popover.Content side="top" align="start" className="w-max min-w-max p-0">
         <Calendar
           style={{ accentColor: "#21bce2" }}
           mode="single"
-          selected={dateAndTime?.endDate}
-          onSelect={(val) => {
-            if (date === "start") {
-              setDateAndTime({ startDate: val });
-            } else {
-              setDateAndTime({ endDate: val });
-            }
-            setEndDateOpen(false);
-          }}
+          selected={defaultValue}
+          onSelect={(val) => onSelect(val)}
           className="max-w-sm"
         />
       </Popover.Content>

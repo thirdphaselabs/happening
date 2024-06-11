@@ -8,7 +8,7 @@ import { setCurrentStageActionHandler } from "./action-handlers/private/set-curr
 
 import { setLocationDetailsActionHandler } from "./action-handlers/public/set-location-details.action-handler";
 import { setAdditionalInformationActionHandler } from "./action-handlers/public/set-additional-information.action-handler";
-import { setTicketPriceActionHandler } from "./action-handlers/public/add-ticket-group.action-handler";
+import { editTicketTypeActionHandler } from "./action-handlers/public/edit-ticket-type.action-handler";
 import { setDateAndTimeActionHandler } from "./action-handlers/public/set-date-and-time.action-handler";
 
 export function eventBuilderReducer(state: EventBuilderState, action: EventBuilderAction): EventBuilderState {
@@ -29,8 +29,8 @@ export function eventBuilderReducer(state: EventBuilderState, action: EventBuild
       return setLocationDetailsActionHandler(state, action);
     case "SET_ADDITIONAL_INFORMATION":
       return setAdditionalInformationActionHandler(state, action);
-    case "SET_TICKET_PRICE":
-      return setTicketPriceActionHandler(state, action);
+    case "EDIT_TICKET_TYPE":
+      return editTicketTypeActionHandler(state, action);
     default:
       return state;
   }

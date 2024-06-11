@@ -14,7 +14,7 @@ import {
   Tickets,
 } from "./types/types";
 import {
-  SetTicketPrice,
+  EditTicketType,
   EventBuilderAction,
   RemoveTicketGroupAction,
   SetDateAndTimeAction,
@@ -27,7 +27,7 @@ import { useSetIsLoading } from "./dispatchers/set-is-loading.dispatcher";
 import { useSetDateAndTime } from "./dispatchers/set-date-and-time.dispatcher";
 import { useSetLocationDetails } from "./dispatchers/set-location-details.dispatcher";
 import { useSetAdditionalInformation } from "./dispatchers/set-additional-information.dispatcher";
-import { useAddTicketGroup } from "./dispatchers/add-ticket-group.dispatcher";
+import { useEditTicketType } from "./dispatchers/edit-ticket-type.dispatcher";
 import { useRemoveTicketGroup } from "./dispatchers/remove-ticket-group.dispatcher";
 import { api } from "~/trpc/provider";
 import { useRouter } from "next/navigation";
@@ -62,7 +62,7 @@ type EventBuilderContextValue = {
   setLocationDetails: (locationDetails: SetLocationDetailsAction["payload"]) => void;
   setDateAndTime: (dateAndTime: SetDateAndTimeAction["payload"]) => void;
   setAdditionalInformation: (additionalInformation: setAdditionalInformationAction["payload"]) => void;
-  setTicketPrice: (args: SetTicketPrice["payload"]) => void;
+  editTicketType: (args: EditTicketType["payload"]) => void;
   removeTicketGroup: (args: RemoveTicketGroupAction["payload"]) => void;
   setIsLoading: (args: SetIsLoadingAction["payload"]) => void;
   createEvent: () => void;
@@ -101,9 +101,16 @@ export function EventBuilderContextProvider({ children }: EventBuilderContextPro
     locationDetails: null,
     additionalInformation: null,
     tickets: {
-      status: "incomplete",
-      type: "free",
-      price: null,
+      ticketTypes: [
+        {
+          id: "1",
+          name: "ctava",
+          price: null,
+          requiresApproval: false,
+          ticketCapacity: null,
+          lastUpdated: new Date(),
+        },
+      ],
     },
   };
 
@@ -116,7 +123,7 @@ export function EventBuilderContextProvider({ children }: EventBuilderContextPro
   const setDateAndTime = useSetDateAndTime(dispatch);
   const setLocationDetails = useSetLocationDetails(dispatch);
   const setAdditionalInformation = useSetAdditionalInformation(dispatch);
-  const setTicketPrice = useAddTicketGroup(dispatch);
+  const editTicketType = useEditTicketType(dispatch);
   const removeTicketGroup = useRemoveTicketGroup(dispatch);
   const setIsLoading = useSetIsLoading(dispatch);
   // useRouteListener(state, dispatch);
@@ -161,8 +168,8 @@ export function EventBuilderContextProvider({ children }: EventBuilderContextPro
         },
         status: "DRAFT",
         ticketing: {
-          price: event.tickets?.price ?? null,
-          type: event.tickets?.type === "free" ? "FREE" : "PAID",
+          type: "FREE",
+          price: 0,
         },
         timing: {
           startDate: event.dateAndTime?.startDate ?? new Date(),
@@ -180,6 +187,8 @@ export function EventBuilderContextProvider({ children }: EventBuilderContextPro
     }
   };
 
+  console.log("E=Event Builder state", state);
+
   return (
     <EventBuilderContext.Provider
       value={{
@@ -195,7 +204,7 @@ export function EventBuilderContextProvider({ children }: EventBuilderContextPro
         setLocationDetails,
         setDateAndTime,
         setAdditionalInformation,
-        setTicketPrice,
+        editTicketType,
         removeTicketGroup,
         setIsLoading,
         createEvent,

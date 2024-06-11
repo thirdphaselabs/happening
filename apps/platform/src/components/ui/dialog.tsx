@@ -13,7 +13,7 @@ function DialogTrigger({ children, ...props }: BaseDialog.TriggerProps) {
 
 function DialogContainer({ children, ...props }: BaseDialog.ContentProps) {
   return (
-    <BaseDialog.Content {...props} className={cn("dialog-align-top p-0", props.className)}>
+    <BaseDialog.Content {...props} className={cn("dialog-align-top p-0 md:mt-12", props.className, {})}>
       {children}
     </BaseDialog.Content>
   );
@@ -66,7 +66,7 @@ function DialogActions({
 
 function DialogTitle({ children, ...props }: BaseDialog.TitleProps) {
   return (
-    <Heading size="5" weight="medium" mb="5" {...props}>
+    <Heading size="5" mb="5" {...props}>
       {children}
     </Heading>
   );

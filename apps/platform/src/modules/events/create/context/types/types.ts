@@ -62,10 +62,22 @@ export type FreeTicketGroup = {
   availableTo: Date;
 };
 
-export type Tickets = {
-  type: "free" | "paid";
+export type TicketType = {
+  id: string;
+  name: string;
+  description?: string;
+  requiresApproval: boolean;
   price: number | null;
-  status: SectionStatus;
+  ticketCapacity: number | null;
+  salesStart?: Date;
+  startTime?: string;
+  salesEnd?: Date;
+  endTime?: string;
+  lastUpdated: Date;
+};
+
+export type Tickets = {
+  ticketTypes: Array<TicketType>;
 };
 
 export type EventBuilderStage =

@@ -6,6 +6,7 @@ import {
   CaretDownIcon,
   ImageIcon,
   Pencil2Icon,
+  PlusIcon,
   ReaderIcon,
   SewingPinIcon,
 } from "@radix-ui/react-icons";
@@ -33,11 +34,13 @@ import { useEventBuilderContext } from "../context/event-builder.context";
 import { EventName } from "../components/event-name";
 import { EventDescription } from "../components/event-description";
 import { DateSelect } from "../components/date-select";
-import { AddPaidTicketGroupDialog } from "../components/add-paid-ticket-group-dialog";
+import { EditTicketTypeDialog } from "../components/edit-ticket-type.dialog";
 import { EventLocation } from "../components/event-location";
+import { Tickets } from "../components/tickets";
 
 export function CreateEvent() {
-  const { setEventDetails, eventDetails, createEvent } = useEventBuilderContext();
+  const { setEventDetails, eventDetails, createEvent, setDateAndTime, dateAndTime } =
+    useEventBuilderContext();
   const ref = useRef<HTMLTextAreaElement>(null);
   useTextareaAutoHeight({ ref });
 
@@ -98,13 +101,39 @@ export function CreateEvent() {
             </Flex>
             <Flex direction="column" gap="1">
               <Flex gap="1">
-                <DateSelect date="start" />
+                <DateSelect
+                  variant="soft"
+                  date="start"
+                  defaultValue={dateAndTime?.startDate}
+                  onSelect={(val) => {
+                    setDateAndTime({ startDate: val });
+                  }}
+                />
 
-                <TimeSelect date="start" />
+                <TimeSelect
+                  variant="soft"
+                  date="start"
+                  onSelect={(val) => {
+                    setDateAndTime({ startTime: val });
+                  }}
+                />
               </Flex>
               <Flex gap="1">
-                <DateSelect date="end" />
-                <TimeSelect date="end" />
+                <DateSelect
+                  variant="soft"
+                  date="end"
+                  defaultValue={dateAndTime?.endDate}
+                  onSelect={(val) => {
+                    setDateAndTime({ endDate: val });
+                  }}
+                />
+                <TimeSelect
+                  variant="soft"
+                  date="end"
+                  onSelect={(val) => {
+                    setDateAndTime({ endTime: val });
+                  }}
+                />
               </Flex>
             </Flex>
           </Flex>
@@ -116,17 +145,7 @@ export function CreateEvent() {
           <Heading size="2" color="gray" my="2">
             Additional options
           </Heading>
-          <Flex gap="2" className="bg-skyA2 rounded-xl rounded-b-none px-3 py-2" width="100%">
-            <Flex align="start" className="mt-1">
-              <TicketIcon height="16" width="16" color="gray" />
-            </Flex>
-            <Flex justify="between" width="100%">
-              <Heading size="3" className="flex items-center gap-1 " color="gray" weight="medium">
-                Tickets
-              </Heading>
-              <AddPaidTicketGroupDialog />
-            </Flex>
-          </Flex>
+          <Tickets />
           <Separator orientation="horizontal" className="w-full" />
           <Flex gap="2" className="bg-skyA2  px-3 py-2" width="100%">
             <Flex align="start" className="mt-1">

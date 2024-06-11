@@ -1,5 +1,5 @@
 import { EventBuilderState } from "./event-builder.context";
-import { EventBuilderStage, FreeTicketGroup, PaidTicketGroup } from "./types/types";
+import { EventBuilderStage, FreeTicketGroup, PaidTicketGroup, TicketType } from "./types/types";
 
 export type NextStageAction = {
   type: "NEXT_STAGE";
@@ -21,17 +21,11 @@ export type SetLocationDetailsAction = {
   payload: NonNullable<Partial<EventBuilderState["locationDetails"]>>;
 };
 
-export type SetTicketPrice = {
-  type: "SET_TICKET_PRICE";
-  payload:
-    | {
-        type: "paid";
-        price: number;
-      }
-    | {
-        type: "free";
-        price: null;
-      };
+export type EditTicketType = {
+  type: "EDIT_TICKET_TYPE";
+  payload: {
+    ticketType: TicketType;
+  };
 };
 
 export type RemoveTicketGroupAction = {
@@ -65,7 +59,7 @@ export type EventBuilderAction =
   | SetDateAndTimeAction
   | SetLocationDetailsAction
   | setAdditionalInformationAction
-  | SetTicketPrice
+  | EditTicketType
   | RemoveTicketGroupAction
   | UpdateCurrentStageCompletionAction
   | SetIsLoadingAction

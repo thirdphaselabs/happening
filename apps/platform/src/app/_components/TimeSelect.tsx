@@ -21,7 +21,17 @@ const generateTimeIntervals = () => {
   return intervals;
 };
 
-export function TimeSelect({ date }: { date: "start" | "end" }) {
+export function TimeSelect({
+  date,
+  variant = "surface",
+  defaultValue,
+  onSelect,
+}: {
+  variant?: "soft" | "surface";
+  defaultValue?: string;
+  date: "start" | "end";
+  onSelect: (val: string) => void;
+}) {
   const timeIntervals = generateTimeIntervals();
   const [isOpen, setIsOpen] = React.useState(false);
   const currentHour = new Date().getHours();
@@ -32,21 +42,13 @@ export function TimeSelect({ date }: { date: "start" | "end" }) {
     return hour > currentHour || (hour === currentHour && minute > currentMinute);
   });
 
-  const { setDateAndTime } = useEventBuilderContext();
-
   return (
     <Select.Root
       open={isOpen}
       onOpenChange={(val) => setIsOpen(val)}
-      defaultValue={nearestTime ?? "00:00"}
-      onValueChange={(val) => {
-        if (date === "start") {
-          setDateAndTime({ startTime: val });
-        } else {
-          setDateAndTime({ endTime: val });
-        }
-      }}>
-      <Select.Trigger variant="soft" color="gray" className="w-[82px]" />
+      defaultValue={defaultValue ?? nearestTime ?? "00:00"}
+      onValueChange={onSelect}>
+      <Select.Trigger variant={variant} color="gray" className="w-[90px] text-[16px]" />
       <Select.Content>
         {timeIntervals.map((time) => (
           <Select.Item value={time}>{time}</Select.Item>

@@ -71,6 +71,9 @@ const config = {
       },
     },
     extend: {
+      transitionProperty: {
+        height: "height",
+      },
       colors: {
         ...gray,
         ...grayA,
