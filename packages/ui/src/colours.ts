@@ -7,6 +7,18 @@ import {
   irisA as rIrisA,
   green as rGreen,
   greenA as rGreenA,
+  orange as rOrange,
+  orangeA as rOrangeA,
+  blue as rBlue,
+  blueA as rBlueA,
+  lime as rLime,
+  limeA as rLimeA,
+  cyan as rCyan,
+  cyanA as rCyanA,
+  purple as rPurple,
+  purpleA as rPurpleA,
+  yellow as rYellow,
+  yellowA as rYellowA,
 } from "@radix-ui/colors";
 
 export const sky = {
@@ -157,4 +169,184 @@ export const greenA = {
   greenA10: rGreenA.greenA10,
   greenA11: rGreenA.greenA11,
   greenA12: rGreenA.greenA12,
+};
+
+export const orange = {
+  orange1: rOrange.orange1,
+  orange2: rOrange.orange2,
+  orange3: rOrange.orange3,
+  orange4: rOrange.orange4,
+  orange5: rOrange.orange5,
+  orange6: rOrange.orange6,
+  orange7: rOrange.orange7,
+  orange8: rOrange.orange8,
+  orange9: rOrange.orange9,
+  orange10: rOrange.orange10,
+  orange11: rOrange.orange11,
+  orange12: rOrange.orange12,
+};
+
+export const orangeA = {
+  orangeA1: rOrangeA.orangeA1,
+  orangeA2: rOrangeA.orangeA2,
+  orangeA3: rOrangeA.orangeA3,
+  orangeA4: rOrangeA.orangeA4,
+  orangeA5: rOrangeA.orangeA5,
+  orangeA6: rOrangeA.orangeA6,
+  orangeA7: rOrangeA.orangeA7,
+  orangeA8: rOrangeA.orangeA8,
+  orangeA9: rOrangeA.orangeA9,
+  orangeA10: rOrangeA.orangeA10,
+  orangeA11: rOrangeA.orangeA11,
+  orangeA12: rOrangeA.orangeA12,
+};
+
+export const blue = {
+  blue1: rBlue.blue1,
+  blue2: rBlue.blue2,
+  blue3: rBlue.blue3,
+  blue4: rBlue.blue4,
+  blue5: rBlue.blue5,
+  blue6: rBlue.blue6,
+  blue7: rBlue.blue7,
+  blue8: rBlue.blue8,
+  blue9: rBlue.blue9,
+  blue10: rBlue.blue10,
+  blue11: rBlue.blue11,
+  blue12: rBlue.blue12,
+};
+
+export const blueA = {
+  blueA1: rBlueA.blueA1,
+  blueA2: rBlueA.blueA2,
+  blueA3: rBlueA.blueA3,
+  blueA4: rBlueA.blueA4,
+  blueA5: rBlueA.blueA5,
+  blueA6: rBlueA.blueA6,
+  blueA7: rBlueA.blueA7,
+  blueA8: rBlueA.blueA8,
+  blueA9: rBlueA.blueA9,
+  blueA10: rBlueA.blueA10,
+  blueA11: rBlueA.blueA11,
+  blueA12: rBlueA.blueA12,
+};
+
+export const lime = {
+  lime1: rLime.lime1,
+  lime2: rLime.lime2,
+  lime3: rLime.lime3,
+  lime4: rLime.lime4,
+  lime5: rLime.lime5,
+  lime6: rLime.lime6,
+  lime7: rLime.lime7,
+  lime8: rLime.lime8,
+  lime9: rLime.lime9,
+  lime10: rLime.lime10,
+  lime11: rLime.lime11,
+  lime12: rLime.lime12,
+};
+
+export const limeA = {
+  limeA1: rLimeA.limeA1,
+  limeA2: rLimeA.limeA2,
+  limeA3: rLimeA.limeA3,
+  limeA4: rLimeA.limeA4,
+  limeA5: rLimeA.limeA5,
+  limeA6: rLimeA.limeA6,
+  limeA7: rLimeA.limeA7,
+  limeA8: rLimeA.limeA8,
+  limeA9: rLimeA.limeA9,
+  limeA10: rLimeA.limeA10,
+  limeA11: rLimeA.limeA11,
+  limeA12: rLimeA.limeA12,
+};
+
+export const cyan = {
+  cyan1: rCyan.cyan1,
+  cyan2: rCyan.cyan2,
+  cyan3: rCyan.cyan3,
+  cyan4: rCyan.cyan4,
+  cyan5: rCyan.cyan5,
+  cyan6: rCyan.cyan6,
+  cyan7: rCyan.cyan7,
+  cyan8: rCyan.cyan8,
+  cyan9: rCyan.cyan9,
+  cyan10: rCyan.cyan10,
+  cyan11: rCyan.cyan11,
+  cyan12: rCyan.cyan12,
+};
+
+export const cyanA = {
+  cyanA1: rCyanA.cyanA1,
+  cyanA2: rCyanA.cyanA2,
+  cyanA3: rCyanA.cyanA3,
+  cyanA4: rCyanA.cyanA4,
+  cyanA5: rCyanA.cyanA5,
+  cyanA6: rCyanA.cyanA6,
+  cyanA7: rCyanA.cyanA7,
+  cyanA8: rCyanA.cyanA8,
+  cyanA9: rCyanA.cyanA9,
+  cyanA10: rCyanA.cyanA10,
+  cyanA11: rCyanA.cyanA11,
+  cyanA12: rCyanA.cyanA12,
+};
+
+export const purple = {
+  purple1: rPurple.purple1,
+  purple2: rPurple.purple2,
+  purple3: rPurple.purple3,
+  purple4: rPurple.purple4,
+  purple5: rPurple.purple5,
+  purple6: rPurple.purple6,
+  purple7: rPurple.purple7,
+  purple8: rPurple.purple8,
+  purple9: rPurple.purple9,
+  purple10: rPurple.purple10,
+  purple11: rPurple.purple11,
+  purple12: rPurple.purple12,
+};
+
+export const purpleA = {
+  purpleA1: rPurpleA.purpleA1,
+  purpleA2: rPurpleA.purpleA2,
+  purpleA3: rPurpleA.purpleA3,
+  purpleA4: rPurpleA.purpleA4,
+  purpleA5: rPurpleA.purpleA5,
+  purpleA6: rPurpleA.purpleA6,
+  purpleA7: rPurpleA.purpleA7,
+  purpleA8: rPurpleA.purpleA8,
+  purpleA9: rPurpleA.purpleA9,
+  purpleA10: rPurpleA.purpleA10,
+  purpleA11: rPurpleA.purpleA11,
+  purpleA12: rPurpleA.purpleA12,
+};
+
+export const yellow = {
+  yellow1: rYellow.yellow1,
+  yellow2: rYellow.yellow2,
+  yellow3: rYellow.yellow3,
+  yellow4: rYellow.yellow4,
+  yellow5: rYellow.yellow5,
+  yellow6: rYellow.yellow6,
+  yellow7: rYellow.yellow7,
+  yellow8: rYellow.yellow8,
+  yellow9: rYellow.yellow9,
+  yellow10: rYellow.yellow10,
+  yellow11: rYellow.yellow11,
+  yellow12: rYellow.yellow12,
+};
+
+export const yellowA = {
+  yellowA1: rYellowA.yellowA1,
+  yellowA2: rYellowA.yellowA2,
+  yellowA3: rYellowA.yellowA3,
+  yellowA4: rYellowA.yellowA4,
+  yellowA5: rYellowA.yellowA5,
+  yellowA6: rYellowA.yellowA6,
+  yellowA7: rYellowA.yellowA7,
+  yellowA8: rYellowA.yellowA8,
+  yellowA9: rYellowA.yellowA9,
+  yellowA10: rYellowA.yellowA10,
+  yellowA11: rYellowA.yellowA11,
+  yellowA12: rYellowA.yellowA12,
 };

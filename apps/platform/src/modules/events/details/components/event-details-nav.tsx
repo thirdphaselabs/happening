@@ -12,7 +12,7 @@ export function EventDetailsNav({ identifier }: { identifier: string }) {
   return (
     <Flex direction="column">
       <Container size="2">
-        <TabNav.Root size="2" className="gap-2">
+        <TabNav.Root size="2" className="gap-2" color="gray" highContrast>
           <TabNav.Link
             asChild
             active={pathname === `/events/${identifier}/overview`}

@@ -6,19 +6,29 @@ import {
   ArrowTopRightIcon,
   BarChartIcon,
   ChatBubbleIcon,
+  CheckIcon,
+  Cross2Icon,
   Pencil2Icon,
   PersonIcon,
   PlusCircledIcon,
   PlusIcon,
 } from "@radix-ui/react-icons";
 import { Badge, Box, Flex, Heading, IconButton, Separator, Text } from "@radix-ui/themes";
-import { RiQrScan2Line } from "@remixicon/react";
+import {
+  RiBarChartGroupedLine,
+  RiChat4Line,
+  RiGroupLine,
+  RiMessage2Line,
+  RiQrScan2Line,
+} from "@remixicon/react";
 import { formatDate } from "date-fns";
 import Link from "next/link";
 import { CalendarIcon } from "~/components/icons/Calendar.icon";
 import { LocationIcon } from "~/components/icons/Location.icon";
 import { UserAvatar } from "~/components/user-avatar";
 import { useUser } from "~/modules/auth/user.context";
+import { Card, ProgressBar } from "@tremor/react";
+
 import { useEventDetails } from "../context/event-details.context";
 
 export function EventDetailsOverviewView() {
@@ -34,13 +44,12 @@ export function EventDetailsOverviewView() {
           highContrast
           className="hover:bg-goldA2 hover:border-goldA4 h-fit flex-grow justify-start border-[1px]  border-solid border-transparent bg-white/75 p-2 pr-3 shadow-none">
           <Flex
-            className="rounded p-2"
+            className="rounded-lg p-2"
             style={{
               backgroundColor: "var(--gold-a4)",
             }}>
-            <PersonIcon
-              height="18"
-              width="18"
+            <RiGroupLine
+              xHeight="16"
               style={{
                 color: "var(--gold-a11)",
               }}
@@ -55,13 +64,12 @@ export function EventDetailsOverviewView() {
           highContrast
           className="hover:bg-irisA2 hover:border-irisA4 h-fit flex-grow justify-start border-[1px] border-solid border-transparent bg-white/75 p-2 pr-3  shadow-none">
           <Flex
-            className="rounded p-2"
+            className="rounded-lg p-2"
             style={{
               backgroundColor: "var(--iris-a4)",
             }}>
-            <ChatBubbleIcon
-              height="18"
-              width="18"
+            <RiMessage2Line
+              xHeight="16"
               style={{
                 color: "var(--iris-a11)",
               }}
@@ -76,13 +84,12 @@ export function EventDetailsOverviewView() {
           highContrast
           className="hover:bg-greenA2 hover:border-greenA4 h-fit flex-grow justify-start border-[1px] border-solid border-transparent bg-white/75 p-2 pr-3  shadow-none ">
           <Flex
-            className="rounded p-2"
+            className="rounded-lg p-2"
             style={{
               backgroundColor: "var(--green-a4)",
             }}>
-            <BarChartIcon
-              height="18"
-              width="18"
+            <RiBarChartGroupedLine
+              xHeight="16"
               style={{
                 color: "var(--green-a11)",
               }}
@@ -156,9 +163,43 @@ export function EventDetailsOverviewView() {
       <Flex direction="column" gap="8">
         <Flex direction="column" gap="5">
           <Heading size="6">Guests</Heading>
-          <Box className="bg-grayA4 h-[44px] w-full rounded-xl" />
+          <Flex direction="column" gap="3">
+            <Flex width="100%" justify="between">
+              <Flex align="end" gap="1">
+                <Text size="6" weight="medium" color="green">
+                  1
+                </Text>
+                <Text size="3" color="green">
+                  guest
+                </Text>
+              </Flex>
+              <Flex align="end" gap="1">
+                <Text size="3" className="text-gray8">
+                  cap
+                </Text>
+                <Text size="6" weight="medium" className="text-gray8">
+                  500
+                </Text>
+              </Flex>
+            </Flex>
+            <ProgressBar color="green" value={1} />
+            <Flex width="100%" gap="4">
+              <Flex align="center" gap="2">
+                <Box className="bg-greenA8 rounded-full p-1" />
+                <Text size="2" color="green">
+                  1 Going
+                </Text>
+              </Flex>
+              <Flex align="center" gap="2">
+                <Box className="bg-orangeA8 rounded-full p-1" />
+                <Text size="2" color="orange">
+                  1 Pending Approval
+                </Text>
+              </Flex>
+            </Flex>
+          </Flex>
           <Flex justify="between" gap="3" align="center">
-            <Heading size="5">Recent Registrations</Heading>
+            <Heading size="4">Recent Registrations</Heading>
             <Link href={`/events/${event.identifier}/guests`}>
               <Button variant="soft" color="gray">
                 All Guests
@@ -167,26 +208,57 @@ export function EventDetailsOverviewView() {
             </Link>
           </Flex>
           <Flex
-            className="border-grayA4 gap-3 rounded-xl border-[1px] border-solid bg-white/75 p-3"
+            direction="column"
+            className="border-grayA4 gap-3 rounded-xl border-[1px] border-solid bg-white/75 py-3"
             justify="between">
-            <Flex align="center" gap="3">
-              <UserAvatar user={user} />
-              <Flex align="center" gap="2">
-                <Text size="3" weight="medium">
-                  {user.firstName} {user.lastName}
-                </Text>
-                <Text color="gray" size="3">
-                  {user.email}
+            <Flex width="100%" justify="between" className="px-3">
+              <Flex align="center" gap="3">
+                <UserAvatar user={user} />
+                <Flex align="center" gap="2">
+                  <Text size="3" weight="medium">
+                    {user.firstName} {user.lastName}
+                  </Text>
+                  <Text color="gray" size="3">
+                    {user.email}
+                  </Text>
+                </Flex>
+              </Flex>
+              <Flex align="center" gap="3">
+                <Button variant="ghost" color="green">
+                  <CheckIcon />
+                  Approve
+                </Button>
+                <Button variant="ghost" color="red">
+                  <Cross2Icon />
+                  Decline
+                </Button>
+
+                <Text size="2" color="gray">
+                  {formatDate(new Date(), "d MMM")}
                 </Text>
               </Flex>
             </Flex>
-            <Flex align="center" gap="3">
-              <Badge color="green" size="2" radius="full">
-                Going
-              </Badge>
-              <Text size="2" color="gray">
-                {formatDate(new Date(), "d MMM")}
-              </Text>
+            <Separator orientation="horizontal" className="bg-grayA3 w-full" />
+            <Flex width="100%" justify="between" className="px-3">
+              <Flex align="center" gap="3">
+                <UserAvatar user={user} />
+                <Flex align="center" gap="2">
+                  <Text size="3" weight="medium">
+                    {user.firstName} {user.lastName}
+                  </Text>
+                  <Text color="gray" size="3">
+                    {user.email}
+                  </Text>
+                </Flex>
+              </Flex>
+              <Flex align="center" gap="3">
+                <Badge color="green" size="2" radius="full">
+                  Going
+                </Badge>
+                <Text size="2" color="gray">
+                  {formatDate(new Date(), "d MMM")}
+                </Text>
+              </Flex>
             </Flex>
           </Flex>
         </Flex>

@@ -10,6 +10,8 @@
   },
   "dependencies": {
     "@clerk/nextjs": "^4.29.9",
+    "@headlessui/react": "^2.0.4",
+    "@headlessui/tailwindcss": "^0.2.1",
     "@hookform/resolvers": "^3.4.0",
     "@plaventi/ui": "workspace:*",
     "@radix-ui/colors": "^3.0.0",
@@ -21,6 +23,7 @@
     "@radix-ui/themes": "^3.0.2",
     "@remixicon/react": "^4.2.0",
     "@tanstack/react-query": "^4.18.0",
+    "@tremor/react": "^3.17.2",
     "@trpc/client": "^10.45.2",
     "@trpc/react-query": "^10.45.2",
     "@trpc/server": "^10.45.2",

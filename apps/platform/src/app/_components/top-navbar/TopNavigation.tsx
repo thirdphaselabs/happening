@@ -1,10 +1,21 @@
-import { Button, Separator } from "@plaventi/ui";
+import { Button } from "@plaventi/ui";
 import { BellIcon, CalendarIcon, ChatBubbleIcon, Crosshair1Icon, GridIcon } from "@radix-ui/react-icons";
-import { Avatar, Container, Flex, Popover, IconButton, Link, Text, Tooltip } from "@radix-ui/themes";
+import {
+  Avatar,
+  Container,
+  Flex,
+  Popover,
+  IconButton,
+  Link,
+  Text,
+  Tooltip,
+  Separator as RSeparator,
+} from "@radix-ui/themes";
 import { LogoOnlyBadge } from "../EventsManagerBadge";
 import { UserDropdown } from "../sidebar/user-dropdown/UserDropdown";
 import useNavigation from "../sidebar/_hooks/useNavigation";
 import NavigationItems from "./NavigationItems";
+import { Separator } from "./seperator";
 
 const notificationItems = [
   {
@@ -124,7 +135,7 @@ export function TopNavigation() {
                           </Text>
                         </Flex>
                       </Button>
-                      <Separator orientation="horizontal" className="w-full" />
+                      <RSeparator orientation="horizontal" className="w-full" />
                     </>
                   ))}
                 </Popover.Content>
@@ -162,7 +173,7 @@ export function TopNavigation() {
                           </Text>
                         </Text>
                       </Button>
-                      <Separator orientation="horizontal" className="w-full" />
+                      <RSeparator orientation="horizontal" className="w-full" />
                     </>
                   ))}
                 </Popover.Content>
@@ -175,7 +186,7 @@ export function TopNavigation() {
             className="pointer-events-none bottom-[-18px] left-1/2 top-0 -translate-x-1/2 transform md:left-[130px]">
             <Image src={navGraphic} alt="Plaventi" height={80} />
           </Flex> */}
-          <Separator orientation="horizontal" className="absolute bottom-0 z-50 w-full" />
+          <Separator />
         </Flex>
       </Flex>
     </>

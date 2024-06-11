@@ -1,7 +1,13 @@
+import { Flex } from "@radix-ui/themes";
+import { EmptyState } from "~/components/empty-state";
+
 export function EventDetailsChatView() {
   return (
-    <div>
-      <h1>Chat</h1>
-    </div>
+    <Flex>
+      <EmptyState
+        title="Event Chat Coming Soon"
+        description="We're working on building out this page. Check back soon."
+      />
+    </Flex>
   );
 }

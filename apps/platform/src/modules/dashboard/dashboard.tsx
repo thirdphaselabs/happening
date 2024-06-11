@@ -46,9 +46,9 @@ const stats: Array<Stat> = [
 
 export function Dashboard({ user }: { user: Session["user"] }) {
   return (
-    <Flex direction="column" gap="6" pb="6">
+    <Flex direction="column" gap="6" pb="6" mt="6">
       <Flex className="w-full" justify="between" align="center">
-        <Heading weight="bold" size="7">
+        <Heading weight="bold" size="8">
           Welcome, {user.firstName}
         </Heading>
         <Flex gap="4">
@@ -61,8 +61,7 @@ export function Dashboard({ user }: { user: Session["user"] }) {
         </Flex>
       </Flex>
 
-      <Separator orientation="horizontal" />
-      <Flex gap="4" wrap="wrap" className="w-full">
+      <Flex gap="4" wrap="wrap" className="mt-4 w-full">
         {stats.map((stat) => (
           <DashboardStat key={stat.title} {...stat} />
         ))}
