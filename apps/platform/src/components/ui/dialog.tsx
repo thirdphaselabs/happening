@@ -1,3 +1,4 @@
+import { Separator } from "@plaventi/ui";
 import { Cross2Icon } from "@radix-ui/react-icons";
 import { Button, Dialog as BaseDialog, Flex, IconButton, Box, Heading } from "@radix-ui/themes";
 import { cn } from "~/lib/utils";
@@ -12,26 +13,52 @@ function DialogTrigger({ children, ...props }: BaseDialog.TriggerProps) {
 
 function DialogContainer({ children, ...props }: BaseDialog.ContentProps) {
   return (
-    <BaseDialog.Content {...props} className="dialog-align-top p-0">
+    <BaseDialog.Content {...props} className={cn("dialog-align-top p-0", props.className)}>
       {children}
     </BaseDialog.Content>
   );
 }
 
 function DialogContent({ children, className }: { children: React.ReactNode; className?: string }) {
-  return <Box className={cn("w-full px-6 pb-6 pt-6", className)}>{children}</Box>;
+  return <Box className={cn("w-full px-5 pb-3 pt-3", className)}>{children}</Box>;
 }
 
-function DialogHeader({ isSubmitButtonDisabled }: { isSubmitButtonDisabled: boolean }) {
+function DialogHeader({
+  header,
+  isSubmitButtonDisabled,
+}: {
+  header: string;
+  isSubmitButtonDisabled: boolean;
+}) {
   return (
-    <Flex justify="between" align="center" px="6" pt="4">
-      <DialogClose>
-        <IconButton color="gray" variant="ghost" highContrast size="3" type="button">
-          <Cross2Icon />
-        </IconButton>
-      </DialogClose>
-      <Button type="submit" disabled={isSubmitButtonDisabled}>
-        Done
+    <Flex direction="column" gap="3">
+      <Flex justify="between" align="center" px="5" pt="3">
+        <Dialog.Title mb="0">{header}</Dialog.Title>
+        <DialogClose>
+          <IconButton color="gray" variant="ghost" size="3" type="button">
+            <Cross2Icon />
+          </IconButton>
+        </DialogClose>
+        {/* <Button type="submit" disabled={isSubmitButtonDisabled}>
+          Done
+        </Button> */}
+      </Flex>
+      <Separator orientation="horizontal" className="w-full" />
+    </Flex>
+  );
+}
+
+function DialogActions({
+  isSubmitButtonDisabled,
+  submitText,
+}: {
+  isSubmitButtonDisabled: boolean;
+  submitText?: string;
+}) {
+  return (
+    <Flex justify="end" width="100%">
+      <Button type="submit" disabled={isSubmitButtonDisabled} size="2">
+        {submitText ?? "Done"}
       </Button>
     </Flex>
   );
@@ -39,7 +66,7 @@ function DialogHeader({ isSubmitButtonDisabled }: { isSubmitButtonDisabled: bool
 
 function DialogTitle({ children, ...props }: BaseDialog.TitleProps) {
   return (
-    <Heading {...props} size="5" weight="medium" mb="5">
+    <Heading size="5" weight="medium" mb="5" {...props}>
       {children}
     </Heading>
   );
@@ -55,6 +82,7 @@ export const Dialog = {
   Container: DialogContainer,
   Content: DialogContent,
   Header: DialogHeader,
+  Actions: DialogActions,
   Title: DialogTitle,
   Close: DialogClose,
 };

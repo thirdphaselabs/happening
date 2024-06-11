@@ -34,6 +34,7 @@ import { EventName } from "../components/event-name";
 import { EventDescription } from "../components/event-description";
 import { DateSelect } from "../components/date-select";
 import { AddPaidTicketGroupDialog } from "../components/add-paid-ticket-group-dialog";
+import { EventLocation } from "../components/event-location";
 
 export function CreateEvent() {
   const { setEventDetails, eventDetails, createEvent } = useEventBuilderContext();
@@ -109,19 +110,7 @@ export function CreateEvent() {
           </Flex>
           <TimezoneSelect />
         </Flex>
-        <Flex gap="2" className="bg-skyA2 rounded-xl px-3 py-2" width="100%">
-          <Flex align="start" className="mt-1">
-            <SewingPinIcon height="16" width="16" color="gray" />
-          </Flex>
-          <Flex direction="column">
-            <Heading size="3" className="flex items-center gap-1 " color="gray" weight="medium">
-              Add Event Location
-            </Heading>
-            <Text color="gray" size="2">
-              Real world location or virtual link.
-            </Text>
-          </Flex>
-        </Flex>
+        <EventLocation />
         <EventDescription />
         <Flex direction="column">
           <Heading size="2" color="gray" my="2">

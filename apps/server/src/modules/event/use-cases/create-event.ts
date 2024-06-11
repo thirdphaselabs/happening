@@ -1,5 +1,4 @@
-import { AuthWithOrg, SessionWithOrg } from "../../../types/types";
-import { CreateEventDTO } from "../dto/create-event.dto";
+import { SessionWithOrg } from "../../../types/types";
 import { EventDTO } from "../dto/event.dto";
 import { EventPersistence } from "../event.persistence";
 

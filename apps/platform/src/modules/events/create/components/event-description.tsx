@@ -1,27 +1,16 @@
 "use client";
 
 import { zodResolver } from "@hookform/resolvers/zod";
-import {
-  Button,
-  TextFieldError,
-  TextFieldInput,
-  TextFieldLabel,
-  TextFieldLabelContainer,
-  TextFieldRoot,
-  TextFieldSlot,
-} from "@plaventi/ui";
-import { CalendarIcon, ReaderIcon } from "@radix-ui/react-icons";
-import { Flex, Heading, Popover, Button as RButton, Reset, Text, TextArea } from "@radix-ui/themes";
-import { format } from "date-fns";
+import { Button, TextFieldRoot } from "@plaventi/ui";
+import { ReaderIcon } from "@radix-ui/react-icons";
+import { Flex, Heading, Text, TextArea } from "@radix-ui/themes";
 import { useRef, useState } from "react";
 import { useForm } from "react-hook-form";
-import { PiCurrencyDollarSimpleBold } from "react-icons/pi";
 import { z } from "zod";
-import { Calendar } from "~/components/ui/calendar";
-import { Dialog } from "~/components/ui/dialog";
-import { FormControl, FormField, FormItem, FormMessage, FormProvider } from "~/components/ui/form";
-import { useEventBuilderContext } from "../context/event-builder.context";
 import { useTextareaAutoHeight } from "~/app/_hooks/useAutoReszieTextArea";
+import { Dialog } from "~/components/ui/dialog";
+import { FormControl, FormField, FormItem, FormProvider } from "~/components/ui/form";
+import { useEventBuilderContext } from "../context/event-builder.context";
 
 export function EventDescription() {
   const [isOpen, setIsOpen] = useState(false);
@@ -85,12 +74,11 @@ export function EventDescription() {
         </Button>
       </Dialog.Trigger>
 
-      <Dialog.Container>
+      <Dialog.Container className="max-w-[480px]">
         <FormProvider {...form}>
           <form onSubmit={form.handleSubmit(onSubmit)}>
-            <Dialog.Header isSubmitButtonDisabled={false} />
+            <Dialog.Header header="Event Description" isSubmitButtonDisabled={false} />
             <Dialog.Content>
-              <Dialog.Title>Event Description</Dialog.Title>
               <Flex direction="column" gap="4" maxWidth="550px" className="h-fit">
                 <FormField
                   control={form.control}
@@ -107,7 +95,11 @@ export function EventDescription() {
                             rows={12}
                             id="create-event-description"
                             className="text text-wrap rounded-none border-none bg-transparent px-0 text-[40px] font-bold tracking-tight outline-none"
-                            style={{ boxShadow: "none", textIndent: 0, height: "fit-content" }}
+                            style={{
+                              boxShadow: "none",
+                              textIndent: 0,
+                              height: "fit-content",
+                            }}
                             {...field}
                           />
                         </FormControl>
@@ -116,6 +108,7 @@ export function EventDescription() {
                   )}
                 />
               </Flex>
+              <Dialog.Actions isSubmitButtonDisabled={false} />
             </Dialog.Content>
           </form>
         </FormProvider>
