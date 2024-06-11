@@ -1,3 +1,4 @@
+import { cn } from "@plaventi/ui/src/utils/helpers";
 import { Select } from "@radix-ui/themes";
 import React from "react";
 
@@ -20,11 +21,13 @@ const generateTimeIntervals = () => {
 
 export function TimeSelect({
   date,
+  size = "3",
   variant = "surface",
   defaultValue,
   onSelect,
 }: {
   variant?: "soft" | "surface";
+  size?: "2" | "3";
   defaultValue?: string;
   date: "start" | "end";
   onSelect: (val: string) => void;
@@ -43,11 +46,19 @@ export function TimeSelect({
 
   return (
     <Select.Root
+      size={size}
       open={isOpen}
       onOpenChange={(val) => setIsOpen(val)}
       defaultValue={defaultValue ?? nearestTime ?? "00:00"}
       onValueChange={onSelect}>
-      <Select.Trigger variant={variant} color="gray" className="w-[90px] text-[16px]" />
+      <Select.Trigger
+        variant={variant}
+        color="gray"
+        className={cn("text-[16px]", {
+          "w-[110px]": size === "3",
+          "w-[90px]": size === "2",
+        })}
+      />
       <Select.Content>
         {timeIntervals.map((time) => (
           <Select.Item value={time}>{time}</Select.Item>

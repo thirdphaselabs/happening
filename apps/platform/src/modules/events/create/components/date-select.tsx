@@ -10,10 +10,12 @@ export function DateSelect({
   date,
   variant = "surface",
   defaultValue,
+  size = "3",
   onSelect,
 }: {
   variant?: "surface" | "soft";
   defaultValue?: Date;
+  size?: "2" | "3";
   date: "start" | "end";
   onSelect: (val: Date | undefined) => void;
 }) {
@@ -26,6 +28,7 @@ export function DateSelect({
           style={{ all: "unset", flexGrow: 1, display: "flex", width: "100%" }}
           className="flex w-full flex-grow justify-start">
           <TextFieldInput
+            size={size}
             value={
               defaultValue ? formatDate(defaultValue, "EEE, d MMM") : formatDate(new Date(), "EEE, d MMM")
             }

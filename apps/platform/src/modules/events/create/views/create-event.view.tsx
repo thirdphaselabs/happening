@@ -110,6 +110,7 @@ export function CreateEvent() {
             <Flex direction="column" gap="1">
               <Flex gap="1">
                 <DateSelect
+                  size="2"
                   variant="soft"
                   date="start"
                   defaultValue={dateAndTime?.startDate}
@@ -119,6 +120,7 @@ export function CreateEvent() {
                 />
 
                 <TimeSelect
+                  size="2"
                   variant="soft"
                   date="start"
                   defaultValue={dateAndTime?.startTime}
@@ -129,6 +131,7 @@ export function CreateEvent() {
               </Flex>
               <Flex gap="1">
                 <DateSelect
+                  size="2"
                   variant="soft"
                   date="end"
                   defaultValue={dateAndTime?.endDate}
@@ -137,6 +140,7 @@ export function CreateEvent() {
                   }}
                 />
                 <TimeSelect
+                  size="2"
                   variant="soft"
                   date="end"
                   defaultValue={dateAndTime?.endTime}

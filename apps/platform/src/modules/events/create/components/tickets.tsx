@@ -6,15 +6,17 @@ import {
   DotsHorizontalIcon,
   GlobeIcon,
   IdCardIcon,
+  LockOpen1Icon,
   Pencil1Icon,
   PlusIcon,
 } from "@radix-ui/react-icons";
-import { Button, DropdownMenu, Flex, Heading, Popover, Text } from "@radix-ui/themes";
+import { Button, DropdownMenu, Flex, Heading, Popover, Text, Tooltip } from "@radix-ui/themes";
 import { TicketTypeDialog } from "./ticket-type.dialog";
 import { useEventBuilderContext } from "../context/event-builder.context";
 import { TicketType } from "../context/types/types";
 import { useState } from "react";
 import { t } from "@plaventi/server/src/trpc/context";
+import { RiCheckDoubleLine, RiLockLine, RiLockStarLine } from "@remixicon/react";
 
 export function Tickets() {
   const { tickets } = useEventBuilderContext();
@@ -78,25 +80,42 @@ function TicketTypeDropdown({ ticketTypes }: { ticketTypes: TicketType[] }) {
                     setSelectedTicketType(ticketType);
                     setIsDialogOpen(true);
                   }}>
-                  <Flex width="100%" align="start" justify="between" gap="1">
-                    <Flex direction="column" gap="1">
-                      <Heading
-                        size="2"
-                        color="gray"
-                        align="left"
-                        highContrast
-                        className="flex items-center gap-2 text-left">
-                        {ticketType.name}
-                        <Pencil1Icon color="gray" />
-                      </Heading>
-                      <Text
-                        size="2"
-                        align="left"
-                        color="gray"
-                        weight="regular"
-                        className="max-w-[220px] truncate">
-                        {ticketType.description}
-                      </Text>
+                  <Flex width="100%" align="center" justify="between" gap="1">
+                    <Flex gap="2">
+                      <Flex>
+                        {ticketType.requiresApproval ? (
+                          <Flex className="relative">
+                            <Tooltip content="Approval required" className="z-[1000]">
+                              <RiLockLine size={18} color="#162124" />
+                            </Tooltip>
+                          </Flex>
+                        ) : (
+                          <Tooltip content="Approval not required">
+                            <RiCheckDoubleLine size={18} color="#162124" />
+                          </Tooltip>
+                        )}
+                      </Flex>
+                      <Flex direction="column" gap="1" align="start">
+                        <Heading
+                          size="2"
+                          color="gray"
+                          align="left"
+                          highContrast
+                          className="flex items-center gap-2 text-left">
+                          {ticketType.name}
+                          {/* <Pencil1Icon color="gray" /> */}
+                        </Heading>
+                        {ticketType.description && (
+                          <Text
+                            size="2"
+                            align="left"
+                            color="gray"
+                            weight="regular"
+                            className="max-w-[220px] truncate">
+                            {ticketType.description}
+                          </Text>
+                        )}
+                      </Flex>
                     </Flex>
                     <Flex direction="column" align="end">
                       <Text size="2">{ticketType.price ? `$${ticketType.price}` : "Free"}</Text>

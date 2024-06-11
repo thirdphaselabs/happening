@@ -1,9 +1,10 @@
-import React, { ReactNode, memo, useEffect, useState } from "react";
+import React, { ReactNode, memo, use, useEffect, useState } from "react";
 import moment from "moment-timezone";
 import { Avatar, Box, Checkbox, Flex, Popover, ScrollArea, Select, Text, TextArea } from "@radix-ui/themes";
 import { ChatBubbleIcon, ClockIcon, GlobeIcon } from "@radix-ui/react-icons";
 import { Button, TextFieldInput } from "@plaventi/ui";
 import { useEventBuilderContext } from "~/modules/events/create/context/event-builder.context";
+import { cn } from "~/lib/utils";
 
 export function TimezoneSelectInner() {
   const { setDateAndTime } = useEventBuilderContext();
@@ -20,6 +21,8 @@ export function TimezoneSelectInner() {
     return tz.replace("_", " ");
   };
 
+  const usersTimezone = moment.tz.guess();
+
   const tzNames = moment.tz.names();
   const tzData = tzNames.map((tz) => {
     const offset = getTimeZoneOffset(tz);
@@ -27,7 +30,7 @@ export function TimezoneSelectInner() {
     return { tz, offset, name };
   });
 
-  const [selectedTz, setSelectedTz] = useState(tzData[0].tz);
+  const [selectedTz, setSelectedTz] = useState(usersTimezone);
 
   const [search, setSearch] = useState<string | null>(null);
 
@@ -118,11 +121,18 @@ export function TimezoneSelectInner() {
                     if (!search) return true;
                     return tz.name.toLowerCase().includes(search.toLowerCase());
                   })
+                  .sort((a, b) => {
+                    if (a.tz === usersTimezone) return -1;
+
+                    return a.name.localeCompare(b.name);
+                  })
                   .map(({ tz, offset, name }) => (
                     <Button
                       color="gray"
                       variant="surface"
-                      className="hover:bg-skyA3 w-full justify-between gap-4 shadow-none"
+                      className={cn(`hover:bg-skyA3 w-full justify-between gap-4 shadow-none`, {
+                        "bg-skyA6": selectedTz === tz,
+                      })}
                       onClick={() => {
                         setDateAndTime({ timezone: tz });
                         setSelectedTz(tz);

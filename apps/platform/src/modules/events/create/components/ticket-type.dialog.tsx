@@ -19,7 +19,7 @@ import {
   Pencil2Icon,
   PlusIcon,
 } from "@radix-ui/react-icons";
-import { Badge, Flex, SegmentedControl, Switch, Text } from "@radix-ui/themes";
+import { Badge, Flex, SegmentedControl, Switch, Text, TextArea } from "@radix-ui/themes";
 import { ReactNode, useEffect, useMemo, useState } from "react";
 import { useForm } from "react-hook-form";
 import { z } from "zod";
@@ -231,7 +231,7 @@ export function TicketTypeDialog({
                                 <FormMessage />
                               </TextFieldLabelContainer>
                               <FormControl>
-                                <TextFieldInput
+                                <TextArea
                                   size="3"
                                   placeholder="Exclusively for friends & family"
                                   {...field}
@@ -299,6 +299,7 @@ export function TicketTypeDialog({
                       highContrast
                       checked={requiresApproval}
                       onCheckedChange={(val) => {
+                        form.setValue("requiresApproval", val);
                         setRequiresApproval(val);
                       }}
                     />
