@@ -81,7 +81,7 @@ export function EditTicketTypeDialog({ ticketType }: { ticketType: TicketType })
     },
   });
 
-  console.log({ formErrors: form.formState.errors });
+  // console.log({ formErrors: form.formState.errors });
   const [error, setError] = useState<string | null>(null);
 
   const onSubmit = async (values: z.infer<typeof schema>) => {

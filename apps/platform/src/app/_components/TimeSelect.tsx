@@ -1,8 +1,5 @@
-import { Button } from "@plaventi/ui";
 import { Select } from "@radix-ui/themes";
-import { time } from "console";
 import React from "react";
-import { useEventBuilderContext } from "~/modules/events/create/context/event-builder.context";
 
 const generateTimeIntervals = () => {
   const intervals = [];
@@ -41,6 +38,8 @@ export function TimeSelect({
     const [hour, minute] = time.split(":").map(Number);
     return hour > currentHour || (hour === currentHour && minute > currentMinute);
   });
+
+  console.log({ nearestTime, timeIntervals });
 
   return (
     <Select.Root

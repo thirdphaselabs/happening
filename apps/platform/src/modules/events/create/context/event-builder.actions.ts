@@ -18,7 +18,7 @@ export type SetDateAndTimeAction = {
 
 export type SetLocationDetailsAction = {
   type: "SET_LOCATION_DETAILS";
-  payload: NonNullable<Partial<EventBuilderState["locationDetails"]>>;
+  payload: { locationDetails: NonNullable<Partial<EventBuilderState["locationDetails"]>> | undefined };
 };
 
 export type EditTicketType = {

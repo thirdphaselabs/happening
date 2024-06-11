@@ -1,5 +1,3 @@
-export type SectionStatus = "incomplete" | "complete";
-
 export type EventDetails = {
   name?: string;
   description?: string;
@@ -7,7 +5,6 @@ export type EventDetails = {
   date?: string;
   time?: string;
   coverImageUrl?: string;
-  status: SectionStatus;
 };
 
 export type DateAndTime = {
@@ -17,20 +14,18 @@ export type DateAndTime = {
   shouldDisplayEndDate?: boolean;
   startTime?: string;
   endTime?: string;
-  status: SectionStatus;
   timezone?: string;
 };
 
 export type LocationDetails = {
-  venue?: string;
-  address?: string;
-  city?: string;
-  country?: string;
-  postalCode?: string;
-  latitude?: number;
-  longitude?: number;
+  name?: string;
+  formattedAddress?: string;
+  placeId?: string;
+  coordinates?: {
+    lat: number;
+    lng: number;
+  };
   onlineLocationLink?: string;
-  status: SectionStatus;
 };
 
 export type AdditionalInformation = {
@@ -40,7 +35,8 @@ export type AdditionalInformation = {
     id: string;
     label: string;
   }[];
-  status: SectionStatus;
+  capacity?: number;
+  visibility: "public" | "private";
 };
 
 export type PaidTicketGroup = {
@@ -79,11 +75,3 @@ export type TicketType = {
 export type Tickets = {
   ticketTypes: Array<TicketType>;
 };
-
-export type EventBuilderStage =
-  | "details"
-  | "date"
-  | "location"
-  | "additional-information"
-  | "tickets"
-  | "confirmation";

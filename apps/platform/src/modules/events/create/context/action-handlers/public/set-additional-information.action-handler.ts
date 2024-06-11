@@ -17,6 +17,7 @@ export const setAdditionalInformationActionHandler: EventBuilderActionHandler<se
       ...updatedAdditionalInformation,
       status: computeStatus(updatedAdditionalInformation),
       requiresApproval: action.payload.requiresApproval ?? false,
+      visibility: action.payload.visibility ?? "public",
     },
   };
 };

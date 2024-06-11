@@ -5,14 +5,7 @@ import { invariant } from "~/utils/helpers";
 import { useSetEventDetails } from "./dispatchers/set-event-details.dispatcher";
 import { useNextStage } from "./dispatchers/next-stage.dispatcher";
 import { eventBuilderReducer } from "./event-builder.reducer";
-import {
-  AdditionalInformation,
-  DateAndTime,
-  EventBuilderStage,
-  EventDetails,
-  LocationDetails,
-  Tickets,
-} from "./types/types";
+import { AdditionalInformation, DateAndTime, EventDetails, LocationDetails, Tickets } from "./types/types";
 import {
   EditTicketType,
   EventBuilderAction,
@@ -34,12 +27,6 @@ import { useRouter } from "next/navigation";
 
 export type EventBuilderState = {
   isLoading: boolean;
-  stage: {
-    current: EventBuilderStage;
-    isCurrentStageComplete: boolean;
-    previous: EventBuilderStage | null;
-    next: EventBuilderStage | null;
-  };
   eventDetails: EventDetails | null;
   dateAndTime: DateAndTime | null;
   locationDetails: LocationDetails | null;
@@ -51,7 +38,6 @@ export type EventBuilderActionType = EventBuilderAction["type"];
 
 type EventBuilderContextValue = {
   isLoading: EventBuilderState["isLoading"];
-  stage: EventBuilderState["stage"];
   eventDetails: EventBuilderState["eventDetails"];
   dateAndTime: EventBuilderState["dateAndTime"];
   locationDetails: EventBuilderState["locationDetails"];
@@ -95,16 +81,21 @@ type EventBuilderContextProviderProps = {
 export function EventBuilderContextProvider({ children }: EventBuilderContextProviderProps) {
   const initialValues: EventBuilderState = {
     isLoading: false,
-    stage: calculateStage(),
     eventDetails: null,
-    dateAndTime: null,
+    dateAndTime: {
+      startDate: new Date(),
+      endDate: new Date(),
+    },
     locationDetails: null,
-    additionalInformation: null,
+    additionalInformation: {
+      visibility: "public",
+      requiresApproval: false,
+    },
     tickets: {
       ticketTypes: [
         {
           id: "1",
-          name: "ctava",
+          name: "Standard",
           price: null,
           requiresApproval: false,
           ticketCapacity: null,
@@ -187,13 +178,12 @@ export function EventBuilderContextProvider({ children }: EventBuilderContextPro
     }
   };
 
-  console.log("E=Event Builder state", state);
+  console.log("Event Builder state", state);
 
   return (
     <EventBuilderContext.Provider
       value={{
         isLoading: state.isLoading,
-        stage: state.stage,
         eventDetails: state.eventDetails,
         dateAndTime: state.dateAndTime,
         locationDetails: state.locationDetails,

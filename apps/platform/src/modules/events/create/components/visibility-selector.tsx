@@ -2,11 +2,11 @@ import { cn } from "@plaventi/ui/src/utils/helpers";
 import { CaretDownIcon, CheckCircledIcon, GlobeIcon, IdCardIcon } from "@radix-ui/react-icons";
 import { Button, Flex, Heading, Popover, Text } from "@radix-ui/themes";
 import { useState } from "react";
+import { useEventBuilderContext } from "../context/event-builder.context";
 
 export function VisibilitySelector() {
   const [isOpen, setIsOpen] = useState(false);
-
-  const [selected, setSelected] = useState<"public" | "private">("public");
+  const { setAdditionalInformation, additionalInformation } = useEventBuilderContext();
 
   return (
     <Popover.Root open={isOpen} onOpenChange={(val) => setIsOpen(val)}>
@@ -17,7 +17,7 @@ export function VisibilitySelector() {
           size="2"
           onClick={() => setIsOpen(true)}
           className="duration-400 transition-all">
-          {selected === "public" ? (
+          {additionalInformation?.visibility === "public" ? (
             <>
               <GlobeIcon />
               Public
@@ -38,7 +38,7 @@ export function VisibilitySelector() {
             variant="surface"
             className="hover:bg-grayA3 h-fit w-full gap-4 px-2 py-2 shadow-none"
             onClick={() => {
-              setSelected("public");
+              setAdditionalInformation({ visibility: "public" });
               setIsOpen(false);
             }}>
             <Flex direction="column" align="start" gap="1">
@@ -54,7 +54,7 @@ export function VisibilitySelector() {
               height="18"
               width="18"
               className={cn({
-                invisible: selected !== "public",
+                invisible: additionalInformation?.visibility !== "public",
               })}
             />
           </Button>
@@ -63,7 +63,7 @@ export function VisibilitySelector() {
             variant="surface"
             className="hover:bg-grayA3 h-fit w-full gap-4 px-2 py-2 shadow-none"
             onClick={() => {
-              setSelected("private");
+              setAdditionalInformation({ visibility: "private" });
               setIsOpen(false);
             }}>
             <Flex direction="column" align="start" gap="1">
@@ -80,7 +80,7 @@ export function VisibilitySelector() {
                 height="18"
                 width="18"
                 className={cn({
-                  invisible: selected !== "private",
+                  invisible: additionalInformation?.visibility !== "private",
                 })}
               />
             </Flex>

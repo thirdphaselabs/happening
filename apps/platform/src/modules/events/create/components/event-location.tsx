@@ -7,10 +7,12 @@ import usePlacesService from "react-google-autocomplete/lib/usePlacesAutocomplet
 import { useDebounce } from "~/app/_hooks/use-debounce";
 import { MapComp } from "./map";
 import { environment } from "~/utils/env";
+import { useEventBuilderContext } from "../context/event-builder.context";
 
 const API_KEY = environment.googlePlacesApiKey;
 
 export function EventLocationInner() {
+  const { setLocationDetails } = useEventBuilderContext();
   const [selectedLocation, setSelectedLocation] = useState<string | null>(null);
 
   const [search, setSearch] = useState<string | null>(null);
@@ -31,6 +33,25 @@ export function EventLocationInner() {
   const [placeDetails, setPlaceDetails] = useState<google.maps.places.PlaceResult | null>(null);
 
   useEffect(() => {
+    if (placeDetails && placeDetails?.place_id === selectedLocation) {
+      setLocationDetails({
+        locationDetails: {
+          name: placeDetails.name,
+          formattedAddress: placeDetails.formatted_address,
+          placeId: placeDetails.place_id,
+          coordinates:
+            placeDetails.geometry && placeDetails.geometry.location
+              ? {
+                  lat: placeDetails.geometry.location.lat(),
+                  lng: placeDetails.geometry.location.lng(),
+                }
+              : undefined,
+        },
+      });
+    }
+  }, [placeDetails]);
+
+  useEffect(() => {
     // fetch place details for the first element in placePredictions array
     if (!selectedLocation || !placesService) return;
     placesService.getDetails(
@@ -44,9 +65,6 @@ export function EventLocationInner() {
   }, [selectedLocation, placesService]);
 
   console.log({ placeDetails, placePredictions });
-
-  const lat = placeDetails?.geometry?.location?.lat();
-  const lng = placeDetails?.geometry?.location?.lng();
 
   return (
     <>
@@ -80,6 +98,12 @@ export function EventLocationInner() {
                 className="z-[10]"
                 onClick={(e) => {
                   e.stopPropagation();
+                  setLocationDetails({
+                    name: undefined,
+                    formattedAddress: undefined,
+                    placeId: undefined,
+                    coordinates: undefined,
+                  });
                   setSelectedLocation(null);
                   setPlaceDetails(null);
                 }}>
@@ -109,7 +133,7 @@ export function EventLocationInner() {
               <Flex direction="column" gap="1" mt="1">
                 {placePredictions.length === 0 && search !== null && (
                   <Flex className="py-5" align="center" justify="center" gap="1">
-                    <Text size="2" color="gray" align="center">
+                    <Text size="3" color="gray" align="center">
                       {!isPlacePredictionsLoading && debouncedSearch === search
                         ? "No results found"
                         : "Loading..."}
@@ -118,8 +142,8 @@ export function EventLocationInner() {
                 )}
                 {placePredictions.length === 0 && (search === null || search === "") && (
                   <Flex className="py-5" align="center" justify="center" gap="1">
-                    <MagnifyingGlassIcon color="gray" />
-                    <Text size="2" color="gray" align="center">
+                    <MagnifyingGlassIcon color="gray" height="18" width="18" />
+                    <Text size="3" color="gray" align="center">
                       Start typing to search for a location
                     </Text>
                   </Flex>

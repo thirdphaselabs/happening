@@ -37,10 +37,17 @@ import { DateSelect } from "../components/date-select";
 import { EditTicketTypeDialog } from "../components/edit-ticket-type.dialog";
 import { EventLocation } from "../components/event-location";
 import { Tickets } from "../components/tickets";
+import { Capacity } from "../components/capacity";
 
 export function CreateEvent() {
-  const { setEventDetails, eventDetails, createEvent, setDateAndTime, dateAndTime } =
-    useEventBuilderContext();
+  const {
+    setEventDetails,
+    eventDetails,
+    createEvent,
+    setDateAndTime,
+    dateAndTime,
+    setAdditionalInformation,
+  } = useEventBuilderContext();
   const ref = useRef<HTMLTextAreaElement>(null);
   useTextareaAutoHeight({ ref });
 
@@ -73,11 +80,12 @@ export function CreateEvent() {
       </Flex>
       <Flex className="flex-grow" direction="column" gap="4">
         <Flex width="100%" justify="between">
-          <Button variant="soft" color="gray" size="2">
+          <Flex align="center" gap="1">
             <Avatar fallback="95" size="1" radius="full" />
-            9-5 Events
-            <CaretDownIcon />
-          </Button>
+            <Text size="2" color="gray" weight="medium">
+              9-5 Events
+            </Text>
+          </Flex>
           <VisibilitySelector />
         </Flex>
         <EventName />
@@ -113,6 +121,7 @@ export function CreateEvent() {
                 <TimeSelect
                   variant="soft"
                   date="start"
+                  defaultValue={dateAndTime?.startTime}
                   onSelect={(val) => {
                     setDateAndTime({ startTime: val });
                   }}
@@ -130,6 +139,7 @@ export function CreateEvent() {
                 <TimeSelect
                   variant="soft"
                   date="end"
+                  defaultValue={dateAndTime?.endTime}
                   onSelect={(val) => {
                     setDateAndTime({ endTime: val });
                   }}
@@ -155,24 +165,11 @@ export function CreateEvent() {
               <Heading size="3" className="flex items-center gap-1 " color="gray" weight="medium">
                 Require approval
               </Heading>
-              <Switch />
+              <Switch onCheckedChange={(val) => setAdditionalInformation({ requiresApproval: val })} />
             </Flex>
           </Flex>
           <Separator orientation="horizontal" className="w-full" />
-          <Flex gap="2" className="bg-skyA2 rounded-xl  rounded-t-none px-3 py-2" width="100%">
-            <Flex align="start" className="mt-1">
-              <BarChartIcon height="16" width="16" color="gray" />
-            </Flex>
-            <Flex justify="between" width="100%">
-              <Heading size="3" className="flex items-center gap-1 " color="gray" weight="medium">
-                Capacity
-              </Heading>
-              <Button variant="ghost" color="gray" size="3">
-                Unlimited
-                <Pencil2Icon />
-              </Button>
-            </Flex>
-          </Flex>
+          <Capacity />
         </Flex>
         <Button size="4" onClick={createEvent}>
           Create Event

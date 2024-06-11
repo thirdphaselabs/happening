@@ -3,8 +3,10 @@ import moment from "moment-timezone";
 import { Avatar, Box, Checkbox, Flex, Popover, ScrollArea, Select, Text, TextArea } from "@radix-ui/themes";
 import { ChatBubbleIcon, ClockIcon, GlobeIcon } from "@radix-ui/react-icons";
 import { Button, TextFieldInput } from "@plaventi/ui";
+import { useEventBuilderContext } from "~/modules/events/create/context/event-builder.context";
 
 export function TimezoneSelectInner() {
+  const { setDateAndTime } = useEventBuilderContext();
   const getTimeZoneOffset = (tz: string) => {
     const offset = moment.tz(tz).utcOffset();
     const absOffset = Math.abs(offset);
@@ -122,6 +124,7 @@ export function TimezoneSelectInner() {
                       variant="surface"
                       className="hover:bg-skyA3 w-full justify-between gap-4 shadow-none"
                       onClick={() => {
+                        setDateAndTime({ timezone: tz });
                         setSelectedTz(tz);
                         setIsOpen(false);
                         setSearch(null);
