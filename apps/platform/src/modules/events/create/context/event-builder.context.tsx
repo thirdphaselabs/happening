@@ -7,7 +7,8 @@ import { useNextStage } from "./dispatchers/next-stage.dispatcher";
 import { eventBuilderReducer } from "./event-builder.reducer";
 import { AdditionalInformation, DateAndTime, EventDetails, LocationDetails, Tickets } from "./types/types";
 import {
-  EditTicketType,
+  CreateTicketTypeAction,
+  EditTicketTypeAction,
   EventBuilderAction,
   RemoveTicketGroupAction,
   SetDateAndTimeAction,
@@ -24,6 +25,7 @@ import { useEditTicketType } from "./dispatchers/edit-ticket-type.dispatcher";
 import { useRemoveTicketGroup } from "./dispatchers/remove-ticket-group.dispatcher";
 import { api } from "~/trpc/provider";
 import { useRouter } from "next/navigation";
+import { useCreateTicketType } from "./dispatchers/create-ticket-type.dispatcher";
 
 export type EventBuilderState = {
   isLoading: boolean;
@@ -48,7 +50,8 @@ type EventBuilderContextValue = {
   setLocationDetails: (locationDetails: SetLocationDetailsAction["payload"]) => void;
   setDateAndTime: (dateAndTime: SetDateAndTimeAction["payload"]) => void;
   setAdditionalInformation: (additionalInformation: setAdditionalInformationAction["payload"]) => void;
-  editTicketType: (args: EditTicketType["payload"]) => void;
+  editTicketType: (args: EditTicketTypeAction["payload"]) => void;
+  createTicketType: (args: CreateTicketTypeAction["payload"]) => void;
   removeTicketGroup: (args: RemoveTicketGroupAction["payload"]) => void;
   setIsLoading: (args: SetIsLoadingAction["payload"]) => void;
   createEvent: () => void;
@@ -115,6 +118,7 @@ export function EventBuilderContextProvider({ children }: EventBuilderContextPro
   const setLocationDetails = useSetLocationDetails(dispatch);
   const setAdditionalInformation = useSetAdditionalInformation(dispatch);
   const editTicketType = useEditTicketType(dispatch);
+  const createTicketType = useCreateTicketType(dispatch);
   const removeTicketGroup = useRemoveTicketGroup(dispatch);
   const setIsLoading = useSetIsLoading(dispatch);
   // useRouteListener(state, dispatch);
@@ -195,6 +199,7 @@ export function EventBuilderContextProvider({ children }: EventBuilderContextPro
         setDateAndTime,
         setAdditionalInformation,
         editTicketType,
+        createTicketType,
         removeTicketGroup,
         setIsLoading,
         createEvent,

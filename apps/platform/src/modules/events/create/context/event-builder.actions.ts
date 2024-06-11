@@ -21,8 +21,15 @@ export type SetLocationDetailsAction = {
   payload: { locationDetails: NonNullable<Partial<EventBuilderState["locationDetails"]>> | undefined };
 };
 
-export type EditTicketType = {
+export type EditTicketTypeAction = {
   type: "EDIT_TICKET_TYPE";
+  payload: {
+    ticketType: TicketType;
+  };
+};
+
+export type CreateTicketTypeAction = {
+  type: "CREATE_TICKET_TYPE";
   payload: {
     ticketType: TicketType;
   };
@@ -59,7 +66,8 @@ export type EventBuilderAction =
   | SetDateAndTimeAction
   | SetLocationDetailsAction
   | setAdditionalInformationAction
-  | EditTicketType
+  | EditTicketTypeAction
+  | CreateTicketTypeAction
   | RemoveTicketGroupAction
   | UpdateCurrentStageCompletionAction
   | SetIsLoadingAction

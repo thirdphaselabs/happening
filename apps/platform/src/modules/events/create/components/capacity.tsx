@@ -1,7 +1,7 @@
 import { TicketIcon } from "@plaventi/ui";
 import { BarChartIcon, Pencil2Icon, PlusIcon } from "@radix-ui/react-icons";
 import { Button, Flex, Heading } from "@radix-ui/themes";
-import { EditTicketTypeDialog } from "./edit-ticket-type.dialog";
+import { TicketTypeDialog } from "./ticket-type.dialog";
 import { useEventBuilderContext } from "../context/event-builder.context";
 import { EditCapacityDialog } from "./edit-capacity.dialog";
 

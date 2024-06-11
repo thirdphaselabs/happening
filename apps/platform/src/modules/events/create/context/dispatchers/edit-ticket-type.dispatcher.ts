@@ -1,8 +1,8 @@
 import { Dispatch, useCallback } from "react";
-import { EditTicketType, EventBuilderAction } from "../event-builder.actions";
+import { EditTicketTypeAction, EventBuilderAction } from "../event-builder.actions";
 
 export function useEditTicketType(dispatch: Dispatch<EventBuilderAction>) {
-  return useCallback((payload: EditTicketType["payload"]) => {
+  return useCallback((payload: EditTicketTypeAction["payload"]) => {
     dispatch({
       type: "EDIT_TICKET_TYPE",
       payload,

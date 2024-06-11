@@ -20,7 +20,7 @@ import {
   PlusIcon,
 } from "@radix-ui/react-icons";
 import { Badge, Flex, SegmentedControl, Switch, Text } from "@radix-ui/themes";
-import { useEffect, useState } from "react";
+import { ReactNode, useEffect, useMemo, useState } from "react";
 import { useForm } from "react-hook-form";
 import { z } from "zod";
 import { Dialog } from "~/components/ui/dialog";
@@ -32,15 +32,49 @@ import { useNotify } from "~/app/_hooks/use-notify";
 import { DateSelect } from "./date-select";
 import { TimeSelect } from "~/app/_components/TimeSelect";
 
-export function EditTicketTypeDialog({ ticketType }: { ticketType: TicketType }) {
-  const [isOpen, setIsOpen] = useState(false);
+function buildStartingValues(args: { ticketType: TicketType | null; method: "add" | "edit" }): TicketType {
+  if (args.method === "edit" && args.ticketType) {
+    return args.ticketType;
+  }
+
+  return {
+    id: Math.random().toString(),
+    name: undefined,
+    description: undefined,
+    price: null,
+    requiresApproval: false,
+    salesStart: undefined,
+    salesEnd: undefined,
+    ticketCapacity: null,
+    lastUpdated: new Date(),
+  };
+}
+
+export function TicketTypeDialog({
+  ticketType: initialData,
+  trigger,
+  method,
+  isOpen: initialIsOpen = false,
+  setIsOpen: initialSetIsOpen,
+}: {
+  isOpen?: boolean;
+  setIsOpen?: (val: boolean) => void;
+  trigger: ReactNode;
+  ticketType: TicketType | null;
+  method: "add" | "edit";
+}) {
+  const ticketType = useMemo(
+    () => buildStartingValues({ ticketType: initialData, method }),
+    [initialData, method],
+  );
+  const [isOpen, setIsOpen] = useState(initialIsOpen);
   const [showDescription, setShowDescription] = useState(ticketType.description ? true : false);
   const [showRestrictions, setShowRestrictions] = useState(false);
   const [showSalesStartDate, setShowSalesStartDate] = useState(false);
   const [showSalesEndDate, setShowSalesEndDate] = useState(false);
   const [requiresApproval, setRequiresApproval] = useState(false);
 
-  const { editTicketType, tickets } = useEventBuilderContext();
+  const { editTicketType, createTicketType, tickets } = useEventBuilderContext();
 
   const [paymentType, setPaymentType] = useState<"free" | "paid">(ticketType.price ? "paid" : "free");
 
@@ -48,6 +82,10 @@ export function EditTicketTypeDialog({ ticketType }: { ticketType: TicketType })
     setShowDescription(ticketType.description ? true : false);
     setPaymentType(ticketType.price ? "paid" : "free");
   }, [ticketType]);
+
+  useEffect(() => {
+    setIsOpen(initialIsOpen);
+  }, [initialIsOpen]);
 
   const schema = z
     .object({
@@ -88,23 +126,32 @@ export function EditTicketTypeDialog({ ticketType }: { ticketType: TicketType })
     console.log("values", values);
     setError(null);
 
-    editTicketType({
-      ticketType: {
-        id: ticketType.id,
-        name: values.name,
-        description: values.description,
-        price: paymentType === "paid" ? values.price ?? null : null,
-        requiresApproval: values.requiresApproval,
-        salesStart: values.salesStartDate,
-        startTime: values.startTime,
-        salesEnd: values.salesEndDate,
-        endTime: values.endTime,
-        ticketCapacity: values.totalTickets ?? null,
-        lastUpdated: new Date(),
-      },
-    });
+    const updatedTicketType: TicketType = {
+      id: ticketType.id,
+      name: values.name,
+      description: values.description,
+      price: paymentType === "paid" ? values.price ?? null : null,
+      requiresApproval: values.requiresApproval,
+      salesStart: values.salesStartDate,
+      startTime: values.startTime,
+      salesEnd: values.salesEndDate,
+      endTime: values.endTime,
+      ticketCapacity: values.totalTickets ?? null,
+      lastUpdated: new Date(),
+    };
+
+    if (method === "add") {
+      createTicketType({
+        ticketType: updatedTicketType,
+      });
+    } else {
+      editTicketType({
+        ticketType: updatedTicketType,
+      });
+    }
 
     setIsOpen(false);
+    initialSetIsOpen?.(false);
     setTimeout(() => {
       setError(null);
     }, 1000);
@@ -118,15 +165,11 @@ export function EditTicketTypeDialog({ ticketType }: { ticketType: TicketType })
             form.reset();
           }, 1000);
         }
-        return setIsOpen(val);
+        setIsOpen(val);
+        initialSetIsOpen?.(val);
       }}
       open={isOpen}>
-      <Dialog.Trigger>
-        <Button variant="soft" color="gray" size="2">
-          {ticketType.name}
-          <Pencil1Icon />
-        </Button>
-      </Dialog.Trigger>
+      {trigger !== null && <Dialog.Trigger>{trigger}</Dialog.Trigger>}
 
       <Dialog.Container className="transition-height max-w-[350px] duration-500 ease-in-out">
         <FormProvider {...form}>
@@ -140,7 +183,7 @@ export function EditTicketTypeDialog({ ticketType }: { ticketType: TicketType })
                   }}>
                   <TicketIcon />
                 </Flex>
-                <Dialog.Title className="mb-4">Edit Ticket Type</Dialog.Title>
+                <Dialog.Title className="mb-4">{method === "edit" ? "Edit" : "Add"} Ticket Type</Dialog.Title>
               </Flex>
               <Flex direction="column" gap="4" maxWidth="550px">
                 <FormField
@@ -423,7 +466,7 @@ export function EditTicketTypeDialog({ ticketType }: { ticketType: TicketType })
                 </Flex>
 
                 <Button size="3" type="submit" highContrast mt="2">
-                  Update Ticket Type
+                  {method === "edit" ? "Update" : "Create"} Ticket Type
                 </Button>
                 <Text size="2" color="red">
                   {error}

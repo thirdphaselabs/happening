@@ -34,7 +34,7 @@ import { useEventBuilderContext } from "../context/event-builder.context";
 import { EventName } from "../components/event-name";
 import { EventDescription } from "../components/event-description";
 import { DateSelect } from "../components/date-select";
-import { EditTicketTypeDialog } from "../components/edit-ticket-type.dialog";
+import { TicketTypeDialog } from "../components/ticket-type.dialog";
 import { EventLocation } from "../components/event-location";
 import { Tickets } from "../components/tickets";
 import { Capacity } from "../components/capacity";

@@ -1,7 +1,7 @@
-import { EditTicketType } from "../../event-builder.actions";
+import { EditTicketTypeAction } from "../../event-builder.actions";
 import { EventBuilderActionHandler } from "../../event-builder.context";
 
-export const editTicketTypeActionHandler: EventBuilderActionHandler<EditTicketType> = (
+export const editTicketTypeActionHandler: EventBuilderActionHandler<EditTicketTypeAction> = (
   state,
   action,
 ) => {

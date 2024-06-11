@@ -60,7 +60,7 @@ export type FreeTicketGroup = {
 
 export type TicketType = {
   id: string;
-  name: string;
+  name?: string;
   description?: string;
   requiresApproval: boolean;
   price: number | null;
