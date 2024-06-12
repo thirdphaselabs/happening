@@ -64,7 +64,9 @@ export default function OnboardingProfile() {
                 placeholder="Enter your first name"
                 name="firstName"
                 type="text"
-                defaultValue={profile.firstName ?? ""}
+                defaultValue={
+                  profile.firstName && profile.firstName !== "plaventi-placeholder" ? profile.firstName : ""
+                }
                 required
               />
             </label>
@@ -77,7 +79,9 @@ export default function OnboardingProfile() {
                 size="3"
                 placeholder="Enter your last name"
                 name="lastName"
-                defaultValue={profile.lastName ?? ""}
+                defaultValue={
+                  profile.lastName && profile.lastName !== "plaventi-placeholder" ? profile.lastName : ""
+                }
                 type="text"
                 required
               />

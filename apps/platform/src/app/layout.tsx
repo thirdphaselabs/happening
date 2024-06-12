@@ -20,7 +20,7 @@ export default function RootLayout({ children }: { children: React.ReactNode }):
     <ClerkProvider>
       <html lang="en" style={{ backgroundColor: "#f4f5f6" }}>
         <body>
-          <Theme {...themeConfig} style={{ backgroundColor: "#f4f5f6" }}>
+          <Theme {...themeConfig} style={{ backgroundColor: "#f4f5f6", overflow: 'visible' }}>
             <TRPCReactProvider cookies={cookies().toString()}>
               <TopGradient />
               {children}

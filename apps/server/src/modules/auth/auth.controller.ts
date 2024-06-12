@@ -24,14 +24,14 @@ export type PlaventiSession = {
 
 const authController = Router();
 
-authController.get("/", async (req: Request, res: Response) => {
+authController.get("/login", async (req: Request, res: Response) => {
   const authorizationUrl = workos.userManagement.getAuthorizationUrl({
     provider: "GoogleOAuth",
     redirectUri: "http://localhost:3002/api/auth/callback",
     clientId,
   });
 
-  return res.json(authorizationUrl);
+  return res.redirect(authorizationUrl);
 });
 
 authController.get("/callback", async (req, res) => {
@@ -84,6 +84,7 @@ authController.get("/callback", async (req, res) => {
 });
 
 authController.get("/refresh", withWorkOsAuth, async (req: Request, res: Response) => {
+  const fetchUserInfo = req.query.fetchUserInfo;
   const session = req.session;
   const { accessToken, refreshToken } = await workos.userManagement.authenticateWithRefreshToken({
     clientId,
@@ -107,11 +108,19 @@ authController.get("/refresh", withWorkOsAuth, async (req: Request, res: Respons
     return res.status(400).send("Profile not found");
   }
 
+  let updatedUser: User | null;
+
+  if (fetchUserInfo) {
+    updatedUser = await workos.userManagement.getUser(session.user.id);
+  } else {
+    updatedUser = session.user;
+  }
+
   const sessionData: PlaventiSession = {
     sessionId: sessionId,
     accessToken,
     refreshToken,
-    user: session.user,
+    user: updatedUser ?? session.user,
     impersonator: session.impersonator,
     profile,
     organisationId: profile.team?.workosOrganisationId ?? null,

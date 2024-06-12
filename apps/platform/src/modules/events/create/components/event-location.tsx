@@ -9,6 +9,7 @@ import { MapComp } from "./map";
 import { environment } from "~/utils/env";
 import { useEventBuilderContext } from "../context/event-builder.context";
 
+
 const API_KEY = environment.googlePlacesApiKey;
 
 export function EventLocationInner() {

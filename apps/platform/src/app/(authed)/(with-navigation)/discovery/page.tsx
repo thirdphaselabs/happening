@@ -1,7 +1,3 @@
-export default function DiscoveryPage() {
-  return (
-    <div>
-      <h1>Discovery</h1>
-    </div>
-  );
-}
+import { Discovery } from "~/modules/discovery/discovery.view";
+
+export default Discovery;

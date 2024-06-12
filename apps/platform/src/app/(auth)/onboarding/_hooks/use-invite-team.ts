@@ -19,7 +19,7 @@ export function useInviteTeam() {
       const { nextStep } = await mutateAsync({
         invites: args.invites,
       });
-      await refresh();
+      await refresh({ shouldFetchUserInfo: true });
       router.push(computeOnboardingPath(nextStep));
     } catch (error) {
       assertError(error);

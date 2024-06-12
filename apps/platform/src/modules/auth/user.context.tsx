@@ -7,7 +7,7 @@ import { invariant } from "~/utils/helpers";
 type UserState = {
   user: Session["user"];
   profile: Session["profile"];
-  refresh: () => Promise<void>;
+  refresh: (args: { shouldFetchUserInfo: boolean }) => Promise<void>;
 };
 
 const UserContext = createContext<UserState | undefined>(undefined);
@@ -20,8 +20,12 @@ type UserContextProviderProps = {
 export function UserContextProvider({ children, session: serverSession }: UserContextProviderProps) {
   const [session, setSession] = useState<Session>(serverSession);
 
-  const refresh = useCallback(async () => {
-    const res = await fetch("http://localhost:3002/api/auth/refresh", {
+  const refresh = useCallback(async ({ shouldFetchUserInfo } = { shouldFetchUserInfo: false }) => {
+    const url = shouldFetchUserInfo
+      ? "http://localhost:3002/api/auth/refresh?fetchUserInfo=true"
+      : "http://localhost:3002/api/auth/refresh";
+
+    const res = await fetch(url, {
       credentials: "include",
     });
     const newSession = await res.json();

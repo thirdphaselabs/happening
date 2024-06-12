@@ -5,7 +5,7 @@ export default async function AuthedLayout({ children }: { children: React.React
   try {
     return (
       <SidebarLayout>
-        <Flex mt="8" width="100%">
+        <Flex mt="8" width="100%" overflow="visible">
           {children}
         </Flex>
       </SidebarLayout>

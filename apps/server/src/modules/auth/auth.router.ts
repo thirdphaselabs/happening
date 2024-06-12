@@ -9,6 +9,52 @@ import { PlaventiSession } from "./auth.controller";
 const authService = new AuthService();
 
 export const authRouter = createTRPCRouter({
+  getLoginUrl: publicProcedure.query(async () => {
+    const url = await authService.loginWithGoogleUrl();
+
+    return url;
+  }),
+  signIn: publicProcedure
+    .input(
+      z.object({
+        email: z.string().email(),
+        password: z.string(),
+      }),
+    )
+    .mutation(async ({ ctx, input }) => {
+      const accessToken = await authService.signIn(input);
+
+      ctx.res.cookie("wos-session", accessToken, {});
+    }),
+  signUp: publicProcedure
+    .input(
+      z.object({
+        email: z.string().email(),
+        password: z.string(),
+      }),
+    )
+    .mutation(async ({ input }) => {
+      return await authService.signUp(input);
+    }),
+  resendVerificationEmail: publicProcedure
+    .input(
+      z.object({
+        userId: z.string(),
+      }),
+    )
+    .mutation(async ({ input }) => {
+      await authService.resendVerificationEmail(input.userId);
+    }),
+  verifyEmail: publicProcedure
+    .input(
+      z.object({
+        userId: z.string(),
+        code: z.string(),
+      }),
+    )
+    .mutation(async ({ input }) => {
+      return await authService.verifyEmail(input);
+    }),
   session: workOsProcedure.query(async ({ ctx }) => {
     return ctx.session as PlaventiSession;
   }),

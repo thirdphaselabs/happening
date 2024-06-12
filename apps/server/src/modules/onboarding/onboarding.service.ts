@@ -86,6 +86,11 @@ export class OnboardingService {
     },
   ) {
     try {
+      await workos.userManagement.updateUser({
+        userId: auth.user.id,
+        firstName: input.firstName,
+        lastName: input.lastName,
+      });
       await this.onboardingPersistence.completePersonalDetails(auth.profile.id, input);
       const nextStep = await this.updateToNextStep(auth);
       return {

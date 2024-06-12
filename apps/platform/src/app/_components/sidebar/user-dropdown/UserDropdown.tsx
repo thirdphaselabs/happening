@@ -8,6 +8,7 @@ import { UserAvatar } from "~/components/user-avatar";
 
 export function UserDropdown() {
   const { user } = useUser();
+  console.log(user);
   return (
     <DropdownMenu.Root>
       <DropdownMenu.Trigger>

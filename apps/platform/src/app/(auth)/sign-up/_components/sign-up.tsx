@@ -17,7 +17,7 @@ import {
 } from "@radix-ui/themes";
 import NextLink from "next/link";
 import { useRouter, useSearchParams } from "next/navigation";
-import { useRef, useState } from "react";
+import { useCallback, useRef, useState } from "react";
 import { EventsManagerBadge } from "~/app/_components/EventsManagerBadge";
 import { InputOTP, InputOTPGroup, InputOTPSeparator, InputOTPSlot } from "~/components/ui/input-otp";
 import { baseAccessColor } from "~/styles/theme";
@@ -28,19 +28,17 @@ import { GoToLogin } from "./GoToLogin";
 import { LoginWithGoogle } from "./LoginWithGoogle";
 import { SignUpContextProvider, useSignUpContext } from "./sign-up-context";
 
+const refresh = async () => {
+  const res = await fetch("http://localhost:3002/api/auth/refresh", {
+    credentials: "include",
+  });
+};
+
 export function SignUpForm() {
-  const { signUp, isLoaded } = useSignUp();
   const ticket = useSearchParams().get("__clerk_ticket");
 
-  if (!isLoaded) return null;
-
-  const isMissingPassword = signUp.missingFields.includes("password");
-
   return (
-    <SignUpContextProvider
-      email={signUp.emailAddress}
-      isMissingPassword={isMissingPassword}
-      ticket={ticket ?? undefined}>
+    <SignUpContextProvider userId={null} email={null} isMissingPassword={false} ticket={ticket ?? undefined}>
       <SignUpFormInner />
     </SignUpContextProvider>
   );
@@ -90,7 +88,7 @@ function SignUpFormInner() {
 }
 
 function EmailStep() {
-  const { stage, setStage, setEmail } = useSignUpContext();
+  const { stage, setStage, setEmail, setUserId } = useSignUpContext();
   const [error, setError] = useState<string | null>(null);
   const [loading, setLoading] = useState<boolean>(false);
   const router = useRouter();
@@ -111,34 +109,25 @@ function EmailStep() {
       return;
     }
 
-    const result = await mutateAsync({ email: emailAddress });
-    try {
-      await signUp.create({ emailAddress });
-    } catch (err) {
-      const { clerkErrorType, errorMessage } = getExpectedClerkError(err, [
-        ClerkErrorType.EmailAlreadyAssociated,
-      ]);
-      if (!clerkErrorType) {
-        setError(errorMessage);
-        setLoading(false);
-        return;
-      }
-      switch (clerkErrorType) {
-        case ClerkErrorType.EmailAlreadyAssociated:
-          router.push(
-            `/sign-in?code=${clerkErrorTypeToCode[ClerkErrorType.EmailAlreadyAssociated]}&email=${emailAddress}`,
-          );
-          return;
-        default:
-          break;
-      }
-    }
-    try {
-      await signUp.update({ emailAddress });
-    } catch (err) {}
+    const { isAssociated, isEmailVerified, userId } = await mutateAsync({ email: emailAddress });
 
-    if (!result) {
-      router.push("/sign-in");
+    if (!isAssociated) {
+      setEmail(emailAddress);
+      setStage("password");
+      setLoading(false);
+      return;
+    }
+
+    if (isEmailVerified) {
+      router.push("/sign-in?code=email_verified");
+      return;
+    }
+
+    if (!isEmailVerified) {
+      setStage("email-verification");
+      setUserId(userId);
+      setLoading(false);
+      return;
     }
 
     setEmail(emailAddress);
@@ -182,11 +171,11 @@ function EmailStep() {
 
 function PasswordStep() {
   const [loading, setLoading] = useState<boolean>(false);
-  const { signUp, setActive } = useSignUp();
-  const { email, ticket, setStage } = useSignUpContext();
+  const { email, ticket, setStage, setPassword, setUserId } = useSignUpContext();
   const [isPasswordStrong, setIsPasswordStrong] = useState<boolean | null>(null);
   const [error, setError] = useState<string | null>(null);
   const router = useRouter();
+  const { mutateAsync: signUp } = api.auth.signUp.useMutation();
 
   const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
@@ -197,17 +186,11 @@ function PasswordStep() {
     const formData = new FormData(e.currentTarget);
     const password = formData.get("password") as string;
     try {
-      if (ticket) {
-        const result = await signUp.create({ ticket, strategy: ticket ? "ticket" : undefined, password });
-        if (result.status === "complete") {
-          setActive({ session: result.createdSessionId });
-        }
-      } else {
-        invariant(email, "Email is not available.");
-        await signUp.create({ emailAddress: email, password });
-        await signUp.prepareEmailAddressVerification({ strategy: "email_code" });
-        setStage("email-verification");
-      }
+      invariant(email, "Email is not available.");
+      setPassword(password);
+      const user = await signUp({ email, password });
+      setUserId(user.id);
+      setStage("email-verification");
     } catch (error) {
       const { clerkErrorType, errorMessage } = getExpectedClerkError(error, [
         ClerkErrorType.EmailAlreadyAssociated,
@@ -351,16 +334,19 @@ function PasswordStrength({ isPasswordStrong }: { isPasswordStrong: boolean }) {
 }
 
 function EmailVerification() {
-  const { signUp, isLoaded, setActive, setSession } = useSignUp();
+  const { signUp, isLoaded } = useSignUp();
   const router = useRouter();
   const { signOut } = useClerk();
   const { session } = useSession();
-  const { email, setStage, setEmail } = useSignUpContext();
+  const { email, setStage, userId, password } = useSignUpContext();
   const [loading, setLoading] = useState<boolean>(false);
   const ref = useRef<HTMLFormElement>(null);
   const [previousLength, setPreviousLength] = useState<number>(0);
   const [error, setError] = useState<string | null>(null);
   const [showReset, setShowReset] = useState<boolean>(false);
+  const { mutateAsync: resendVerificationEmail } = api.auth.resendVerificationEmail.useMutation();
+  const { mutateAsync: verifyEmailAddress } = api.auth.verifyEmail.useMutation();
+  const { mutateAsync: signIn } = api.auth.signIn.useMutation();
 
   const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
@@ -368,12 +354,16 @@ function EmailVerification() {
     if (!signUp) return;
 
     try {
-      const code = new FormData(e.currentTarget).get("code") as string;
-      const result = await signUp.attemptEmailAddressVerification({ code });
-      if (result.status === "complete") {
-        await setActive({ session: result.createdSessionId });
-        router.push("/onboarding");
+      if (!userId) {
+        alert("User ID is missing. Please try again.");
+        setLoading(false);
         return;
+      }
+      const code = new FormData(e.currentTarget).get("code") as string;
+      const result = await verifyEmailAddress({ userId, code });
+      if (email && password) {
+        await signIn({ email, password });
+        router.push("/onboarding");
       }
     } catch (error) {
       const { clerkErrorType, errorMessage } = getExpectedClerkError(error, [
@@ -455,14 +445,7 @@ function EmailVerification() {
               Verify
             </Button>
             {showReset && (
-              <Button
-                className="w-full"
-                size="3"
-                onClick={() => {
-                  signUp?.prepareEmailAddressVerification({ strategy: "email_code" });
-                  setShowReset(false);
-                  setError(null);
-                }}>
+              <Button className="w-full" size="3" onClick={() => resendVerificationEmail({ userId: "" })}>
                 Resend
               </Button>
             )}

@@ -2,7 +2,13 @@ import clerkClient from "@clerk/clerk-sdk-node";
 import { TRPCError } from "@trpc/server";
 import { mapClerkRoleToUserRole } from "../role/role-mapper";
 import { AuthPersistence } from "./auth.persistance";
-import { User } from "@workos-inc/node";
+import WorkOS, { User } from "@workos-inc/node";
+import { environment } from "../../environment";
+import { createRemoteJWKSet, jwtVerify } from "jose";
+import { sealData } from "iron-session";
+import { PlaventiSession } from "./auth.controller";
+import { profileInclude } from "../profile/entities/profile.entity";
+import { prisma } from "@plaventi/database";
 
 export enum AuthenticationMethod {
   Email = "email",
@@ -11,7 +17,95 @@ export enum AuthenticationMethod {
 
 const authPersistence = new AuthPersistence();
 
+const workos = new WorkOS(environment.WORKOS_API_KEY);
+
+const JWKS = createRemoteJWKSet(new URL(workos.userManagement.getJwksUrl(environment.WORKOS_CLIENT_ID)));
+
 export class AuthService {
+  async loginWithGoogleUrl(): Promise<{ url: string }> {
+    const authorizationUrl = workos.userManagement.getAuthorizationUrl({
+      provider: "GoogleOAuth",
+      redirectUri: "http://localhost:3002/api/auth/callback",
+      clientId: environment.WORKOS_CLIENT_ID,
+    });
+
+    return {
+      url: authorizationUrl,
+    };
+  }
+  async signIn(args: { email: string; password: string }) {
+    const response = await workos.userManagement.authenticateWithPassword({
+      clientId: process.env.WORKOS_CLIENT_ID || "",
+      email: String(args.email),
+      password: String(args.password),
+    });
+
+    const decodedAccessToken = await jwtVerify(response.accessToken, JWKS);
+    const sessionId = decodedAccessToken.payload.sid as string;
+
+    const profile = await prisma.profile.findUnique({
+      where: {
+        workosId: response.user.id,
+      },
+      include: profileInclude,
+    });
+
+    if (!profile) {
+      throw new TRPCError({
+        code: "INTERNAL_SERVER_ERROR",
+        message: "An error occurred while fetching user profile",
+      });
+    }
+
+    const sessionData: PlaventiSession = {
+      sessionId: sessionId,
+      accessToken: response.accessToken,
+      refreshToken: response.refreshToken,
+      user: response.user,
+      impersonator: response.impersonator,
+      profile,
+      organisationId: profile.team?.workosOrganisationId ?? null,
+    };
+
+    const encryptedSession = await sealData(sessionData, { password: environment.WORKOS_COOKIE_PASSWORD });
+
+    return encryptedSession;
+  }
+
+  async signUp(args: { email: string; password: string }) {
+    const user = await workos.userManagement.createUser({
+      email: args.email,
+      password: args.password,
+    });
+
+    await workos.userManagement.sendVerificationEmail({
+      userId: user.id,
+    });
+
+    return user;
+  }
+
+  async resendVerificationEmail(userId: string) {
+    await workos.userManagement.sendVerificationEmail({
+      userId,
+    });
+  }
+
+  async verifyEmail({ userId, code }: { userId: string; code: string }) {
+    const { user } = await workos.userManagement.verifyEmail({
+      userId,
+      code,
+    });
+  }
+
+  async verifyEmailAndAuthenticate({ userId, code }: { userId: string; code: string }) {
+    await workos.userManagement.authenticateWithEmailVerification({
+      code,
+      clientId: environment.WORKOS_CLIENT_ID,
+      pendingAuthenticationToken: userId,
+    });
+  }
+
   async getUser(clerkUserId: string) {
     try {
       const user = await authPersistence.getUserByClerkId(clerkUserId);
@@ -62,21 +156,36 @@ export class AuthService {
     }
   }
   async isEmailAssociatedWithUser(email: string) {
-    const userList = await clerkClient.users.getUserList();
+    const users = await workos.userManagement.listUsers({
+      email: email,
+    });
 
-    const user = userList.find((user) => user.emailAddresses.map((e) => e.emailAddress).includes(email));
+    const user = users.data[0];
 
-    if (!user)
+    if (!user) {
       return {
         isAssociated: false,
-        method: null,
-      };
+        isEmailVerified: false,
+        userId: null,
+      } as const;
+    }
 
-    const isGoogleAuth = user.externalAccounts.length > 0;
+    if (user.emailVerified) {
+      return {
+        isAssociated: true,
+        isEmailVerified: true,
+        userId: user.id,
+      } as const;
+    }
+
+    await workos.userManagement.sendVerificationEmail({
+      userId: user.id,
+    });
 
     return {
       isAssociated: true,
-      method: isGoogleAuth ? AuthenticationMethod.Google : AuthenticationMethod.Email,
-    };
+      isEmailVerified: user.emailVerified,
+      userId: user.id,
+    } as const;
   }
 }

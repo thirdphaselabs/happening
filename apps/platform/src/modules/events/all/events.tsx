@@ -1,13 +1,11 @@
 "use client";
 
-import { Text, Flex, Grid, Heading, SegmentedControl, Box } from "@radix-ui/themes";
-import Link from "next/link";
-import { api } from "~/trpc/provider";
-import { EventCard } from "../shared/components/event-card";
-import { Button, Separator } from "@plaventi/ui";
-import { useState } from "react";
+import { Button } from "@plaventi/ui";
 import { PlusIcon } from "@radix-ui/react-icons";
-import { formatDate } from "date-fns";
+import { Container, Flex, Heading, SegmentedControl, Text } from "@radix-ui/themes";
+import Link from "next/link";
+import { useState } from "react";
+import { api } from "~/trpc/provider";
 import { EventTimeline } from "./components/event-timeline";
 
 export function Events() {
@@ -46,21 +44,23 @@ export function Events() {
   );
 
   return (
-    <Flex direction="column" gap="6" mt="6">
-      <Flex className="w-full" justify="between" align="center">
-        <Heading size="8">Events</Heading>
-        <Flex gap="4">
-          <SegmentedControl.Root
-            value={category}
-            onValueChange={(val) => (val === "upcoming" ? setCategory("upcoming") : setCategory("past"))}>
-            <SegmentedControl.Item value="upcoming">Upcoming</SegmentedControl.Item>
-            <SegmentedControl.Item value="past">Past</SegmentedControl.Item>
-          </SegmentedControl.Root>
+    <Container size="2">
+      <Flex direction="column" gap="6" mt="6">
+        <Flex className="w-full" justify="between" align="center">
+          <Heading size="8">Events</Heading>
+          <Flex gap="4">
+            <SegmentedControl.Root
+              value={category}
+              onValueChange={(val) => (val === "upcoming" ? setCategory("upcoming") : setCategory("past"))}>
+              <SegmentedControl.Item value="upcoming">Upcoming</SegmentedControl.Item>
+              <SegmentedControl.Item value="past">Past</SegmentedControl.Item>
+            </SegmentedControl.Root>
+          </Flex>
         </Flex>
+        {events.length > 0 && <EventTimeline events={eventsByCategory} />}
+        {eventsByCategory.length === 0 && <EmptyState category={category} />}
       </Flex>
-      {events.length > 0 && <EventTimeline events={eventsByCategory} />}
-      {eventsByCategory.length === 0 && <EmptyState category={category} />}
-    </Flex>
+    </Container>
   );
 }
 
