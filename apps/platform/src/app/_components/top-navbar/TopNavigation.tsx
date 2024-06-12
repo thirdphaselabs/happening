@@ -16,6 +16,7 @@ import { UserDropdown } from "../sidebar/user-dropdown/UserDropdown";
 import useNavigation from "../sidebar/_hooks/useNavigation";
 import NavigationItems from "./NavigationItems";
 import { Separator } from "./seperator";
+import { TeamName } from "./team-name";
 
 const notificationItems = [
   {
@@ -92,9 +93,7 @@ export function TopNavigation() {
             </Flex>
             <NavigationItems />
             <Flex gap="4" align="center" position="absolute" right="6">
-              <Text color="gray" size="2" className="text-gray8">
-                9-5 Events
-              </Text>
+              <TeamName />
               <Link
                 size="2"
                 color="gray"

@@ -8,6 +8,7 @@ import { setAdditionalInformationActionHandler } from "./action-handlers/public/
 import { editTicketTypeActionHandler } from "./action-handlers/public/edit-ticket-type.action-handler";
 import { setDateAndTimeActionHandler } from "./action-handlers/public/set-date-and-time.action-handler";
 import { createTicketTypeActionHandler } from "./action-handlers/public/create-ticket-type.action-handler";
+import { setEventCreationValidationErrorActionHandler } from "./action-handlers/public/set-event-creation-validation-error.action-handler";
 
 export function eventBuilderReducer(state: EventBuilderState, action: EventBuilderAction): EventBuilderState {
   switch (action.type) {
@@ -25,6 +26,8 @@ export function eventBuilderReducer(state: EventBuilderState, action: EventBuild
       return editTicketTypeActionHandler(state, action);
     case "CREATE_TICKET_TYPE":
       return createTicketTypeActionHandler(state, action);
+    case "SET_ERROR":
+      return setEventCreationValidationErrorActionHandler(state, action);
     default:
       return state;
   }

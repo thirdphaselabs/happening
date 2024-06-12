@@ -1,4 +1,4 @@
-import { EventStatus, LocationType, TicketType } from "@prisma/client";
+import { EventStatus } from "@prisma/client";
 import { z } from "zod";
 
 export const eventDTO = z.object({
@@ -6,18 +6,16 @@ export const eventDTO = z.object({
   title: z.string(),
   description: z.string(),
   status: z.nativeEnum(EventStatus),
-  coverImageUrl: z.string().nullable(),
+  imageUrl: z.string(),
   isApprovalRequired: z.boolean(),
   location: z.object({
-    type: z.nativeEnum(LocationType),
-    venue: z.string().nullable(),
-    address: z.string().nullable(),
-    city: z.string().nullable(),
-    country: z.string().nullable(),
-    postalCode: z.string().nullable(),
-    latitude: z.number().nullable(),
-    longitude: z.number().nullable(),
-    onlineLocationLink: z.string().nullable(),
+    name: z.string(),
+    formattedAddress: z.string(),
+    placeId: z.string(),
+    coordinates: z.object({
+      lat: z.string(),
+      lng: z.string(),
+    }),
   }),
   timing: z.object({
     startDate: z.date(),
@@ -27,8 +25,17 @@ export const eventDTO = z.object({
     timezone: z.string(),
   }),
   ticketing: z.object({
-    type: z.nativeEnum(TicketType),
-    price: z.number().nullable(),
+    types: z.array(
+      z.object({
+        id: z.string(),
+        name: z.string(),
+        description: z.string().nullable(),
+        price: z.number().nullable(),
+        availableQuantity: z.number().nullable(),
+        salesStart: z.date().nullable(),
+        salesEnd: z.date().nullable(),
+      }),
+    ),
   }),
   guestList: z.object({
     requiresApproval: z.boolean(),

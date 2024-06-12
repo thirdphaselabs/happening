@@ -51,19 +51,15 @@ export class EventPersistence {
         title: args.title,
         description: args.description,
         status: EventStatus.DRAFT,
-        coverImageUrl: args.coverImageUrl,
+        imageUrl: args.imageUrl,
         isApprovalRequired: args.isApprovalRequired,
         location: {
           create: {
-            type: args.location.type,
-            venue: args.location.venue,
-            address: args.location.address,
-            city: args.location.city,
-            country: args.location.country,
-            postalCode: args.location.postalCode,
-            latitude: args.location.latitude,
-            longitude: args.location.longitude,
-            onlineLocationLink: args.location.onlineLocationLink,
+            formattedAddress: args.location.formattedAddress,
+            googlePlaceId: args.location.placeId,
+            latitude: args.location.coordinates.lat,
+            longitude: args.location.coordinates.lng,
+            name: args.location.name,
           },
         },
         timing: {
@@ -77,8 +73,16 @@ export class EventPersistence {
         },
         ticketing: {
           create: {
-            type: args.ticketing.type,
-            price: args.ticketing.price,
+            types: {
+              create: args.ticketing.types.map((ticket) => ({
+                name: ticket.name,
+                description: ticket.description,
+                price: ticket.price,
+                availableQuantity: ticket.availableQuantity,
+                salesStart: ticket.salesStart,
+                salesEnd: ticket.salesEnd,
+              })),
+            },
           },
         },
         guestList: {

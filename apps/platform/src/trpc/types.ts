@@ -7,6 +7,8 @@ export type RouterOutput = inferRouterOutputs<AppRouter>;
 export type OnboardingStatus = RouterOutput["onboarding"]["getCurrentOnboardingStep"]["onboardingStep"];
 export type PlaventiEvent = RouterOutput["event"]["byIdentifier"];
 
+export type CreateEventInput = RouterInput["event"]["create"];
+
 export type Session = RouterOutput["auth"]["session"];
 
 export type PageParams<K extends string> = {

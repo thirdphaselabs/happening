@@ -42,8 +42,8 @@ export function EventLocationInner() {
           coordinates:
             placeDetails.geometry && placeDetails.geometry.location
               ? {
-                  lat: placeDetails.geometry.location.lat(),
-                  lng: placeDetails.geometry.location.lng(),
+                  lat: placeDetails.geometry.location.lat().toString(),
+                  lng: placeDetails.geometry.location.lng().toString(),
                 }
               : undefined,
         },
@@ -98,12 +98,7 @@ export function EventLocationInner() {
                 className="z-[10]"
                 onClick={(e) => {
                   e.stopPropagation();
-                  setLocationDetails({
-                    name: undefined,
-                    formattedAddress: undefined,
-                    placeId: undefined,
-                    coordinates: undefined,
-                  });
+                  setLocationDetails(null);
                   setSelectedLocation(null);
                   setPlaceDetails(null);
                 }}>

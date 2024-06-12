@@ -4,7 +4,7 @@ export type EventDetails = {
   location?: string;
   date?: string;
   time?: string;
-  coverImageUrl?: string;
+  image?: File;
 };
 
 export type DateAndTime = {
@@ -22,10 +22,9 @@ export type LocationDetails = {
   formattedAddress?: string;
   placeId?: string;
   coordinates?: {
-    lat: number;
-    lng: number;
+    lat: string;
+    lng: string;
   };
-  onlineLocationLink?: string;
 };
 
 export type AdditionalInformation = {
@@ -75,3 +74,8 @@ export type TicketType = {
 export type Tickets = {
   ticketTypes: Array<TicketType>;
 };
+
+export type CreateEventErrors = Record<
+  "event-details" | "date-and-time" | "location" | "additional-information" | "ticketing",
+  string | null
+>;

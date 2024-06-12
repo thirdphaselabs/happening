@@ -7,7 +7,7 @@ export function toEventDTO(event: PlaventiEvent): EventDTO {
     title: event.title,
     status: event.status,
     description: event.description,
-    coverImageUrl: event.coverImageUrl,
+    imageUrl: event.imageUrl,
     isApprovalRequired: event.isApprovalRequired,
     guestList: {
       isVisible: event.guestList.isVisible,
@@ -21,8 +21,26 @@ export function toEventDTO(event: PlaventiEvent): EventDTO {
         },
       })),
     },
-    location: event.location,
-    ticketing: event.ticketing,
+    location: {
+      name: event.location.name,
+      formattedAddress: event.location.formattedAddress,
+      placeId: event.location.googlePlaceId,
+      coordinates: {
+        lat: event.location.latitude,
+        lng: event.location.latitude,
+      },
+    },
+    ticketing: {
+      types: event.ticketing.types.map((ticket) => ({
+        id: ticket.id,
+        name: ticket.name,
+        description: ticket.description,
+        price: ticket.price,
+        availableQuantity: ticket.availableQuantity,
+        salesStart: ticket.salesStart,
+        salesEnd: ticket.salesEnd,
+      })),
+    },
     timing: event.timing,
   };
 }

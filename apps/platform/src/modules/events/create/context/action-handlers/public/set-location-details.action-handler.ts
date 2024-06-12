@@ -8,7 +8,7 @@ export const setLocationDetailsActionHandler: EventBuilderActionHandler<SetLocat
 
   return {
     ...state,
-    locationDetails: action.payload.locationDetails ? {
+    locationDetails: action.payload !== null ? {
         ...state.locationDetails,
         ...action.payload.locationDetails,
     } : null,

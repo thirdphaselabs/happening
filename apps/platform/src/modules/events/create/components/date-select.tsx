@@ -1,10 +1,8 @@
-import { CalendarIcon } from "@radix-ui/react-icons";
-import { Button, Popover, Text } from "@radix-ui/themes";
-import { format, formatDate } from "date-fns";
+import { TextFieldInput } from "@plaventi/ui";
+import { Popover } from "@radix-ui/themes";
+import { formatDate } from "date-fns";
 import { useState } from "react";
 import { Calendar } from "~/components/ui/calendar";
-import { useEventBuilderContext } from "../context/event-builder.context";
-import { TextFieldInput } from "@plaventi/ui";
 
 export function DateSelect({
   date,

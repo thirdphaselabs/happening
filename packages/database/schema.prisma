@@ -46,6 +46,8 @@ model Team {
   createdAt           DateTime @default(now())
   domain              String   @unique
 
+
+  mediaLibrary Media[]
   profiles Profile[]
   events Event[]
 
@@ -71,7 +73,7 @@ model Event {
   title     String
   description String
   status   EventStatus 
-  coverImageUrl String?
+  imageUrl String
   isApprovalRequired Boolean @default(false)
   visibility EventVisibility @default(PUBLIC)
   createdAt DateTime @default(now())
@@ -95,19 +97,15 @@ enum LocationType {
 
 model EventLocation {
   id        String      @id @default(cuid())
-  type     LocationType
-  venue      String?
-  address   String?
-  city      String?
-  country   String?
-  postalCode String?
-  latitude  Float?
-  longitude Float?
-  onlineLocationLink String?
+  name     String
+  formattedAddress String
+  googlePlaceId String
+  latitude  String
+  longitude String
   createdAt DateTime @default(now())
 
   eventId String @unique
-  event   Event @relation(fields: [eventId], references: [identifier])
+  event   Event @relation(fields: [eventId], references: [id])
 }
 
 model EventDate {
@@ -120,22 +118,31 @@ model EventDate {
   timezone String
 
   eventId String @unique
-  event   Event @relation(fields: [eventId], references: [identifier])
+  event   Event @relation(fields: [eventId], references: [id])
 }
 
-enum TicketType {
-  FREE
-  PAID
+model TicketType {
+  id       String      @id @default(cuid())
+  name     String
+  description String?
+  price    Float?
+  availableQuantity Int?
+  salesStart DateTime?
+  salesEnd DateTime?
+
+  ticketingId String
+  ticketing   Ticketing @relation(fields: [ticketingId], references: [eventId])
+  createdAt DateTime @default(now())
 }
 
 model Ticketing {
   id        String      @id @default(cuid())
-  type      TicketType
+  types    TicketType[]
   price     Float?
   createdAt DateTime @default(now())
 
   eventId String @unique
-  event   Event @relation(fields: [eventId], references: [identifier])
+  event   Event @relation(fields: [eventId], references: [id])
 }
 
 model GuestList {
@@ -146,7 +153,7 @@ model GuestList {
   createdAt DateTime @default(now())
 
   eventId String @unique
-  event   Event @relation(fields: [eventId], references: [identifier])
+  event   Event @relation(fields: [eventId], references: [id])
 }
 
 model GuestListAttendee {
@@ -163,5 +170,13 @@ model GuestListAttendee {
 model Waitlist {
   id        Int   @id @default(autoincrement())
   email     String   @unique
+  createdAt DateTime @default(now())
+}
+
+model Media {
+  id        String   @id @default(cuid())
+  url       String
+  teamId    String
+  team      Team @relation(fields: [teamId], references: [id])
   createdAt DateTime @default(now())
 }

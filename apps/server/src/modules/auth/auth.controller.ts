@@ -54,7 +54,7 @@ authController.get("/callback", async (req, res) => {
   const profile = await getProfileWithBackOff(user.id);
 
   if (!profile) {
-    return res.status(400).send("Profile not found");
+    return res.redirect("http://localhost:3003");
   }
 
   const sessionData: PlaventiSession = {

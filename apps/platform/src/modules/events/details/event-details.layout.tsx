@@ -29,21 +29,23 @@ export async function EventDetailsLayout({
             9-5 Events
             <CaretRightIcon />
           </Link>
-          <Flex className="w-full" justify="between" align="center">
-            <Heading size="8" className="flex items-center gap-2">
+          <Flex className="w-full" justify="between" align="center" gap="6">
+            <Heading size="8" className="items-center">
               <Tooltip content="This event is public and available in discovery." side="top" align="center">
-                <IconButton size="1" color="sky" variant="soft">
+                <IconButton size="1" color="sky" variant="soft" mt="2" mr="2">
                   <GlobeIcon />
                 </IconButton>
               </Tooltip>
               {event.title}
             </Heading>
-            <Link href="/events">
-              <Button color="gray" variant="soft" className="no-underline">
-                <ArrowTopRightIcon />
-                Event page
-              </Button>
-            </Link>
+            <Flex>
+              <Link href="/events">
+                <Button color="gray" variant="soft" className="text-nowrap no-underline">
+                  <ArrowTopRightIcon />
+                  Event page
+                </Button>
+              </Link>
+            </Flex>
           </Flex>
         </Container>
         <Flex direction="column" className="w-full" gap="6">

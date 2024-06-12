@@ -1,5 +1,5 @@
 import { EventBuilderState } from "./event-builder.context";
-import { EventBuilderStage, FreeTicketGroup, PaidTicketGroup, TicketType } from "./types/types";
+import { CreateEventErrors, FreeTicketGroup, PaidTicketGroup, TicketType } from "./types/types";
 
 export type NextStageAction = {
   type: "NEXT_STAGE";
@@ -18,7 +18,7 @@ export type SetDateAndTimeAction = {
 
 export type SetLocationDetailsAction = {
   type: "SET_LOCATION_DETAILS";
-  payload: { locationDetails: NonNullable<Partial<EventBuilderState["locationDetails"]>> | undefined };
+  payload: { locationDetails: NonNullable<Partial<EventBuilderState["locationDetails"]>> | undefined } | null;
 };
 
 export type EditTicketTypeAction = {
@@ -55,9 +55,9 @@ export type SetIsLoadingAction = {
   payload: boolean;
 };
 
-export type SetCurrentStageAction = {
-  type: "SET_CURRENT_STAGE";
-  payload: EventBuilderStage;
+export type SetEventCreationValidationErrorAction = {
+  type: "SET_ERROR";
+  payload: Partial<CreateEventErrors>;
 };
 
 export type EventBuilderAction =
@@ -71,4 +71,4 @@ export type EventBuilderAction =
   | RemoveTicketGroupAction
   | UpdateCurrentStageCompletionAction
   | SetIsLoadingAction
-  | SetCurrentStageAction;
+  | SetEventCreationValidationErrorAction;

@@ -1,46 +1,29 @@
 "use client";
 
-import { Button, Separator, TextFieldInput, TicketIcon } from "@plaventi/ui";
-import {
-  BarChartIcon,
-  CaretDownIcon,
-  ImageIcon,
-  Pencil2Icon,
-  PlusIcon,
-  ReaderIcon,
-  SewingPinIcon,
-} from "@radix-ui/react-icons";
-import {
-  AspectRatio,
-  Avatar,
-  Box,
-  Flex,
-  Heading,
-  IconButton,
-  Switch,
-  Text,
-  TextArea,
-} from "@radix-ui/themes";
-import { formatDate } from "date-fns";
+import { Button, Separator } from "@plaventi/ui";
+import { ImageIcon } from "@radix-ui/react-icons";
+import { AspectRatio, Avatar, Box, Flex, Heading, IconButton, Switch, Text } from "@radix-ui/themes";
 import Image from "next/image";
 import { useRef } from "react";
 import { GoVerified } from "react-icons/go";
 import { TimeSelect } from "~/app/_components/TimeSelect";
 import { TimezoneSelect } from "~/app/_components/TimezoneSelect";
 import { useTextareaAutoHeight } from "~/app/_hooks/useAutoReszieTextArea";
-import placeholder from "~/assets/invited-placeholder.png";
+
 import { VisibilitySelector } from "~/modules/events/create/components/visibility-selector";
-import { useEventBuilderContext } from "../context/event-builder.context";
-import { EventName } from "../components/event-name";
-import { EventDescription } from "../components/event-description";
-import { DateSelect } from "../components/date-select";
-import { TicketTypeDialog } from "../components/ticket-type.dialog";
-import { EventLocation } from "../components/event-location";
-import { Tickets } from "../components/tickets";
 import { Capacity } from "../components/capacity";
+import { DateSelect } from "../components/date-select";
+import { EventDescription } from "../components/event-description";
+import { EventLocation } from "../components/event-location";
+import { EventName } from "../components/event-name";
+import { Tickets } from "../components/tickets";
+import { useEventBuilderContext } from "../context/event-builder.context";
+import { EventImage } from "../components/event-image";
 
 export function CreateEvent() {
   const {
+    isLoading,
+    errors,
     setEventDetails,
     eventDetails,
     createEvent,
@@ -57,14 +40,7 @@ export function CreateEvent() {
   return (
     <Flex width="100%" gap="6">
       <Flex direction="column" gap="5">
-        <Flex className="h-[330px] w-[330px]">
-          <AspectRatio ratio={1 / 1}>
-            <Image src={placeholder} alt="Event" layout="fill" objectFit="cover" className="rounded-xl" />
-            <IconButton size="3" className="absolute bottom-2 right-2 z-10" color="gray" variant="surface">
-              <ImageIcon height="20" width="20" />
-            </IconButton>
-          </AspectRatio>
-        </Flex>
+        <EventImage />
         <Flex direction="column" width="100%" gap="2">
           <Heading size="2" color="gray">
             Hosted By
@@ -175,9 +151,10 @@ export function CreateEvent() {
           <Separator orientation="horizontal" className="w-full" />
           <Capacity />
         </Flex>
-        <Button size="4" onClick={createEvent}>
+        <Button size="4" onClick={createEvent} loading={{ isLoading }}>
           Create Event
         </Button>
+        {Object.values(errors).some((v) => v !== null) && <Text color="red">{JSON.stringify(errors)}</Text>}
       </Flex>
     </Flex>
   );

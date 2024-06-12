@@ -38,14 +38,15 @@ export class EventService {
 
   private async createUniqueIdentifier(eventTitle: string, attempt = 0): Promise<string> {
     if (attempt === 5) {
-      throw new Error("Max attempts reached creating unique identifer");
+      throw new Error("Max attempts reached creating unique identifier");
     }
     const identifier = `${eventTitle.toLowerCase().replace(/ /g, "-")}${attempt !== 0 ? attempt : ""}`;
-    const isIdentifierInUse = await this.eventPersistence.isIdentifierInUse(identifier);
+    const removedSpecialChars = identifier.replace(/[^a-zA-Z0-9-]/g, "");
+    const isIdentifierInUse = await this.eventPersistence.isIdentifierInUse(removedSpecialChars);
     if (isIdentifierInUse) {
-      return this.createUniqueIdentifier(identifier, attempt + 1);
+      return this.createUniqueIdentifier(removedSpecialChars, attempt + 1);
     }
 
-    return identifier;
+    return removedSpecialChars;
   }
 }

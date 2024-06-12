@@ -30,6 +30,7 @@ import { useUser } from "~/modules/auth/user.context";
 import { Card, ProgressBar } from "@tremor/react";
 
 import { useEventDetails } from "../context/event-details.context";
+import Image from "next/image";
 
 export function EventDetailsOverviewView() {
   const { event } = useEventDetails();
@@ -100,9 +101,17 @@ export function EventDetailsOverviewView() {
       </Flex>
       <Flex width="100%" className="mb-5 gap-3 rounded-xl bg-white/75 p-3">
         <Flex className="w-1/2">
-          <Flex className="bg-grayA2 w-full items-end justify-end rounded-lg p-2 ">
+          <Flex className="bg-grayA2 relative w-full items-end justify-end overflow-hidden rounded-lg p-2 ">
+            <Image
+              src={event.imageUrl}
+              layout="fill"
+              objectFit="cover"
+              className="absolute h-full w-full rounded-lg"
+              alt="ecentr"
+              quality={100}
+            />
             <Button
-              className="w-full justify-between bg-black/30 tracking-tight text-white"
+              className="bg-gray12/90 w-full justify-between tracking-tight text-white"
               variant="soft"
               color="gray"
               size="2">
@@ -120,7 +129,7 @@ export function EventDetailsOverviewView() {
             <CalendarIcon date={new Date()} />
             <Flex direction="column">
               <Text size="3" weight="medium">
-                {formatDate(new Date(), "EEE d MMM")}
+                {formatDate(event.timing.startDate, "EEE d MMM")}
               </Text>
               <Text size="2" color="gray">
                 22:00 - 04:00 UTC
@@ -128,13 +137,15 @@ export function EventDetailsOverviewView() {
             </Flex>
           </Flex>
           <Flex align="center" width="100%" gap="3">
-            <LocationIcon />
+            <Flex>
+              <LocationIcon />
+            </Flex>
             <Flex direction="column">
               <Text size="3" weight="medium">
-                Hï Ibiza
+                {event.location.name}
               </Text>
               <Text size="2" color="gray">
-                Platja d'en Bossa, 07817, Illes Balears, Spain
+                {event.location.formattedAddress}
               </Text>
             </Flex>
           </Flex>

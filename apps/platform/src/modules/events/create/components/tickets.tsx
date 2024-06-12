@@ -111,7 +111,7 @@ function TicketTypeDropdown({ ticketTypes }: { ticketTypes: TicketType[] }) {
                             align="left"
                             color="gray"
                             weight="regular"
-                            className="max-w-[220px] truncate">
+                            className="max-w-[200px] truncate">
                             {ticketType.description}
                           </Text>
                         )}
@@ -119,7 +119,7 @@ function TicketTypeDropdown({ ticketTypes }: { ticketTypes: TicketType[] }) {
                     </Flex>
                     <Flex direction="column" align="end">
                       <Text size="2">{ticketType.price ? `$${ticketType.price}` : "Free"}</Text>
-                      <Text size="2" className="text-grayA8">
+                      <Text size="2" className="text-grayA8 text-nowrap">
                         {ticketType.ticketCapacity ? `${ticketType.ticketCapacity} capacity` : "No limit"}
                       </Text>
                     </Flex>

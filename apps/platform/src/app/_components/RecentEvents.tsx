@@ -2,6 +2,7 @@
 import { PlusIcon } from "@radix-ui/react-icons";
 import { Button, Flex, Grid, Heading, Text } from "@radix-ui/themes";
 import Link from "next/link";
+import { EventTimeline } from "~/modules/events/all/components/event-timeline";
 import { useMyEvents } from "~/modules/events/events.context";
 import { EventCard } from "~/modules/events/shared/components/event-card";
 
@@ -12,19 +13,9 @@ export function UpcomingEvents() {
     <Flex direction="column" gap="6" width="100%">
       <Heading size="6">Upcoming Events</Heading>
       {(events?.length ?? 0) > 0 && (
-        <Grid
-          width="100%"
-          columns={{
-            initial: "1",
-            md: "2",
-          }}
-          gap="6">
-          {events?.slice(0, 3).map((event) => (
-            <Flex minWidth="350px">
-              <EventCard key={event.identifier} event={event} />
-            </Flex>
-          ))}
-        </Grid>
+        <EventTimeline
+          events={events.filter((event) => new Date(event.timing.startDate).getTime() > new Date().getTime())}
+        />
       )}
       {events?.length === 0 && <EmptyState />}
     </Flex>

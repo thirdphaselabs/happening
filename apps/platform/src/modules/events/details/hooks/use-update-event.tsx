@@ -19,7 +19,7 @@ export function useUpdateEvent() {
       invalidate(identifier);
     },
     onError: (error, { identifier }) => {
-      toast.custom((id) => <NotificationCallout toastId={id} message={error.message} type="error" />);
+      toast.custom((id) => <NotificationCallout message={error.message} type="error" />);
       invalidate(identifier);
     },
   });
