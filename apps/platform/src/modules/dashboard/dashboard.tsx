@@ -8,6 +8,8 @@ import { ArrowTopRightIcon, CalendarIcon, PersonIcon, PlusIcon } from "@radix-ui
 import { Session } from "~/trpc/types";
 import { lastDayOfWeek } from "date-fns";
 import { PiCurrencyDollar } from "react-icons/pi";
+import { EventPageViews } from "./components/event-page-views";
+import { useMyEvents } from "../events/events.context";
 
 const stats: Array<Stat> = [
   {
@@ -71,7 +73,7 @@ export function Dashboard({ user }: { user: Session["user"] }) {
       <UpcomingEvents />
       <Separator orientation="horizontal" />
 
-      <QuickActions />
+      <EventPageViews  />
     </Flex>
   );
 }

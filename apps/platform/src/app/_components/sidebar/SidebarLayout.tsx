@@ -1,9 +1,14 @@
-import { Container, Flex } from "@radix-ui/themes";
+import { PlaventiSession } from "@plaventi/server/src/modules/auth/auth.controller";
+import { Flex } from "@radix-ui/themes";
 import { TopNavigation } from "../top-navbar/top-navigation";
-import { getSession } from "~/app/actions";
 
-export default async function SidebarLayout({ children }: { children: React.ReactNode }) {
-  const session = await getSession({ ensureSignedIn: true });
+export default function SidebarLayout({
+  children,
+  session,
+}: {
+  children: React.ReactNode;
+  session: PlaventiSession;
+}) {
   return (
     <>
       <TopNavigation session={session} />

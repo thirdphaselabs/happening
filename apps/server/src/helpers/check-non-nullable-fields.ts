@@ -1,4 +1,4 @@
-import { PlaventiEvent } from "../modules/event/event.model";
+import { PlaventiEvent } from "../modules/event-management/event.model";
 
 export function checkNonNullableFields<T, K extends keyof T>(
   object: T,

@@ -1,15 +1,11 @@
 "use client";
 
-import { Flex, Heading, Box, Text } from "@radix-ui/themes";
-import { useMapEvents } from "@vis.gl/react-google-maps/dist/components/map/use-map-events";
+import { Box, Flex, Text } from "@radix-ui/themes";
 import { formatDate } from "date-fns";
-import { useMyEvents } from "~/modules/events/events.context";
 import { EventCard } from "~/modules/events/shared/components/event-card";
 import { PlaventiEvent } from "~/trpc/types";
 
-export function EventsNearMe() {
-  const { events } = useMyEvents();
-
+export function EventsNearMe({ events }: { events: Array<PlaventiEvent> }) {
   const eventsGroupedByStartDate = events.reduce(
     (acc, event) => {
       const startDate = new Date(event.timing.startDate);
@@ -37,7 +33,7 @@ export function EventsNearMe() {
             </Flex>
 
             <Flex direction="column" className="flex-grow" gap="2">
-              <Flex gap="2">
+              <Flex gap="2" position="sticky" top="70px">
                 <Text weight="bold" highContrast size="3">
                   Today
                 </Text>{" "}

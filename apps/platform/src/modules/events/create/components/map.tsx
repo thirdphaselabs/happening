@@ -1,5 +1,5 @@
 "use client";
-import { Flex } from "@radix-ui/themes";
+import { Box, Flex, Skeleton } from "@radix-ui/themes";
 import { APIProvider, Map, Marker, useMarkerRef } from "@vis.gl/react-google-maps";
 import { environment } from "~/utils/env";
 
@@ -130,5 +130,13 @@ export function MapOfCity({ city }: { city: string }) {
     );
   }, [placePredictions, placesService]);
 
-  return <Flex>{placeDetails && <MapComp location={placeDetails} zoom={9} />}</Flex>;
+  return (
+    <Flex>
+      {
+        <Skeleton loading={!placeDetails}>
+          {placeDetails ? <MapComp location={placeDetails} zoom={9} /> : <Box height="175px" width="280px" />}
+        </Skeleton>
+      }
+    </Flex>
+  );
 }

@@ -6,7 +6,7 @@ import { PlaventiEvent } from "./event.model";
 import { EventPersistence } from "./event.persistence";
 import { CreateEvent } from "./use-cases/create-event";
 
-export class EventService {
+export class EventManagementService {
   private eventPersistence: EventPersistence;
   private createEvent: CreateEvent;
 

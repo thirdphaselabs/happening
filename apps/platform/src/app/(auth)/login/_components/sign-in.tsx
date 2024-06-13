@@ -11,7 +11,7 @@ import { EventsManagerBadge } from "~/app/_components/EventsManagerBadge";
 import { InputOTP, InputOTPGroup, InputOTPSeparator, InputOTPSlot } from "~/components/ui/input-otp";
 import { baseAccessColor } from "~/styles/theme";
 import { api } from "~/trpc/provider";
-import { ClerkErrorType, clerkErrorTypeToCode, getExpectedClerkError } from "~/utils/error";
+import { AuthErrorType, clerkErrorTypeToCode, getExpectedAuthenticationError } from "~/utils/error";
 import { invariant } from "~/utils/helpers";
 import { LoginWithGoogle } from "../../sign-up/_components/LoginWithGoogle";
 import { SignInContextProvider, useSignInContext } from "./sign-in-context";
@@ -21,11 +21,13 @@ export function SignIn() {
   const errorCode = searchParams.get("code");
   const email = searchParams.get("email");
 
-  const isCode = errorCode === clerkErrorTypeToCode[ClerkErrorType.EmailAlreadyAssociated];
+  const isCode = errorCode === clerkErrorTypeToCode[AuthErrorType.EmailAlreadyAssociated];
+
+  console.log({ errorCode });
 
   return (
     <SignInContextProvider
-      errorCode={isCode ? ClerkErrorType.EmailAlreadyAssociated : null}
+      errorCode={isCode ? AuthErrorType.EmailAlreadyAssociated : null}
       email={email ?? undefined}>
       <SignInInner />
     </SignInContextProvider>
@@ -146,7 +148,6 @@ function EmailStep() {
             size="3"
             loading={{
               isLoading: loading,
-              loadingText: "Validating your email",
             }}>
             Continue <ArrowRightIcon />
           </Button>
@@ -178,16 +179,18 @@ function PasswordStep() {
     const formData = new FormData(e.currentTarget);
     const password = formData.get("password") as string;
     try {
+      console.log("email", email);
       const result = await signIn({
         email,
         password,
       });
       router.push("/");
     } catch (error) {
-      const { clerkErrorType, errorMessage } = getExpectedClerkError(error, [
-        ClerkErrorType.IncorrectPassword,
-        ClerkErrorType.AccountNotFound,
-        ClerkErrorType.ToManyRequests,
+      console.error("errr mate", error);
+      const { clerkErrorType, errorMessage } = getExpectedAuthenticationError(error, [
+        AuthErrorType.InvalidCredentials,
+        AuthErrorType.AccountNotFound,
+        AuthErrorType.ToManyRequests,
       ]);
       if (!clerkErrorType) {
         setError(errorMessage);
@@ -195,13 +198,13 @@ function PasswordStep() {
         return;
       }
       switch (clerkErrorType) {
-        case ClerkErrorType.IncorrectPassword:
-          setError("Incorrect password. Please try again.");
+        case AuthErrorType.InvalidCredentials:
+          setError("Invalid credentials. Please try again.");
           break;
-        case ClerkErrorType.AccountNotFound:
+        case AuthErrorType.AccountNotFound:
           setError("Account not found. Please sign up.");
           break;
-        case ClerkErrorType.ToManyRequests:
+        case AuthErrorType.ToManyRequests:
           setError("Too many requests. Please try again later.");
           break;
         default:
@@ -275,7 +278,6 @@ function PasswordStep() {
             size="3"
             loading={{
               isLoading: loading,
-              loadingText: "Validating credentials",
             }}>
             Continue <ArrowRightIcon />
           </Button>
@@ -336,12 +338,12 @@ export function ResetPassword() {
       }
       alert("error");
     } catch (error) {
-      const { clerkErrorType, errorMessage } = getExpectedClerkError(error, [
-        ClerkErrorType.AccountNotFound,
-        ClerkErrorType.PasswordFoundInBreach,
-        ClerkErrorType.IncorrectOTPCode,
-        ClerkErrorType.VerificationFailedTooManyAttempts,
-        ClerkErrorType.VerificationExpired,
+      const { clerkErrorType, errorMessage } = getExpectedAuthenticationError(error, [
+        AuthErrorType.AccountNotFound,
+        AuthErrorType.PasswordFoundInBreach,
+        AuthErrorType.IncorrectOTPCode,
+        AuthErrorType.VerificationFailedTooManyAttempts,
+        AuthErrorType.VerificationExpired,
       ]);
       if (!clerkErrorType) {
         setError(errorMessage);
@@ -349,20 +351,20 @@ export function ResetPassword() {
         return;
       }
       switch (clerkErrorType) {
-        case ClerkErrorType.IncorrectOTPCode:
+        case AuthErrorType.IncorrectOTPCode:
           setOtpError("Incorrect code. Please try again.");
           break;
-        case ClerkErrorType.AccountNotFound:
+        case AuthErrorType.AccountNotFound:
           setError("Account not found. Please sign up.");
           break;
-        case ClerkErrorType.PasswordFoundInBreach:
+        case AuthErrorType.PasswordFoundInBreach:
           setError("Password found in breach. Please try another one.");
           break;
-        case ClerkErrorType.VerificationFailedTooManyAttempts:
+        case AuthErrorType.VerificationFailedTooManyAttempts:
           setError("Too many failed attempts. Please try again.");
           setShowReset(true);
           break;
-        case ClerkErrorType.VerificationExpired:
+        case AuthErrorType.VerificationExpired:
           setError("Verification code expired. Please try again.");
           setShowReset(true);
           break;
@@ -398,7 +400,6 @@ export function ResetPassword() {
               size="3"
               loading={{
                 isLoading: loading,
-                loadingText: "Validating credentials",
               }}>
               Send reset instructions{" "}
             </Button>
@@ -475,7 +476,6 @@ export function ResetPassword() {
             size="3"
             loading={{
               isLoading: loading,
-              loadingText: "Validating credentials",
             }}
             error={{
               errorText: otpError ?? undefined,

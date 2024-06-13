@@ -7,18 +7,23 @@ export function assertError(error: unknown): asserts error is Error {
   }
 }
 
-export function getTRPCError(error: unknown): TRPCError | null {
-  const errorObj = error as { name?: string; data: unknown };
-  if (errorObj?.name === "TRPCClientError") {
-    return JSON.parse(JSON.stringify(errorObj.data as TRPCError)) as TRPCError;
+export function getTRPCError(error: unknown): { code: string; message: string } | null {
+  console.log("error", error);
+  const errorObj = error as { shape: { code: string; message: string } };
+  console.log("errorObj", JSON.stringify(errorObj, null, 2));
+  if ("shape" in errorObj) {
+    return {
+      code: errorObj.shape.code,
+      message: errorObj.shape.message,
+    };
   }
   return null;
 }
 
-export enum ClerkErrorType {
+export enum AuthErrorType {
   EmailAlreadyAssociated = "EmailAlreadyAssociated",
   PasswordTooShort = "PasswordTooShort",
-  IncorrectPassword = "IncorrectPassword",
+  InvalidCredentials = "InvalidCredentials",
   AccountNotFound = "AccountNotFound",
   IncorrectOTPCode = "IncorrectOTPCode",
   VerificationFailedTooManyAttempts = "VerificationFailedTooManyAttempts",
@@ -27,16 +32,16 @@ export enum ClerkErrorType {
   ToManyRequests = "ToManyRequests",
 }
 
-export const clerkErrorTypeToCode: Record<ClerkErrorType, string> = {
-  [ClerkErrorType.EmailAlreadyAssociated]: "form_identifier_exists",
-  [ClerkErrorType.PasswordTooShort]: "form_password_length_too_short",
-  [ClerkErrorType.IncorrectPassword]: "form_password_incorrect",
-  [ClerkErrorType.AccountNotFound]: "form_identifier_not_found",
-  [ClerkErrorType.IncorrectOTPCode]: "form_code_incorrect",
-  [ClerkErrorType.VerificationFailedTooManyAttempts]: "verification_failed",
-  [ClerkErrorType.PasswordFoundInBreach]: "form_password_pwned",
-  [ClerkErrorType.VerificationExpired]: "verification_expired",
-  [ClerkErrorType.ToManyRequests]: "too_many_requests",
+export const clerkErrorTypeToCode: Record<AuthErrorType, string> = {
+  [AuthErrorType.EmailAlreadyAssociated]: "form_identifier_exists",
+  [AuthErrorType.PasswordTooShort]: "form_password_length_too_short",
+  [AuthErrorType.InvalidCredentials]: "invalid_credentials",
+  [AuthErrorType.AccountNotFound]: "form_identifier_not_found",
+  [AuthErrorType.IncorrectOTPCode]: "form_code_incorrect",
+  [AuthErrorType.VerificationFailedTooManyAttempts]: "verification_failed",
+  [AuthErrorType.PasswordFoundInBreach]: "form_password_pwned",
+  [AuthErrorType.VerificationExpired]: "verification_expired",
+  [AuthErrorType.ToManyRequests]: "too_many_requests",
 };
 
 const clerkErrorSchema = z.object({
@@ -58,17 +63,19 @@ function parseClerkError(error: unknown): ClerkError | null {
   }
 }
 
-export function getExpectedClerkError(
+export function getExpectedAuthenticationError(
   error: unknown,
-  expected: ClerkErrorType[],
-): { clerkErrorType: ClerkErrorType; errorMessage: null } | { clerkErrorType: null; errorMessage: string } {
-  const clerkError = parseClerkError(error);
+  expected: AuthErrorType[],
+): { clerkErrorType: AuthErrorType; errorMessage: null } | { clerkErrorType: null; errorMessage: string } {
+  const trpcError = getTRPCError(error);
+
+  console.log("trpcError", trpcError);
 
   for (const type of expected) {
-    if (clerkError?.errors[0].code === clerkErrorTypeToCode[type]) {
+    if (trpcError?.message === clerkErrorTypeToCode[type]) {
       return { clerkErrorType: type, errorMessage: null };
     }
   }
 
-  return { clerkErrorType: null, errorMessage: clerkError?.errors[0].message ?? "An error occurred." };
+  return { clerkErrorType: null, errorMessage: trpcError?.message ?? "An error occurred." };
 }

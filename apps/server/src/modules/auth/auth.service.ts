@@ -9,6 +9,8 @@ import { sealData } from "iron-session";
 import { PlaventiSession } from "./auth.controller";
 import { profileInclude } from "../profile/entities/profile.entity";
 import { prisma } from "@plaventi/database";
+import { assertError } from "../../helpers/utils";
+import { parseWorkOSError } from "./helpers/workos-error-parser";
 
 export enum AuthenticationMethod {
   Email = "email",
@@ -34,42 +36,52 @@ export class AuthService {
     };
   }
   async signIn(args: { email: string; password: string }) {
-    const response = await workos.userManagement.authenticateWithPassword({
-      clientId: process.env.WORKOS_CLIENT_ID || "",
-      email: String(args.email),
-      password: String(args.password),
-    });
+    try {
+      const response = await workos.userManagement.authenticateWithPassword({
+        clientId: process.env.WORKOS_CLIENT_ID || "",
+        email: String(args.email),
+        password: String(args.password),
+      });
 
-    const decodedAccessToken = await jwtVerify(response.accessToken, JWKS);
-    const sessionId = decodedAccessToken.payload.sid as string;
+      const decodedAccessToken = await jwtVerify(response.accessToken, JWKS);
+      const sessionId = decodedAccessToken.payload.sid as string;
 
-    const profile = await prisma.profile.findUnique({
-      where: {
-        workosId: response.user.id,
-      },
-      include: profileInclude,
-    });
+      const profile = await prisma.profile.findUnique({
+        where: {
+          workosId: response.user.id,
+        },
+        include: profileInclude,
+      });
 
-    if (!profile) {
+      if (!profile) {
+        throw new TRPCError({
+          code: "UNAUTHORIZED",
+          message: "No user profile found",
+        });
+      }
+
+      const sessionData: PlaventiSession = {
+        sessionId: sessionId,
+        accessToken: response.accessToken,
+        refreshToken: response.refreshToken,
+        user: response.user,
+        impersonator: response.impersonator,
+        profile,
+        organisationId: profile.team?.workosOrganisationId ?? null,
+      };
+
+      const encryptedSession = await sealData(sessionData, { password: environment.WORKOS_COOKIE_PASSWORD });
+
+      return { success: true, encryptedSession };
+    } catch (error) {
+      const { code, message, status } = parseWorkOSError(error);
+
+      console.error("Error signing in", error);
       throw new TRPCError({
-        code: "INTERNAL_SERVER_ERROR",
-        message: "An error occurred while fetching user profile",
+        code: "UNAUTHORIZED",
+        message: code,
       });
     }
-
-    const sessionData: PlaventiSession = {
-      sessionId: sessionId,
-      accessToken: response.accessToken,
-      refreshToken: response.refreshToken,
-      user: response.user,
-      impersonator: response.impersonator,
-      profile,
-      organisationId: profile.team?.workosOrganisationId ?? null,
-    };
-
-    const encryptedSession = await sealData(sessionData, { password: environment.WORKOS_COOKIE_PASSWORD });
-
-    return encryptedSession;
   }
 
   async signUp(args: { email: string; password: string }) {

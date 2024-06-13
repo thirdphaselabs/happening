@@ -4,10 +4,10 @@ import { workOsWithOrgProcedure } from "../../trpc/procedures/workOsProcedure";
 import { eventDTO, eventDTOs } from "./dto/event.dto";
 import { getEventDTO } from "./dto/get-event.dto";
 import { updateEventDTO } from "./dto/update-event.dto";
-import { EventService } from "./event.service";
+import { EventManagementService } from "./event.service";
 import { toEventDTO } from "./mappers/toEventDTO.mapper";
 
-const eventService = new EventService();
+const eventService = new EventManagementService();
 
 export const eventsRouter = createTRPCRouter({
   all: workOsWithOrgProcedure.output(eventDTOs).query(async ({ ctx }) => {

@@ -22,7 +22,7 @@ import { EventsManagerBadge } from "~/app/_components/EventsManagerBadge";
 import { InputOTP, InputOTPGroup, InputOTPSeparator, InputOTPSlot } from "~/components/ui/input-otp";
 import { baseAccessColor } from "~/styles/theme";
 import { api } from "~/trpc/provider";
-import { ClerkErrorType, clerkErrorTypeToCode, getExpectedClerkError } from "~/utils/error";
+import { AuthErrorType, clerkErrorTypeToCode, getExpectedAuthenticationError } from "~/utils/error";
 import { invariant } from "~/utils/helpers";
 import { GoToLogin } from "./GoToLogin";
 import { LoginWithGoogle } from "./LoginWithGoogle";
@@ -119,7 +119,7 @@ function EmailStep() {
     }
 
     if (isEmailVerified) {
-      router.push("/sign-in?code=email_verified");
+      router.push("/login?code=form_identifier_exists");
       return;
     }
 
@@ -156,7 +156,6 @@ function EmailStep() {
             size="3"
             loading={{
               isLoading: loading,
-              loadingText: "Validating your email",
             }}>
             Continue <ArrowRightIcon />
           </Button>
@@ -192,10 +191,10 @@ function PasswordStep() {
       setUserId(user.id);
       setStage("email-verification");
     } catch (error) {
-      const { clerkErrorType, errorMessage } = getExpectedClerkError(error, [
-        ClerkErrorType.EmailAlreadyAssociated,
-        ClerkErrorType.PasswordTooShort,
-        ClerkErrorType.PasswordFoundInBreach,
+      const { clerkErrorType, errorMessage } = getExpectedAuthenticationError(error, [
+        AuthErrorType.EmailAlreadyAssociated,
+        AuthErrorType.PasswordTooShort,
+        AuthErrorType.PasswordFoundInBreach,
       ]);
 
       if (!clerkErrorType) {
@@ -204,13 +203,13 @@ function PasswordStep() {
       }
 
       switch (clerkErrorType) {
-        case ClerkErrorType.EmailAlreadyAssociated:
+        case AuthErrorType.EmailAlreadyAssociated:
           router.push("/sign-in?code=form_identifier_exists");
           return;
-        case ClerkErrorType.PasswordTooShort:
+        case AuthErrorType.PasswordTooShort:
           setError("Password is too short.");
           return;
-        case ClerkErrorType.PasswordFoundInBreach:
+        case AuthErrorType.PasswordFoundInBreach:
           setError("Password has been found in breach. Please try another one.");
           return;
         default:
@@ -280,7 +279,6 @@ function PasswordStep() {
             size="3"
             loading={{
               isLoading: loading,
-              loadingText: "Validating credentials",
             }}>
             Continue <ArrowRightIcon />
           </Button>
@@ -366,9 +364,9 @@ function EmailVerification() {
         router.push("/onboarding");
       }
     } catch (error) {
-      const { clerkErrorType, errorMessage } = getExpectedClerkError(error, [
-        ClerkErrorType.IncorrectOTPCode,
-        ClerkErrorType.VerificationFailedTooManyAttempts,
+      const { clerkErrorType, errorMessage } = getExpectedAuthenticationError(error, [
+        AuthErrorType.IncorrectOTPCode,
+        AuthErrorType.VerificationFailedTooManyAttempts,
       ]);
       if (!clerkErrorType) {
         setError(errorMessage);
@@ -376,10 +374,10 @@ function EmailVerification() {
         return;
       }
       switch (clerkErrorType) {
-        case ClerkErrorType.IncorrectOTPCode:
+        case AuthErrorType.IncorrectOTPCode:
           setError("Incorrect code. Please try again.");
           break;
-        case ClerkErrorType.VerificationFailedTooManyAttempts:
+        case AuthErrorType.VerificationFailedTooManyAttempts:
           setError("Verification failed, too many attempts.");
           setShowReset(true);
           break;
@@ -436,7 +434,6 @@ function EmailVerification() {
               }}
               loading={{
                 isLoading: loading,
-                loadingText: "Verifying code",
               }}
               error={{
                 isError: error !== null,

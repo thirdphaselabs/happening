@@ -21,7 +21,6 @@ type SignUpContextProviderProps = {
   children: ReactNode;
   userId: string | null;
   email: string | null;
-  password: string | null;
   isMissingPassword?: boolean;
   ticket?: string;
 };

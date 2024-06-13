@@ -23,7 +23,7 @@ export async function EventDetailsLayout({
 
   return (
     <EventDetailsContextProvider event={event}>
-      <Flex direction="column" gap="3" mt="4" className="w-full">
+      <Flex direction="column" gap="3" mt="4" mb="6" className="w-full">
         <Container size="2">
           <Link size="2" color="gray" className="flex items-center gap-1 font-medium" mb="2" href="/events">
             9-5 Events

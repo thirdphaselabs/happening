@@ -22,7 +22,7 @@ export function useCreateOrganization() {
         name,
         domain,
       });
-      await refresh();
+      await refresh({});
       router.push(`${computeOnboardingPath(nextStep)}?domain=${domain}`);
     } catch (error) {
       assertError(error);

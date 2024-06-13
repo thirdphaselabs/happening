@@ -124,3 +124,7 @@
 .rt-BaseTabList {
   box-shadow: none;
 }
+
+.tremor-Legend-legendItem {
+  gap: 4px;
+}

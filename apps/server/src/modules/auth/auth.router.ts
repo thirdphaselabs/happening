@@ -22,9 +22,9 @@ export const authRouter = createTRPCRouter({
       }),
     )
     .mutation(async ({ ctx, input }) => {
-      const accessToken = await authService.signIn(input);
+      const { encryptedSession } = await authService.signIn(input);
 
-      ctx.res.cookie("wos-session", accessToken, {});
+      ctx.res.cookie("wos-session", encryptedSession, {});
     }),
   signUp: publicProcedure
     .input(

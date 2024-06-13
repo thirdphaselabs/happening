@@ -1,7 +1,7 @@
 "use client";
 
 import { createContext, useContext, type ReactNode, useState } from "react";
-import { ClerkErrorType } from "~/utils/error";
+import { AuthErrorType } from "~/utils/error";
 import { invariant } from "~/utils/helpers";
 
 type SignInState = {
@@ -10,7 +10,7 @@ type SignInState = {
   email?: string;
   setEmail: (email: string) => void;
   setStage: (stage: SignInState["stage"]) => void;
-  errorCode: ClerkErrorType.EmailAlreadyAssociated | null;
+  errorCode: AuthErrorType.EmailAlreadyAssociated | null;
   clearError: () => void;
 };
 
@@ -18,7 +18,7 @@ const SignInContext = createContext<SignInState | undefined>(undefined);
 
 type SignInContextProviderProps = {
   children: ReactNode;
-  errorCode: ClerkErrorType.EmailAlreadyAssociated | null;
+  errorCode: AuthErrorType.EmailAlreadyAssociated | null;
   email?: string;
 };
 
@@ -29,7 +29,7 @@ export function SignInContextProvider({
 }: SignInContextProviderProps) {
   const [stage, setStage] = useState<SignInState["stage"]>(initialEmail ? "password" : "email");
   const [email, setEmail] = useState<SignInState["email"]>(initialEmail);
-  const [errorCode, setErrorCode] = useState<ClerkErrorType.EmailAlreadyAssociated | null>(initialErrorCode);
+  const [errorCode, setErrorCode] = useState<AuthErrorType.EmailAlreadyAssociated | null>(initialErrorCode);
 
   return (
     <SignInContext.Provider

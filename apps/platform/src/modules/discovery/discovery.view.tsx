@@ -3,8 +3,10 @@ import { Box, Button, Container, Flex, Heading, IconButton, Text } from "@radix-
 import { RiMap2Line } from "@remixicon/react";
 import { EventsNearMe } from "./components/events-near-me";
 import { MapComp, MapOfCity } from "../events/create/components/map";
+import { serverClient } from "~/trpc/server";
 
-export function Discovery() {
+export async function Discovery() {
+  const events = await serverClient.eventDiscovery.allForCity.query();
   return (
     <Container size="2" overflow="visible">
       <Flex direction="column" gap="6" my="6" overflow="visible">
@@ -35,18 +37,19 @@ export function Discovery() {
 
           <Flex width="100%" gap="8" overflow="visible">
             <Flex gap="4" mt="9" width="2/3" className="w-fit">
-              <EventsNearMe />
+              <EventsNearMe events={events} />
             </Flex>
             <Flex
               direction="column"
               gap="4"
               mt="9"
               width="280px"
+              minWidth="280px"
               className="h-fit"
               position="sticky"
               style={{
                 position: "-webkit-sticky",
-                top: "90px",
+                top: "70px",
               }}
               top="0">
               <Flex direction="column" gap="2">

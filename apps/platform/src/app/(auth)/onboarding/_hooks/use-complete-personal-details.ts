@@ -23,7 +23,7 @@ export function useCompletePersonalDetails() {
 
     try {
       const data = await mutateAsync({ firstName, lastName });
-      await refresh();
+      await refresh({});
       router.push(computeOnboardingPath(data.nextStep));
     } catch (error) {
       assertError(error);

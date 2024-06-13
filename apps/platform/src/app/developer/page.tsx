@@ -26,7 +26,6 @@ export default function Developer() {
             }}
             loading={{
               isLoading,
-              loadingText: "Resetting onboarding",
             }}
             success={{
               isSuccess,
