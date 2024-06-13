@@ -10,13 +10,13 @@ export default function NavigationItems() {
   const { activeRoute, navigationItems } = useNavigation();
   const pathName = usePathname();
 
-  const isLargerContainer = pathName === "/events/create";
+  const isLargerContainer = pathName === "/events/create" || !activeRoute;
 
   return (
     <Container size={isLargerContainer ? "3" : "2"} align="center">
       <Flex align="center" gap="5" className="h-[24px]">
         {navigationItems.map((item) => {
-          const isActive = activeRoute.route === item.route;
+          const isActive = activeRoute?.route === item.route;
           return (
             <Link key={item.route} href={item.route} className="flex w-fit">
               <Button

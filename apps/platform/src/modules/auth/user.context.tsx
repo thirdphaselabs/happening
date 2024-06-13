@@ -50,3 +50,13 @@ export function useUser() {
 
   return contextValue;
 }
+
+export function useOptionalUser() {
+  const contextValue = useContext(UserContext);
+
+  if (!contextValue) {
+    return null;
+  }
+
+  return contextValue;
+}

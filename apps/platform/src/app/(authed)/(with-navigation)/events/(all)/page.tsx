@@ -1,3 +1,3 @@
-import { Events } from "~/modules/events/all/events";
+import { Events } from "~/modules/event-management/all/events";
 
 export default Events;

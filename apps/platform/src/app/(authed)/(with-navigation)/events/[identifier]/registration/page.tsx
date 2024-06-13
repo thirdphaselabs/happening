@@ -1,3 +1,3 @@
-import { EventDetailsRegistrationView } from "~/modules/events/details/views/registration.view";
+import { EventDetailsRegistrationView } from "~/modules/event-management/details/views/registration.view";
 
 export default EventDetailsRegistrationView;

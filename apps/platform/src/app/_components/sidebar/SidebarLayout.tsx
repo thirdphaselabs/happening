@@ -7,7 +7,7 @@ export default function SidebarLayout({
   session,
 }: {
   children: React.ReactNode;
-  session: PlaventiSession;
+  session: PlaventiSession | null;
 }) {
   return (
     <>

@@ -1,3 +1,5 @@
+"use client";
+
 import { ImageIcon } from "@radix-ui/react-icons";
 import { AspectRatio, Flex, IconButton } from "@radix-ui/themes";
 import Image from "next/image";

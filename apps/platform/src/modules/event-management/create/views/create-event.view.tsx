@@ -10,7 +10,6 @@ import { TimeSelect } from "~/app/_components/TimeSelect";
 import { TimezoneSelect } from "~/app/_components/TimezoneSelect";
 import { useTextareaAutoHeight } from "~/app/_hooks/useAutoReszieTextArea";
 
-import { VisibilitySelector } from "~/modules/events/create/components/visibility-selector";
 import { Capacity } from "../components/capacity";
 import { DateSelect } from "../components/date-select";
 import { EventDescription } from "../components/event-description";
@@ -19,6 +18,7 @@ import { EventName } from "../components/event-name";
 import { Tickets } from "../components/tickets";
 import { useEventBuilderContext } from "../context/event-builder.context";
 import { EventImage } from "../components/event-image";
+import { VisibilitySelector } from "../components/visibility-selector";
 
 export function CreateEvent() {
   const {

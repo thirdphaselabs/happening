@@ -1,3 +1,5 @@
+"use client";
+
 import { TextArea } from "@radix-ui/themes";
 import { useRef } from "react";
 import { useTextareaAutoHeight } from "~/app/_hooks/useAutoReszieTextArea";

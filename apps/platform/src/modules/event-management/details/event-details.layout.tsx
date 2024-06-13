@@ -39,7 +39,7 @@ export async function EventDetailsLayout({
               {event.title}
             </Heading>
             <Flex>
-              <Link href="/events">
+              <Link href={`/event/${event.identifier}`}>
                 <Button color="gray" variant="soft" className="text-nowrap no-underline">
                   <ArrowTopRightIcon />
                   Event page

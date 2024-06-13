@@ -99,7 +99,7 @@ export function EventDetailsOverviewView() {
           View Insights
         </Button>
       </Flex>
-      <Flex width="100%" className="mb-5 gap-3 rounded-xl bg-white/75 p-3">
+      <Flex width="100%" className="mb-5 gap-4 rounded-xl bg-white/75 p-3">
         <Flex className="w-1/2">
           <Flex className="bg-grayA2 relative w-full items-end justify-end overflow-hidden rounded-lg p-2 ">
             <Image

@@ -14,6 +14,12 @@ export async function middleware(request: NextRequest) {
     return NextResponse.next();
   }
 
+  const isEventPage = requestedPathname.startsWith("/event/");
+
+  if (isEventPage) {
+    return NextResponse.next();
+  }
+
   if (!session || !session.profile) {
     const loginUrl = new URL(Routes.Login, request.nextUrl);
     return NextResponse.redirect(loginUrl);

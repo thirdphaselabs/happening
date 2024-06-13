@@ -2,14 +2,13 @@ import { Separator, TicketIcon } from "@plaventi/ui";
 import { Button, ChevronDownIcon, Flex, Grid, Heading } from "@radix-ui/themes";
 import Link from "next/link";
 import { UpcomingEvents } from "~/app/_components/RecentEvents";
-import { DashboardStat, Stat } from "../events/all/components/dashboard-stat";
 import { QuickActions } from "./components/quick-actions";
 import { ArrowTopRightIcon, CalendarIcon, PersonIcon, PlusIcon } from "@radix-ui/react-icons";
 import { Session } from "~/trpc/types";
 import { lastDayOfWeek } from "date-fns";
 import { PiCurrencyDollar } from "react-icons/pi";
 import { EventPageViews } from "./components/event-page-views";
-import { useMyEvents } from "../events/events.context";
+import { DashboardStat } from "../event-management/all/components/dashboard-stat";
 
 const stats: Array<Stat> = [
   {
@@ -73,7 +72,7 @@ export function Dashboard({ user }: { user: Session["user"] }) {
       <UpcomingEvents />
       <Separator orientation="horizontal" />
 
-      <EventPageViews  />
+      <EventPageViews />
     </Flex>
   );
 }

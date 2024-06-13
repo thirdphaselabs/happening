@@ -1,3 +1,5 @@
+"use client";
+
 import { Button, TextFieldInput } from "@plaventi/ui";
 import { Cross2Icon, MagnifyingGlassIcon, SewingPinIcon } from "@radix-ui/react-icons";
 import { Flex, Heading, IconButton, Popover, ScrollArea, Text } from "@radix-ui/themes";
@@ -8,7 +10,6 @@ import { useDebounce } from "~/app/_hooks/use-debounce";
 import { MapComp } from "./map";
 import { environment } from "~/utils/env";
 import { useEventBuilderContext } from "../context/event-builder.context";
-
 
 const API_KEY = environment.googlePlacesApiKey;
 

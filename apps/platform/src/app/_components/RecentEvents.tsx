@@ -2,9 +2,8 @@
 import { PlusIcon } from "@radix-ui/react-icons";
 import { Button, Flex, Grid, Heading, Text } from "@radix-ui/themes";
 import Link from "next/link";
-import { EventTimeline } from "~/modules/events/all/components/event-timeline";
-import { useMyEvents } from "~/modules/events/events.context";
-import { EventCard } from "~/modules/events/shared/components/event-card";
+import { EventTimeline } from "~/modules/event-management/all/components/event-timeline";
+import { useMyEvents } from "~/modules/event-management/events.context";
 
 export function UpcomingEvents() {
   const { events } = useMyEvents();

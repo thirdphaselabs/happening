@@ -4,7 +4,7 @@ import { Flex, Heading, Text } from "@radix-ui/themes";
 import { AreaChart } from "@tremor/react";
 import { formatDate } from "date-fns";
 import { useMemo } from "react";
-import { useMyEvents } from "~/modules/events/events.context";
+import { useMyEvents } from "~/modules/event-management/events.context";
 import { PlaventiEvent } from "~/trpc/types";
 
 const chartdata = [

@@ -44,9 +44,11 @@ export default function useNavigation() {
   const pathname = usePathname();
 
   const activeRoute =
-    navigationItems
-      .filter((t) => t.route !== Route.Dashboard)
-      .find((tab) => pathname.startsWith(tab.route.valueOf())) ?? navigationItems[0];
+    pathname === Route.Dashboard
+      ? Route.Dashboard
+      : navigationItems
+          .filter((t) => t.route !== Route.Dashboard)
+          .find((tab) => pathname.startsWith(tab.route.valueOf()));
 
   return { navigationItems, activeRoute };
 }

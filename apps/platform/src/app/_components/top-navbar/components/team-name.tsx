@@ -1,16 +1,18 @@
 "use client";
 
 import { Text } from "@radix-ui/themes";
-import { useUser } from "~/modules/auth/user.context";
+import { useOptionalUser, useUser } from "~/modules/auth/user.context";
 
 export function TeamName() {
-  const { profile } = useUser();
+  const user = useOptionalUser();
 
-  if (!profile.team) return null;
+  if (!user) return null;
+
+  if (!user.profile.team) return null;
 
   return (
     <Text color="gray" size="2" className="text-gray8">
-      {profile.team.name}
+      {user.profile.team.name}
     </Text>
   );
 }

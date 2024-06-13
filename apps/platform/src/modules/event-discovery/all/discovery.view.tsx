@@ -2,8 +2,8 @@ import { MagnifyingGlassIcon } from "@radix-ui/react-icons";
 import { Box, Button, Container, Flex, Heading, IconButton, Text } from "@radix-ui/themes";
 import { RiMap2Line } from "@remixicon/react";
 import { EventsNearMe } from "./components/events-near-me";
-import { MapComp, MapOfCity } from "../events/create/components/map";
 import { serverClient } from "~/trpc/server";
+import { MapOfCity } from "~/modules/event-management/create/components/map";
 
 export async function Discovery() {
   const events = await serverClient.eventDiscovery.allForCity.query();

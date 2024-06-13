@@ -5,6 +5,7 @@ import { environment } from "~/utils/env";
 
 import usePlacesService from "react-google-autocomplete/lib/usePlacesAutocompleteService";
 import { useEffect, useState } from "react";
+import { PlaventiEvent } from "~/trpc/types";
 
 const API_KEY = environment.googlePlacesApiKey;
 
@@ -69,9 +70,11 @@ const API_KEY = environment.googlePlacesApiKey;
 export function MapComp({
   location,
   zoom = 13,
+  minWidth = "280px",
 }: {
   zoom?: number;
   location: google.maps.places.PlaceResult;
+  minWidth?: string;
 }) {
   const lat = location.geometry?.location?.lat();
   const lng = location.geometry?.location?.lng();
@@ -88,7 +91,7 @@ export function MapComp({
     <APIProvider apiKey={environment.googlePlacesApiKey}>
       <Flex className="rounded-xl" overflow="hidden">
         <Map
-          style={{ width: "100%", height: "175px", minWidth: "280px", borderRadius: "8px" }}
+          style={{ width: "100%", height: "175px", minWidth, borderRadius: "8px" }}
           defaultCenter={{
             lat,
             lng,
@@ -135,6 +138,39 @@ export function MapOfCity({ city }: { city: string }) {
       {
         <Skeleton loading={!placeDetails}>
           {placeDetails ? <MapComp location={placeDetails} zoom={9} /> : <Box height="175px" width="280px" />}
+        </Skeleton>
+      }
+    </Flex>
+  );
+}
+
+export function EventDetailsMap({ location }: { location: PlaventiEvent["location"] }) {
+  const { placesService, placePredictions } = usePlacesService({
+    apiKey: API_KEY,
+  });
+
+  const [placeDetails, setPlaceDetails] = useState<google.maps.places.PlaceResult | null>(null);
+
+  useEffect(() => {
+    placesService?.getDetails(
+      {
+        placeId: location.placeId,
+      },
+      (place) => {
+        setPlaceDetails(place);
+      },
+    );
+  }, [placePredictions, location]);
+
+  return (
+    <Flex width="100%">
+      {
+        <Skeleton loading={!placeDetails}>
+          {placeDetails ? (
+            <MapComp location={placeDetails} zoom={9} minWidth="588px" />
+          ) : (
+            <Box height="175px" width="588px" />
+          )}
         </Skeleton>
       }
     </Flex>

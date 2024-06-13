@@ -3,8 +3,8 @@ import moment from "moment-timezone";
 import { Avatar, Box, Checkbox, Flex, Popover, ScrollArea, Select, Text, TextArea } from "@radix-ui/themes";
 import { ChatBubbleIcon, ClockIcon, GlobeIcon } from "@radix-ui/react-icons";
 import { Button, TextFieldInput } from "@plaventi/ui";
-import { useEventBuilderContext } from "~/modules/events/create/context/event-builder.context";
 import { cn } from "~/lib/utils";
+import { useEventBuilderContext } from "~/modules/event-management/create/context/event-builder.context";
 
 export function TimezoneSelectInner() {
   const { setDateAndTime } = useEventBuilderContext();

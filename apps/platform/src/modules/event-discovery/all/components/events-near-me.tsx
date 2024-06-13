@@ -2,7 +2,7 @@
 
 import { Box, Flex, Text } from "@radix-ui/themes";
 import { formatDate } from "date-fns";
-import { EventCard } from "~/modules/events/shared/components/event-card";
+import { EventCard } from "~/modules/event-management/shared/components/event-card";
 import { PlaventiEvent } from "~/trpc/types";
 
 export function EventsNearMe({ events }: { events: Array<PlaventiEvent> }) {
@@ -19,6 +19,20 @@ export function EventsNearMe({ events }: { events: Array<PlaventiEvent> }) {
     {} as Record<string, typeof events>,
   );
 
+  const dayText = (date: Date) => {
+    const today = new Date();
+    const tomorrow = new Date(today);
+    tomorrow.setDate(today.getDate() + 1);
+
+    if (date.toDateString() === today.toDateString()) {
+      return "Today";
+    } else if (date.toDateString() === tomorrow.toDateString()) {
+      return "Tomorrow";
+    } else {
+      return formatDate(date, "d MMM");
+    }
+  };
+
   return (
     <Flex direction="column" gap="6">
       {Object.entries(eventsGroupedByStartDate)
@@ -33,16 +47,17 @@ export function EventsNearMe({ events }: { events: Array<PlaventiEvent> }) {
             </Flex>
 
             <Flex direction="column" className="flex-grow" gap="2">
-              <Flex gap="2" position="sticky" top="70px">
+              {/* position="sticky" top="70px" > */}
+              <Flex gap="2">
                 <Text weight="bold" highContrast size="3">
-                  Today
+                  {dayText(new Date(date))}
                 </Text>{" "}
                 <Text size="3" color="gray">
-                  {formatDate(new Date(date), "d MMM")}
+                  {formatDate(new Date(date), "iiii")}
                 </Text>
               </Flex>
               <Flex direction="column" gap="6">
-                {[...events, ...events, ...events, ...events].map((event) => (
+                {events.map((event) => (
                   <Flex>
                     <EventCard key={event.identifier} event={event} />
                   </Flex>

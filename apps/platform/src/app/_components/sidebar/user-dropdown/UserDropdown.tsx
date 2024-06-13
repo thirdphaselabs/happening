@@ -1,20 +1,20 @@
 "use client";
 
-import { Avatar, DropdownMenu, Flex, IconButton } from "@radix-ui/themes";
-import { buildOrganizationFallbackInitials } from "~/lib/utils";
-import { useUser } from "~/modules/auth/user.context";
-import { Logout } from "./Logout";
+import { DropdownMenu, Flex, IconButton } from "@radix-ui/themes";
 import { UserAvatar } from "~/components/user-avatar";
+import { useOptionalUser } from "~/modules/auth/user.context";
+import { Logout } from "./Logout";
 
 export function UserDropdown() {
-  const { user } = useUser();
-  console.log(user);
+  const user = useOptionalUser();
+  if (!user) return null;
+
   return (
     <DropdownMenu.Root>
       <DropdownMenu.Trigger>
         <IconButton variant="ghost" color="gray" className="hidden focus:outline-none md:flex">
           <Flex gap="2" align="center">
-            <UserAvatar user={user} />
+            <UserAvatar user={user.user} />
           </Flex>
         </IconButton>
       </DropdownMenu.Trigger>

@@ -11,4 +11,8 @@ export class EventDiscoveryService {
   async getEventsForCity(city: string): Promise<Array<PlaventiEvent>> {
     return await this.eventDiscoveryPersistence.getEventsForCity(city);
   }
+
+  async getEventByIdentifier(identifier: string): Promise<PlaventiEvent> {
+    return await this.eventDiscoveryPersistence.getEventByIdentifier(identifier);
+  }
 }

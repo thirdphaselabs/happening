@@ -39,8 +39,6 @@ async function verifyAccessToken(accessToken: string) {
 const hasValidSession = t.middleware(async ({ ctx, next }) => {
   const session = await getSessionFromCookie(ctx.req.cookies);
 
-  console.log("session in prod", session);
-
   if (!session) {
     throw new TRPCError({ code: "UNAUTHORIZED", message: "No session" });
   }
@@ -62,8 +60,6 @@ const hasValidSession = t.middleware(async ({ ctx, next }) => {
 
 const hasValidSessionWithOrg = t.middleware(async ({ ctx, next }) => {
   const session = await getSessionFromCookie(ctx.req.cookies);
-
-  console.log("session in prod", session);
 
   if (!session) {
     throw new TRPCError({ code: "UNAUTHORIZED", message: "No session" });

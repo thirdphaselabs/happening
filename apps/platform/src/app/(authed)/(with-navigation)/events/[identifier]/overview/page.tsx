@@ -1,3 +1,3 @@
-import { EventDetailsOverviewView } from "~/modules/events/details/views/overview.view";
+import { EventDetailsOverviewView } from "~/modules/event-management/details/views/overview.view";
 
 export default EventDetailsOverviewView;

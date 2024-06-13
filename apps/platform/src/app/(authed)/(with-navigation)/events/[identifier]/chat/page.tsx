@@ -1,3 +1,3 @@
-import { EventDetailsChatView } from "~/modules/events/details/views/chat.view";
+import { EventDetailsChatView } from "~/modules/event-management/details/views/chat.view";
 
 export default EventDetailsChatView;

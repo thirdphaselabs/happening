@@ -69,8 +69,6 @@ const messages = [
 ];
 
 export function TopNavigation({ session }: { session: PlaventiSession | null }) {
-  if (!session) return null;
-
   return (
     <>
       <Flex position="relative" top="0" className="z-[99999999] h-fit">

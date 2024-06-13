@@ -1,3 +1,3 @@
-import { EventDetailsGuestsView } from "~/modules/events/details/views/guests.view";
+import { EventDetailsGuestsView } from "~/modules/event-management/details/views/guests.view";
 
 export default EventDetailsGuestsView;

@@ -1,3 +1,3 @@
-import { EventDetailsLayout } from "~/modules/events/details/event-details.layout";
+import { EventDetailsLayout } from "~/modules/event-management/details/event-details.layout";
 
 export default EventDetailsLayout;
