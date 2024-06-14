@@ -21,6 +21,17 @@ type RefreshOptions = {
   shouldFetchUserInfo?: boolean;
 };
 
+export function OptionalUserContextProvider({
+  children,
+  session: serverSession,
+}: Partial<UserContextProviderProps>) {
+  if (!serverSession) {
+    return <>{children}</>;
+  }
+
+  return <UserContextProvider session={serverSession}>{children}</UserContextProvider>;
+}
+
 export function UserContextProvider({ children, session: serverSession }: UserContextProviderProps) {
   const [session, setSession] = useState<Session>(serverSession);
 

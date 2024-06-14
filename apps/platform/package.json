@@ -24,6 +24,8 @@
     "@radix-ui/react-slot": "^1.0.2",
     "@radix-ui/themes": "^3.0.2",
     "@remixicon/react": "^4.2.0",
+    "@stripe/react-stripe-js": "^2.7.1",
+    "@stripe/stripe-js": "^3.5.0",
     "@tanstack/react-query": "^4.18.0",
     "@tremor/react": "^3.17.2",
     "@trpc/client": "^10.45.2",
