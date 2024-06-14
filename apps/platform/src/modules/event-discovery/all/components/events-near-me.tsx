@@ -2,7 +2,7 @@
 
 import { Box, Flex, Text } from "@radix-ui/themes";
 import { formatDate } from "date-fns";
-import { EventCard } from "~/modules/event-management/shared/components/event-card";
+import { EventDiscoveryCard } from "~/modules/event-management/shared/components/event-discovery-card";
 import { PlaventiEvent } from "~/trpc/types";
 
 export function EventsNearMe({ events }: { events: Array<PlaventiEvent> }) {
@@ -59,7 +59,7 @@ export function EventsNearMe({ events }: { events: Array<PlaventiEvent> }) {
               <Flex direction="column" gap="6">
                 {events.map((event) => (
                   <Flex>
-                    <EventCard key={event.identifier} event={event} />
+                    <EventDiscoveryCard key={event.identifier} event={event} />
                   </Flex>
                 ))}
               </Flex>

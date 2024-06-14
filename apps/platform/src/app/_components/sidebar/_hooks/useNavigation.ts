@@ -1,14 +1,4 @@
-import { TicketIcon } from "@plaventi/ui";
-import {
-  ArrowTopRightIcon,
-  BackpackIcon,
-  BarChartIcon,
-  CalendarIcon,
-  ChatBubbleIcon,
-  Crosshair1Icon,
-  GridIcon,
-  HomeIcon,
-} from "@radix-ui/react-icons";
+import { CalendarIcon, Crosshair1Icon, GridIcon } from "@radix-ui/react-icons";
 import { usePathname } from "next/navigation";
 import { NavigationItem, Route } from "~/types/types";
 
@@ -45,7 +35,7 @@ export default function useNavigation() {
 
   const activeRoute =
     pathname === Route.Dashboard
-      ? Route.Dashboard
+      ? navigationItems.find((r) => r.route === Route.Dashboard)
       : navigationItems
           .filter((t) => t.route !== Route.Dashboard)
           .find((tab) => pathname.startsWith(tab.route.valueOf()));

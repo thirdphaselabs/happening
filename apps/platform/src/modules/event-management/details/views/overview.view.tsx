@@ -31,6 +31,8 @@ import { Card, ProgressBar } from "@tremor/react";
 
 import { useEventDetails } from "../context/event-details.context";
 import Image from "next/image";
+import EventDetailsDiscovery from "~/app/event/[identifier]/page";
+import { EventDetailsDiscoveryInner } from "~/modules/event-discovery/details/components/event-disovery-details";
 
 export function EventDetailsOverviewView() {
   const { event } = useEventDetails();
@@ -102,14 +104,30 @@ export function EventDetailsOverviewView() {
       <Flex width="100%" className="mb-5 gap-4 rounded-xl bg-white/75 p-3">
         <Flex className="w-1/2">
           <Flex className="bg-grayA2 relative w-full items-end justify-end overflow-hidden rounded-lg p-2 ">
-            <Image
+            {/* <figure> */}
+            <Box
+              style={{
+                transform: "scale(0.35)",
+                overflow: "hidden",
+                width: "950px",
+                height: "776px",
+                left: "24px",
+                position: "absolute",
+                transformOrigin: "0 0",
+                top: "12px",
+                padding: "8px",
+              }}>
+              <EventDetailsDiscoveryInner event={event} />
+            </Box>
+            {/* </figure> */}
+            {/* <Image
               src={event.imageUrl}
               layout="fill"
               objectFit="cover"
               className="absolute h-full w-full rounded-lg"
               alt="ecentr"
               quality={100}
-            />
+            /> */}
             <Button
               className="bg-gray12/90 w-full justify-between tracking-tight text-white"
               variant="soft"

@@ -13,7 +13,7 @@ export function ViewLocation({ event }: { event: PlaventiEvent }) {
       className="mx-0"
       onClick={() => {
         window.open(
-          `https://www.google.com/maps/search/?api=1&query=${event.location.name}&query_place_id={event.location.placeId}`,
+          `https://www.google.com/maps/search/?api=1&query=${event.location.name}&query_place_id=${event.location.placeId}`,
           "_blank",
         );
       }}>

@@ -1,6 +1,6 @@
 import { Flex, Heading, Box, Text } from "@radix-ui/themes";
 import { formatDate } from "date-fns";
-import { EventCard } from "../../shared/components/event-card";
+import { EventManageCard } from "../../shared/components/event-manage-card";
 import { PlaventiEvent } from "~/trpc/types";
 
 export function EventTimeline({ events }: { events: PlaventiEvent[] }) {
@@ -40,7 +40,7 @@ export function EventTimeline({ events }: { events: PlaventiEvent[] }) {
             <Flex direction="column" className="w-3/4" gap="6">
               {events.map((event) => (
                 <Flex>
-                  <EventCard key={event.identifier} event={event} />
+                  <EventManageCard key={event.identifier} event={event} />
                 </Flex>
               ))}
             </Flex>

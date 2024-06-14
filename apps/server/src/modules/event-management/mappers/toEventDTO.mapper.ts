@@ -27,7 +27,7 @@ export function toEventDTO(event: PlaventiEvent): EventDTO {
       placeId: event.location.googlePlaceId,
       coordinates: {
         lat: event.location.latitude,
-        lng: event.location.latitude,
+        lng: event.location.longitude,
       },
     },
     ticketing: {

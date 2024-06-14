@@ -9,6 +9,9 @@ import { TRPCReactProvider } from "../trpc/provider";
 
 import type { Metadata } from "next";
 import { TopGradient } from "./_components/TopGradient";
+import { Wrapper, Status } from "@googlemaps/react-wrapper";
+import { environment } from "~/utils/env";
+import { MapProvider } from "./_components/map-provider";
 
 export const metadata: Metadata = {
   title: "Plaventi",
@@ -16,11 +19,12 @@ export const metadata: Metadata = {
 };
 
 export default function RootLayout({ children }: { children: React.ReactNode }): JSX.Element {
+  const render = (status: Status) => <h1>{status}</h1>;
   return (
     <ClerkProvider>
       <html lang="en" style={{ backgroundColor: "#f4f5f6" }}>
         <body>
-          <Theme {...themeConfig} style={{ backgroundColor: "#f4f5f6", overflow: 'visible' }}>
+          <Theme {...themeConfig} style={{ backgroundColor: "#f4f5f6", overflow: "visible" }}>
             <TRPCReactProvider cookies={cookies().toString()}>
               <TopGradient />
               {children}

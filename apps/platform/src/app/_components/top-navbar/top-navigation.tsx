@@ -68,12 +68,18 @@ const messages = [
   },
 ];
 
-export function TopNavigation({ session }: { session: PlaventiSession | null }) {
+export function TopNavigation({
+  session,
+  isFixed = true,
+}: {
+  session: PlaventiSession | null;
+  isFixed?: boolean;
+}) {
   return (
     <>
       <Flex position="relative" top="0" className="z-[99999999] h-fit">
         <Flex
-          position="fixed"
+          position={isFixed ? "fixed" : "relative"}
           top="0"
           overflow="hidden"
           width="100%"
@@ -81,18 +87,17 @@ export function TopNavigation({ session }: { session: PlaventiSession | null }) 
           style={{ backdropFilter: "blur(16px)" }}>
           <Flex
             justify={{
-              initial: "center",
-              md: "center",
+              md: "start",
             }}
             width="100%"
             py="3"
             px="6"
             align="center">
-            <Flex className="absolute z-10 w-fit" left="6">
+            <Flex className="z-10 w-fit" gap="6">
               {/* <EventsManagerBadge /> */}
               <LogoOnlyBadge />
+              <NavigationItems />
             </Flex>
-            <NavigationItems />
             <Flex gap="4" align="center" position="absolute" right="6">
               <TeamName />
               <Link
@@ -186,7 +191,7 @@ export function TopNavigation({ session }: { session: PlaventiSession | null }) 
             className="pointer-events-none bottom-[-18px] left-1/2 top-0 -translate-x-1/2 transform md:left-[130px]">
             <Image src={navGraphic} alt="Plaventi" height={80} />
           </Flex> */}
-          <Separator />
+          {isFixed && <Separator />}
         </Flex>
       </Flex>
     </>

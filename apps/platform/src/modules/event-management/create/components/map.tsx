@@ -4,7 +4,7 @@ import { APIProvider, Map, Marker, useMarkerRef } from "@vis.gl/react-google-map
 import { environment } from "~/utils/env";
 
 import usePlacesService from "react-google-autocomplete/lib/usePlacesAutocompleteService";
-import { useEffect, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import { PlaventiEvent } from "~/trpc/types";
 
 const API_KEY = environment.googlePlacesApiKey;
@@ -113,6 +113,8 @@ export function MapOfCity({ city }: { city: string }) {
     });
 
   const [placeDetails, setPlaceDetails] = useState<google.maps.places.PlaceResult | null>(null);
+  const lat = placeDetails?.geometry?.location?.lat();
+  const lng = placeDetails?.geometry?.location?.lng();
 
   console.log({ placePredictions, placeDetails });
 
@@ -137,42 +139,66 @@ export function MapOfCity({ city }: { city: string }) {
     <Flex>
       {
         <Skeleton loading={!placeDetails}>
-          {placeDetails ? <MapComp location={placeDetails} zoom={9} /> : <Box height="175px" width="280px" />}
+          {placeDetails && lat && lng ? (
+            <MapComponentInner lat={lat} lng={lng} zoom={10} />
+          ) : (
+            <Box height="175px" width="280px" />
+          )}
         </Skeleton>
       }
     </Flex>
   );
 }
 
-export function EventDetailsMap({ location }: { location: PlaventiEvent["location"] }) {
-  const { placesService, placePredictions } = usePlacesService({
-    apiKey: API_KEY,
-  });
+import { MarkerClusterer } from "@googlemaps/markerclusterer";
+import { MapProvider } from "~/app/_components/map-provider";
 
-  const [placeDetails, setPlaceDetails] = useState<google.maps.places.PlaceResult | null>(null);
+function MapComponentInner({ lat, lng, zoom = 15 }: { lat: number; lng: number; zoom?: number }) {
+  const [map, setMap] = useState<google.maps.Map>();
+  const ref = useRef<HTMLDivElement>();
+  const [markerCluster, setMarkerClusters] = useState<MarkerClusterer>();
+  const [marker, setMarker] = useState<{ lat: number; lng: number } | undefined>();
 
   useEffect(() => {
-    placesService?.getDetails(
-      {
-        placeId: location.placeId,
-      },
-      (place) => {
-        setPlaceDetails(place);
-      },
-    );
-  }, [placePredictions, location]);
+    if (ref.current && !map) {
+      setMap(
+        new window.google.maps.Map(ref.current, {
+          center: { lat, lng },
+          zoom,
+        }),
+      );
+      setMarker({ lat, lng });
+    }
+    if (map && !markerCluster) {
+      setMarkerClusters(new MarkerClusterer({ map, markers: [] }));
+    }
+  }, [map, markerCluster]);
+
+  useEffect(() => {
+    if (marker && markerCluster) {
+      markerCluster.clearMarkers();
+      markerCluster.addMarker(
+        new window.google.maps.Marker({
+          position: { lat: marker.lat, lng: marker.lng },
+        }),
+      );
+    }
+  }, [marker, markerCluster]);
 
   return (
-    <Flex width="100%">
-      {
-        <Skeleton loading={!placeDetails}>
-          {placeDetails ? (
-            <MapComp location={placeDetails} zoom={9} minWidth="588px" />
-          ) : (
-            <Box height="175px" width="588px" />
-          )}
-        </Skeleton>
-      }
-    </Flex>
+    <>
+      <Flex
+        className="rounded-lg"
+        ref={ref as any}
+        style={{ height: "100%", width: "588px", minHeight: "175px" }}></Flex>
+    </>
+  );
+}
+
+export function MapComponent({ location }: { location: PlaventiEvent["location"] }) {
+  return (
+    <MapProvider>
+      <MapComponentInner lat={+location.coordinates.lat} lng={+location.coordinates.lng} />
+    </MapProvider>
   );
 }
