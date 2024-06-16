@@ -27,6 +27,7 @@ model Profile {
   lastName  String
   userRole  ProfileRole 
   workosId   String   @unique
+  stripeCustomerId String @unique
   createdAt DateTime @default(now())
   onboardingStatus OnboardingStatus @default(PROFILE)
 
@@ -35,12 +36,15 @@ model Profile {
   team   Team? @relation(fields: [teamId], references: [id])
   createdEvents Event[]
   guestLists GuestListAttendee[]
+  ticketsPurchased TicketPurchase[]
+  paymentAccountCustomers PaymentAccountCustomer[]
 
   @@index([workosId])
 }
 
 model Team {
   id                  String      @id @default(cuid())
+  identifier          String      @unique @default(cuid())
   workosOrganisationId String   @unique
   name                String   
   createdAt           DateTime @default(now())
@@ -50,6 +54,7 @@ model Team {
   mediaLibrary Media[]
   profiles Profile[]
   events Event[]
+  paymentAccount PaymentAccount?
 
   @@index([id])
 }
@@ -132,6 +137,8 @@ model TicketType {
 
   ticketingId String
   ticketing   Ticketing @relation(fields: [ticketingId], references: [eventId])
+  purchases TicketPurchase[]
+  guestListAttendees GuestListAttendee[]
   createdAt DateTime @default(now())
 }
 
@@ -161,10 +168,14 @@ model GuestListAttendee {
   isApproved Boolean
   createdAt DateTime @default(now())
 
-  profileId      String @unique
+  profileId      String
   profile        Profile @relation(fields: [profileId], references: [id])
   guestListId String
   guestList   GuestList @relation(fields: [guestListId], references: [id])
+  ticketTypeId String
+  ticketType   TicketType @relation(fields: [ticketTypeId], references: [id])
+
+  @@unique([profileId, guestListId])
 }
 
 model Waitlist {
@@ -178,5 +189,35 @@ model Media {
   url       String
   teamId    String
   team      Team @relation(fields: [teamId], references: [id])
+  createdAt DateTime @default(now())
+}
+
+model PaymentAccount {
+  id        String   @id @default(cuid())
+  stripeAccountId String @unique
+  
+  paymentAccountCustomers PaymentAccountCustomer[]
+  teamId    String @unique
+  team      Team @relation(fields: [teamId], references: [id])
+  createdAt DateTime @default(now())
+}
+
+model TicketPurchase {
+  id        String   @id @default(cuid())
+  srtipePaymentIntentId String
+  createdAt DateTime @default(now())
+  ticketTypeId String
+  ticketType   TicketType @relation(fields: [ticketTypeId], references: [id])
+  profileId    String
+  profile      Profile @relation(fields: [profileId], references: [id])
+}
+
+model PaymentAccountCustomer {
+  id        String   @id @default(cuid())
+  stripeCustomerId String
+  profileId    String
+  profile      Profile @relation(fields: [profileId], references: [id])
+  paymentAccountId String
+  paymentAccount   PaymentAccount @relation(fields: [paymentAccountId], references: [id])
   createdAt DateTime @default(now())
 }

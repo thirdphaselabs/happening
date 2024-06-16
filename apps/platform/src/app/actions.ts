@@ -3,6 +3,7 @@ import { cookies } from "next/headers";
 import { Session } from "~/trpc/types";
 import WorkOS from "@workos-inc/node";
 import { createRemoteJWKSet, jwtVerify } from "jose";
+import { isString } from "~/utils/helpers";
 
 const workos = new WorkOS(
   "sk_test_a2V5XzAxSEdKOFZSTkgxWTExRlRRRDA3Mzg2MjlYLHFXRWNlcGo4S211c2R3UmxKc3B1NVJQWHA",
@@ -15,6 +16,7 @@ const JWKS = createRemoteJWKSet(
 type GetSessionReturnType<T extends boolean> = T extends true ? Session : Session | null;
 
 async function verifyAccessToken(accessToken: string) {
+  console.log("accessToken aaa", accessToken);
   try {
     await jwtVerify(accessToken, JWKS);
     return true;
@@ -33,6 +35,14 @@ export async function getSession<T extends boolean>(options?: {
     password: "mcRI+dvCYeIAUu4DPlzhEkq+6nLFpW6xY0CD20hFWPytKeDtMGqU0XN6d7c/PEMp3dyNB21U5LyBHxcmxak3tA==",
     cookieName: "wos-session",
   });
+
+  if (!session || !isString(session.accessToken)) {
+    if (ensureSignedIn) {
+      throw new Error("User is not signed in");
+    } else {
+      return null as GetSessionReturnType<T>;
+    }
+  }
 
   const hasValidSession = await verifyAccessToken(session.accessToken);
 

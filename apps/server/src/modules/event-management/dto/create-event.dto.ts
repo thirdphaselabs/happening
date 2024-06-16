@@ -1,9 +1,6 @@
 import { z } from "zod";
+import { eventDTO } from "./event.dto";
 
-export const createEventDTO = z.object({
-  identifier: z.string(),
-  title: z.string(),
-  description: z.string(),
-});
+export const createEventDTO = eventDTO.omit({ id: true, host: true, status: true });
 
 export type CreateEventDTO = z.infer<typeof createEventDTO>;

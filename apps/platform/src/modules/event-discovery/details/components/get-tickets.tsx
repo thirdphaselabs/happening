@@ -2,47 +2,78 @@
 
 import { cn } from "@plaventi/ui/src/utils/helpers";
 import { CheckCircledIcon } from "@radix-ui/react-icons";
-import { Flex, Heading, Text, Button } from "@radix-ui/themes";
+import { Flex, Heading, Text, Button, Avatar, Link } from "@radix-ui/themes";
 import { useState } from "react";
 import { PlaventiEvent } from "~/trpc/types";
 import { BuyTickets } from "./buy-tickets";
 import { StripeElementsOptions, loadStripe } from "@stripe/stripe-js";
 import { Elements } from "@stripe/react-stripe-js";
-
-const stripePromise = loadStripe(
-  "pk_test_51MzHzlAZ9Vfg7QSfkFmhU5V9rje45T7NbK3IljvjsKwAHLDKcvWmLNgx1zaN2CDemFTr97EKAOuYLA0uBWXHaNsM00ay4OFgvo",
-);
+import { api } from "~/trpc/provider";
+import { useSearchParams } from "next/navigation";
+import { useOptionalUser, useUser } from "~/modules/auth/user.context";
+import { buildOrganizationFallbackInitials, timeUntil } from "~/lib/utils";
+import { UserAvatar } from "~/components/user-avatar";
+import { RiCalendar2Line, RiShareForward2Line, RiShareForwardLine, RiTimer2Line } from "@remixicon/react";
 
 export function GetTickets({ event }: { event: PlaventiEvent }) {
   const [selectedTicketType, setSelectedTicketType] = useState(event.ticketing.types[0]);
   const [isBuyTicketsOpen, setIsBuyTicketsOpen] = useState(false);
+  const { user, profile, attending } = useUser();
 
-  const appearance = {
-    rules: {
-      ".Input": {
-        backgroundColor: "#00698016",
-        boxShadow: "none",
-        border: "none",
-        borderRadius: "9px",
-      },
+  const searchParams = useSearchParams();
+  const redirectStatus = searchParams.get("redirect_status");
 
-      ".Label": {
-        color: "#001419a6",
-        fontSize: "14px",
-        fontWeight: "500",
-        marginBottom: "4px",
-      },
+  console.log({ attending });
 
-      // See all supported class names and selector syntax below
-    },
-  };
-
-  const options: StripeElementsOptions = {
-    mode: "payment",
-    amount: 1099,
-    appearance,
-    currency: "usd",
-  };
+  if (redirectStatus === "succeeded" || attending.map((a) => a.eventId).includes(event.id)) {
+    return (
+      <Flex direction="column" width="100%" className="mb-5 gap-4 rounded-xl bg-white/50 px-5 py-4 pb-4">
+        <Flex direction="column" gap="2">
+          <UserAvatar user={user} size="2" />
+          <Flex direction="column">
+            <Heading size="5">You're In</Heading>
+            <Text size="3" color="gray">
+              A confirmation email has been sent to
+            </Text>
+            <Text size="3" color="gray" weight="medium">
+              {user.email}
+            </Text>
+          </Flex>
+        </Flex>
+        <Flex className="w-full items-center gap-3 rounded-xl bg-[#00698016] px-3 py-2" justify="between">
+          <Flex align="center" gap="3">
+            <RiTimer2Line size="18" color="gray" />
+            <Text size="3" color="gray" weight="medium">
+              Event starting in
+            </Text>
+          </Flex>
+          <Flex>
+            <Text size="3" color="sky" weight="bold">
+              {timeUntil(event.timing.startDate)}
+            </Text>
+          </Flex>
+        </Flex>
+        <Flex width="100%" justify="between">
+          <Button variant="soft" size="2" color="gray">
+            <RiCalendar2Line size="18" color="gray" />
+            Add to calendar
+          </Button>
+          <Button variant="soft" size="2" color="gray">
+            <RiShareForwardLine size="18" color="gray" />
+            Invite friends
+          </Button>
+        </Flex>
+        <Flex>
+          <Text size="2" color="gray" className="text-grayA9">
+            No longer able to attend?{" "}
+            <Link size="2" href="#" color="gray" className="text-grayA9">
+              Cancel your registration.
+            </Link>
+          </Text>
+        </Flex>
+      </Flex>
+    );
+  }
 
   return (
     <>
@@ -102,14 +133,13 @@ export function GetTickets({ event }: { event: PlaventiEvent }) {
           </Button>
         </Flex>
       </Flex>
-      <Elements stripe={stripePromise} options={options}>
-        <BuyTickets
-          ticketType={selectedTicketType}
-          event={event}
-          isOpen={isBuyTicketsOpen}
-          setIsOpen={setIsBuyTicketsOpen}
-        />
-      </Elements>
+
+      <BuyTickets
+        ticketType={selectedTicketType}
+        event={event}
+        isOpen={isBuyTicketsOpen}
+        setIsOpen={setIsBuyTicketsOpen}
+      />
     </>
   );
 }

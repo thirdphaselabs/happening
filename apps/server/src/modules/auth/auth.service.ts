@@ -11,6 +11,7 @@ import { profileInclude } from "../profile/entities/profile.entity";
 import { prisma } from "@plaventi/database";
 import { assertError } from "../../helpers/utils";
 import { parseWorkOSError } from "./helpers/workos-error-parser";
+import Stripe from "stripe";
 
 export enum AuthenticationMethod {
   Email = "email",
@@ -22,6 +23,10 @@ const authPersistence = new AuthPersistence();
 const workos = new WorkOS(environment.WORKOS_API_KEY);
 
 const JWKS = createRemoteJWKSet(new URL(workos.userManagement.getJwksUrl(environment.WORKOS_CLIENT_ID)));
+
+const stripe = new Stripe(environment.STRIPE_SECRET_KEY, {
+  apiVersion: "2023-08-16",
+});
 
 export class AuthService {
   async loginWithGoogleUrl(): Promise<{ url: string }> {
@@ -142,10 +147,15 @@ export class AuthService {
   }
   async createProfile(user: User) {
     try {
-      const profile = await authPersistence.createUser({
+      const stripeCustomer = await stripe.customers.create({
+        email: user.email,
+      });
+
+      const profile = await authPersistence.createProfile({
         workosUserId: user.id,
         firstName: user.firstName,
         lastName: user.lastName,
+        stripeCustomerId: stripeCustomer.id,
       });
 
       return profile;

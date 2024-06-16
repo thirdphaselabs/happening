@@ -11,6 +11,8 @@ export type CreateEventInput = RouterInput["event"]["create"];
 
 export type Session = RouterOutput["auth"]["session"];
 
+export type Attending = RouterOutput["profile"]["attending"];
+
 export type PageParams<K extends string> = {
   params: {
     [P in K]?: string;

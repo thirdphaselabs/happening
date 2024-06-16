@@ -1,43 +1,16 @@
 "use client";
 
-import {
-  AspectRatio,
-  Avatar,
-  Box,
-  Button,
-  Card,
-  Container,
-  Flex,
-  Heading,
-  Skeleton,
-  Text,
-  TextField,
-} from "@radix-ui/themes";
-import { FullScreenDialog as Dialog } from "../../../../components/ui/full-screen-dialog/full-screen-dialog";
-import { PlaventiEvent } from "~/trpc/types";
+import { Separator, TextFieldLabel, TextFieldLabelContainer, TextFieldRoot } from "@plaventi/ui";
+import { AspectRatio, Avatar, Container, Flex, Heading, Text, TextField } from "@radix-ui/themes";
 import Image from "next/image";
+import { buildOrganizationFallbackInitials } from "~/lib/utils";
 import { useOptionalUser } from "~/modules/auth/user.context";
-import { buildOrganizationFallbackInitials, cn } from "~/lib/utils";
-import { isError } from "@tanstack/react-query";
-import {
-  TextFieldError,
-  TextFieldInput,
-  TextFieldLabel,
-  TextFieldLabelContainer,
-  TextFieldRoot,
-  Separator,
-} from "@plaventi/ui";
+import { PlaventiEvent } from "~/trpc/types";
+import { FullScreenDialog as Dialog } from "../../../../components/ui/full-screen-dialog/full-screen-dialog";
 
-import { Elements, PaymentElement, CardElement } from "@stripe/react-stripe-js";
-import { StripeElementsOptions, loadStripe } from "@stripe/stripe-js";
+import { loadStripe } from "@stripe/stripe-js";
 import { formatDate } from "date-fns";
-import { useState } from "react";
-
-// Make sure to call `loadStripe` outside of a component’s render to avoid
-// recreating the `Stripe` object on every render.
-const stripePromise = loadStripe(
-  "pk_test_51MzHzlAZ9Vfg7QSfkFmhU5V9rje45T7NbK3IljvjsKwAHLDKcvWmLNgx1zaN2CDemFTr97EKAOuYLA0uBWXHaNsM00ay4OFgvo",
-);
+import { PaymentForm } from "./payment-form";
 
 export function BuyTickets({
   event,
@@ -51,7 +24,6 @@ export function BuyTickets({
   setIsOpen: (val: boolean) => void;
 }) {
   const user = useOptionalUser();
-  const [isLoading, setIsLoading] = useState(true);
 
   return (
     <Dialog.Root
@@ -106,22 +78,11 @@ export function BuyTickets({
                       </TextFieldRoot>
                     </Flex>
                   </Flex>
-                  <Flex direction="column" gap="4" className="relative w-full">
-                    <Heading size="5">Payment</Heading>
-
-                    <Flex direction="column" gap="3" width="100%">
-                      <Flex className={cn("w-full", { hidden: isLoading })} width="100%">
-                        <PaymentElement onReady={() => setIsLoading(false)} className="w-full" />
-                      </Flex>
-                      {isLoading && (
-                        <Skeleton loading={isLoading} className="w-full">
-                          <Box className="bg-gray3/50 h-[256px] w-full rounded-lg">loading</Box>
-                        </Skeleton>
-                      )}
-
-                      <Button size="3">Pay With Card</Button>
-                    </Flex>
-                  </Flex>
+                  <PaymentForm
+                    eventId={event.id}
+                    eventIdentifier={event.identifier}
+                    ticketTypeId={ticketType.id}
+                  />
                 </Flex>
                 <Flex className="w-2/5">
                   <Flex

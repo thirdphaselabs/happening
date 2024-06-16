@@ -1,5 +1,5 @@
 import { prisma } from "@plaventi/database";
-import { Profile } from "../../profile/entities/profile.entity";
+import { Profile, profileInclude } from "../../profile/entities/profile.entity";
 import { exponentialBackOff } from "../../../helpers/exponential-backoff";
 
 export async function getProfileWithBackOff(workosUserId: string): Promise<Profile | null> {
@@ -10,9 +10,7 @@ export async function getProfileWithBackOff(workosUserId: string): Promise<Profi
       where: {
         workosId: workosUserId,
       },
-      include: {
-        team: true,
-      },
+      include: profileInclude,
     });
 
     if (!profile) {
@@ -30,14 +28,12 @@ export async function getProfileWithBackOff(workosUserId: string): Promise<Profi
           where: {
             workosId: workosUserId,
           },
-          include: {
-            team: true,
-          },
+          include: profileInclude,
         });
       },
     }).catch((retryError) => {
       console.error("Exponential backoff fetch profile error:", retryError);
-      return null; // Handle this appropriately, perhaps set an error response
+      return null;
     });
   }
 

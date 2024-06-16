@@ -9,6 +9,7 @@ import { createExpressMiddleware } from "@trpc/server/adapters/express";
 import cookieParser from "cookie-parser";
 import { createOpenApiExpressMiddleware } from "trpc-openapi";
 import { PlaventiSession, authController } from "./modules/auth/auth.controller";
+import { paymentsController } from "./modules/payments/payments.controller";
 import { authWebhooks } from "./modules/auth/auth.webhooks";
 import { imageController } from "./controllers/image.controller";
 import { environment, initEnv } from "./environment";
@@ -32,6 +33,8 @@ initEnv();
 const port: number = 3002 as const;
 
 const app: Application = express();
+
+app.use("/api/webhooks/payments", paymentsController);
 
 app
   .use(cors({ origin: true, credentials: true }))

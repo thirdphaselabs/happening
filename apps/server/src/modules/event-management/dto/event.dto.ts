@@ -2,6 +2,7 @@ import { EventStatus } from "@prisma/client";
 import { z } from "zod";
 
 export const eventDTO = z.object({
+  id: z.string(),
   identifier: z.string(),
   title: z.string(),
   description: z.string(),
@@ -50,6 +51,11 @@ export const eventDTO = z.object({
         }),
       }),
     ),
+  }),
+  host: z.object({
+    id: z.string(),
+    name: z.string(),
+    profilePictureUrl: z.string().nullable(),
   }),
 });
 export const eventDTOs = z.array(eventDTO);

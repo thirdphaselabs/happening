@@ -8,7 +8,7 @@ import { MapOfCity } from "~/modules/event-management/create/components/map";
 export async function Discovery() {
   const events = await serverClient.eventDiscovery.allForCity.query();
   return (
-    <Container size="2" overflow="visible">
+    <Container size="3" overflow="visible">
       <Flex direction="column" gap="6" my="6" overflow="visible">
         <Box className="w-full" position="relative" overflow="visible">
           <Flex direction="column" gap="4">

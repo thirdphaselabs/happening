@@ -1,12 +1,14 @@
 import { Button } from "@plaventi/ui";
 import { ArrowTopRightIcon, CaretRightIcon, GlobeIcon } from "@radix-ui/react-icons";
-import { Box, Container, Flex, Heading, IconButton, Link, Tooltip } from "@radix-ui/themes";
+import { Box, Container, Flex, Heading, IconButton, Tooltip } from "@radix-ui/themes";
 import { notFound } from "next/navigation";
 import { serverClient } from "~/trpc/server";
 import { PageParams } from "~/trpc/types";
 import { isString } from "~/utils/helpers";
 import { EventDetailsNav } from "./components/event-details-nav";
 import { EventDetailsContextProvider } from "./context/event-details.context";
+import { ManageTeamLink } from "./components/manage-team-link";
+import Link from "next/link";
 
 export async function EventDetailsLayout({
   children,
@@ -25,10 +27,7 @@ export async function EventDetailsLayout({
     <EventDetailsContextProvider event={event}>
       <Flex direction="column" gap="3" mt="4" mb="6" className="w-full">
         <Container size="2">
-          <Link size="2" color="gray" className="flex items-center gap-1 font-medium" mb="2" href="/events">
-            9-5 Events
-            <CaretRightIcon />
-          </Link>
+          <ManageTeamLink />
           <Flex className="w-full" justify="between" align="center" gap="6">
             <Heading size="8" className="items-center">
               <Tooltip content="This event is public and available in discovery." side="top" align="center">

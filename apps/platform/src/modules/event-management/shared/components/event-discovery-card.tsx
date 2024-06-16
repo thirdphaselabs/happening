@@ -1,10 +1,8 @@
-import { GlobeIcon, PersonIcon, SewingPinIcon } from "@radix-ui/react-icons";
-import { AspectRatio, Avatar, Flex, Heading, IconButton, Text, Tooltip } from "@radix-ui/themes";
+import { AspectRatio, Avatar, Badge, Flex, Heading, Text } from "@radix-ui/themes";
 import { RiMapPin2Line } from "@remixicon/react";
 import { formatDate } from "date-fns";
 import Image from "next/image";
 import Link from "next/link";
-import { LocationIcon } from "~/components/icons/Location.icon";
 import { PlaventiEvent } from "~/trpc/types";
 
 export function EventDiscoveryCard({ event }: { event: PlaventiEvent }) {
@@ -19,15 +17,22 @@ export function EventDiscoveryCard({ event }: { event: PlaventiEvent }) {
                   {formatDate(new Date(event.timing.startDate), "HH:mm")}
                 </Text>
               </Flex>
-              <Heading size="5" color="gray" weight="medium" highContrast className="flex items-center tracking-tight leading-tighter gap-2">
+              <Heading
+                size="5"
+                color="gray"
+                weight="medium"
+                highContrast
+                className="leading-tighter flex items-center gap-2 tracking-tight">
                 {event.title}
               </Heading>
 
               <Flex direction="column" gap="1">
                 <Flex align="center" gap="2" mt="2px">
-                  <Avatar fallback="95" size="1" radius="full" />
+                  <Flex width="24px" justify="start">
+                    <Avatar fallback="95" size="1" radius="full" className="h-[18px] w-[18px] text-[10px]" />
+                  </Flex>
                   <Text color="gray" size="3" className="text-gray9 tracking-tight">
-                    By 9-5 Events
+                    By {event.host.name}
                   </Text>
                 </Flex>
                 <Flex align="center" gap="2">
@@ -38,6 +43,17 @@ export function EventDiscoveryCard({ event }: { event: PlaventiEvent }) {
                     {event.location.name}
                   </Text>
                 </Flex>
+              </Flex>
+              <Flex mt="2">
+                {event.ticketing.types[0].price ? (
+                  <Badge color="green" size="2">
+                    US{new Intl.NumberFormat("en-US", {
+                      style: "currency",
+                      currency: "USD",
+                      minimumFractionDigits: 2,
+                    }).format(event.ticketing.types[0].price)}
+                  </Badge>
+                ): <Badge color="amber">Limited Availability</Badge>}
               </Flex>
             </Flex>
             <Flex>

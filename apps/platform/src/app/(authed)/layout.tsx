@@ -5,10 +5,13 @@ import { MyEventsProvider } from "~/modules/event-management/events.context";
 
 export default async function Layout({ children }: { children: React.ReactNode }) {
   const session = await getSession({ ensureSignedIn: true });
-  const events = await serverClient.event.all.query();
+  const [events, attending] = await Promise.all([
+    serverClient.event.all.query(),
+    serverClient.profile.attending.query(),
+  ]);
 
   return (
-    <UserContextProvider session={session}>
+    <UserContextProvider session={session} attending={attending}>
       <MyEventsProvider events={events}>{children}</MyEventsProvider>
     </UserContextProvider>
   );

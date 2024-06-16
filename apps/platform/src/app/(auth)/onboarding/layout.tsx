@@ -8,7 +8,7 @@ export default async function OnboardingLayout({ children }: { children: ReactNo
   const session = await getSession({ ensureSignedIn: true });
 
   return (
-    <UserContextProvider session={session}>
+    <UserContextProvider session={session} attending={[]}>
       <Flex gap="6" direction="column">
         {children}
         <Stepper />

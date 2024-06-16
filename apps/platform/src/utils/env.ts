@@ -9,4 +9,5 @@ export function nonNullableEnvironmentVariable(key: string): string {
 export const environment = {
   googlePlacesApiKey: process.env.NEXT_PUBLIC_GOOGLE_PLACES_API_KEY as string,
   apiUrl: process.env.NEXT_PUBLIC_API_URL as string,
+  stripePublishableKey: process.env.NEXT_PUBLIC_STRIPE_PUBLISHABLE_KEY as string,
 };

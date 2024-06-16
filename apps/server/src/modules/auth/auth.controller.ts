@@ -6,7 +6,7 @@ import { withWorkOsAuth } from "../../middleware/auth";
 import { getProfileWithBackOff } from "./helpers/get-profile-with-backoff";
 import { sealData } from "iron-session";
 import { prisma } from "@plaventi/database";
-import { Profile } from "../profile/entities/profile.entity";
+import { Profile, profileInclude } from "../profile/entities/profile.entity";
 
 const workos = new WorkOS(environment.WORKOS_API_KEY);
 const clientId = environment.WORKOS_CLIENT_ID;
@@ -99,9 +99,7 @@ authController.get("/refresh", withWorkOsAuth, async (req: Request, res: Respons
     where: {
       workosId: session.user.id,
     },
-    include: {
-      team: true,
-    },
+    include: profileInclude,
   });
 
   if (!profile) {

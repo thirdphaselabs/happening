@@ -5,6 +5,7 @@ import { GetEventDTO } from "./dto/get-event.dto";
 import { UpdateEventDTO } from "./dto/update-event.dto";
 import { toEventModel } from "./mappers/toEventModel.mapper";
 import { PlaventiEvent, plaventiEventInclude } from "./event.model";
+import { CreateEventDTO } from "./dto/create-event.dto";
 
 export class EventPersistence {
   async all(auth: SessionWithOrg): Promise<Array<PlaventiEvent>> {
@@ -44,7 +45,7 @@ export class EventPersistence {
     return toEventModel(event);
   }
 
-  async create(auth: SessionWithOrg, args: EventDTO): Promise<PlaventiEvent> {
+  async create(auth: SessionWithOrg, args: CreateEventDTO): Promise<PlaventiEvent> {
     const createdEvent = await prisma.event.create({
       data: {
         identifier: args.identifier,

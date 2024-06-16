@@ -1,6 +1,7 @@
 import { SessionWithOrg } from "../../types/types";
 import { EventDTO } from "./dto/event.dto";
 import { GetEventDTO } from "./dto/get-event.dto";
+import { CreateEventDTO } from "./dto/create-event.dto";
 import { UpdateEventDTO } from "./dto/update-event.dto";
 import { PlaventiEvent } from "./event.model";
 import { EventPersistence } from "./event.persistence";
@@ -23,7 +24,7 @@ export class EventManagementService {
     return this.eventPersistence.getByIdentifier(auth, args);
   }
 
-  async create(auth: SessionWithOrg, args: Omit<EventDTO, "identifier">): Promise<PlaventiEvent> {
+  async create(auth: SessionWithOrg, args: Omit<CreateEventDTO, "identifier">): Promise<PlaventiEvent> {
     const identifier = await this.createUniqueIdentifier(args.title, 0);
 
     return this.createEvent.execute(auth, {

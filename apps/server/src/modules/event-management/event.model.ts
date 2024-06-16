@@ -13,6 +13,7 @@ export const plaventiEventInclude = Prisma.validator<Prisma.EventInclude>()({
   },
   timing: true,
   location: true,
+  team: true,
   ticketing: {
     include: {
       types: true,

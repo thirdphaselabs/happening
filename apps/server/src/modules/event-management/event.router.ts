@@ -1,6 +1,7 @@
 import { throwOnNotFound } from "../../helpers/throw-on-not-found";
 import { createTRPCRouter } from "../../trpc/context";
 import { workOsWithOrgProcedure } from "../../trpc/procedures/workOsProcedure";
+import { createEventDTO } from "./dto/create-event.dto";
 import { eventDTO, eventDTOs } from "./dto/event.dto";
 import { getEventDTO } from "./dto/get-event.dto";
 import { updateEventDTO } from "./dto/update-event.dto";
@@ -28,7 +29,7 @@ export const eventsRouter = createTRPCRouter({
     }),
 
   create: workOsWithOrgProcedure
-    .input(eventDTO.omit({ identifier: true }))
+    .input(createEventDTO.omit({ identifier: true }))
     .output(eventDTO)
     .mutation(async ({ ctx, input }) => {
       const event = await eventService.create(ctx.session, input);

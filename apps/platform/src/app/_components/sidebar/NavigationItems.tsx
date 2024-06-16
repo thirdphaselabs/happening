@@ -13,7 +13,7 @@ export default function NavigationItems() {
   return (
     <Flex direction="column" px="4" gap="2" className="w-full">
       {navigationItems.map((item) => {
-        const isActive = activeRoute.route === item.route;
+        const isActive = activeRoute?.route === item.route;
         const context = item.route === Route.Messages ? <Badge color="sky">2</Badge> : null;
         if (isActive) return <Active key={item.title} navigationItem={item} context={context} />;
         return <Inactive key={item.title} navigationItem={item} context={context} />;

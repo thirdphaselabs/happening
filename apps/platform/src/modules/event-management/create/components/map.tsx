@@ -107,44 +107,54 @@ export function MapComp({
 }
 
 export function MapOfCity({ city }: { city: string }) {
-  const { placesService, placePredictions, getPlacePredictions, isPlacePredictionsLoading } =
-    usePlacesService({
-      apiKey: API_KEY,
-    });
+  // const { placesService, placePredictions, getPlacePredictions, isPlacePredictionsLoading } =
+  //   usePlacesService({
+  //     apiKey: API_KEY,
+  //   });
 
-  const [placeDetails, setPlaceDetails] = useState<google.maps.places.PlaceResult | null>(null);
-  const lat = placeDetails?.geometry?.location?.lat();
-  const lng = placeDetails?.geometry?.location?.lng();
+  // const [placeDetails, setPlaceDetails] = useState<google.maps.places.PlaceResult | null>(null);
+  // const lat = placeDetails?.geometry?.location?.lat();
+  // const lng = placeDetails?.geometry?.location?.lng();
 
-  console.log({ placePredictions, placeDetails });
+  // console.log({ placePredictions, placeDetails });
 
-  useEffect(() => {
-    getPlacePredictions({ input: city });
-  }, [city]);
+  // useEffect(() => {
+  //   getPlacePredictions({ input: city });
+  // }, [city]);
 
-  useEffect(() => {
-    if (!placePredictions) return;
-    if (placePredictions.length === 0) return;
-    placesService?.getDetails(
-      {
-        placeId: placePredictions[0].place_id,
-      },
-      (place) => {
-        setPlaceDetails(place);
-      },
-    );
-  }, [placePredictions, placesService]);
+  // useEffect(() => {
+  //   if (!placePredictions) return;
+  //   if (placePredictions.length === 0) return;
+  //   placesService?.getDetails(
+  //     {
+  //       placeId: placePredictions[0].place_id,
+  //     },
+  //     (place) => {
+  //       setPlaceDetails(place);
+  //     },
+  //   );
+  // }, [placePredictions, placesService]);
 
   return (
     <Flex>
       {
-        <Skeleton loading={!placeDetails}>
-          {placeDetails && lat && lng ? (
-            <MapComponentInner lat={lat} lng={lng} zoom={10} />
-          ) : (
-            <Box height="175px" width="280px" />
-          )}
-        </Skeleton>
+        // <Skeleton loading={!placeDetails}>
+        //   {placeDetails && lat && lng ? (
+        <MapComponent
+          zoom={10}
+          location={
+            {
+              coordinates: {
+                lat: "53.4810538",
+                lng: "-2.250059",
+              },
+            } as unknown as PlaventiEvent["location"]
+          }
+        />
+        //   ) : (
+        //     <Box height="175px" width="280px" />
+        //   )}
+        // </Skeleton>
       }
     </Flex>
   );
@@ -195,10 +205,16 @@ function MapComponentInner({ lat, lng, zoom = 15 }: { lat: number; lng: number; 
   );
 }
 
-export function MapComponent({ location }: { location: PlaventiEvent["location"] }) {
+export function MapComponent({
+  location,
+  zoom = 15,
+}: {
+  location: PlaventiEvent["location"];
+  zoom?: number;
+}) {
   return (
     <MapProvider>
-      <MapComponentInner lat={+location.coordinates.lat} lng={+location.coordinates.lng} />
+      <MapComponentInner zoom={zoom} lat={+location.coordinates.lat} lng={+location.coordinates.lng} />
     </MapProvider>
   );
 }

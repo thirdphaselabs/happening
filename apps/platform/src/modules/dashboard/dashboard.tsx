@@ -8,7 +8,7 @@ import { Session } from "~/trpc/types";
 import { lastDayOfWeek } from "date-fns";
 import { PiCurrencyDollar } from "react-icons/pi";
 import { EventPageViews } from "./components/event-page-views";
-import { DashboardStat } from "../event-management/all/components/dashboard-stat";
+import { DashboardStat, Stat } from "../event-management/all/components/dashboard-stat";
 
 const stats: Array<Stat> = [
   {

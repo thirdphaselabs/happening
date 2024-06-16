@@ -20,13 +20,19 @@ export class AuthPersistence {
 
     return user.team;
   }
-  async createUser(args: { firstName: string | null; lastName: string | null; workosUserId: string }) {
+  async createProfile(args: {
+    firstName: string | null;
+    lastName: string | null;
+    workosUserId: string;
+    stripeCustomerId: string;
+  }) {
     return prisma.profile.create({
       data: {
         firstName: args.firstName ?? "plaventi-placeholder",
         lastName: args.lastName ?? "plaventi-placeholder",
         workosId: args.workosUserId,
         userRole: ProfileRole.MEMBER,
+        stripeCustomerId: args.stripeCustomerId,
       },
     });
   }

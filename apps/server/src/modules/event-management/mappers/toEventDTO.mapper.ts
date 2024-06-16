@@ -3,6 +3,7 @@ import { PlaventiEvent } from "../event.model";
 
 export function toEventDTO(event: PlaventiEvent): EventDTO {
   return {
+    id: event.id,
     identifier: event.identifier,
     title: event.title,
     status: event.status,
@@ -42,5 +43,10 @@ export function toEventDTO(event: PlaventiEvent): EventDTO {
       })),
     },
     timing: event.timing,
+    host: {
+      id: event.team.id,
+      name: event.team.name,
+      profilePictureUrl: null,
+    },
   };
 }

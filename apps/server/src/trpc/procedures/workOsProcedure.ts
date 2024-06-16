@@ -17,6 +17,8 @@ const JWKS = createRemoteJWKSet(new URL(workos.userManagement.getJwksUrl(clientI
 async function getSessionFromCookie(cookies: Request["cookies"]): Promise<PlaventiSession | null> {
   const cookie = cookies["wos-session"];
 
+  console.log("cookie", cookie);
+
   if (cookie) {
     return unsealData(cookie, {
       password: environment.WORKOS_COOKIE_PASSWORD,
@@ -27,6 +29,7 @@ async function getSessionFromCookie(cookies: Request["cookies"]): Promise<Plaven
 }
 
 async function verifyAccessToken(accessToken: string) {
+  console.log("accessToken", accessToken);
   try {
     await jwtVerify(accessToken, JWKS);
     return true;

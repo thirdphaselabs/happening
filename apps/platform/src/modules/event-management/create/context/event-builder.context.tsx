@@ -232,7 +232,6 @@ export function EventBuilderContextProvider({ children }: EventBuilderContextPro
           lng: event.locationDetails.coordinates.lng,
         },
       },
-      status: "DRAFT",
       ticketing: {
         types: ticketTypes,
       },
@@ -250,7 +249,6 @@ export function EventBuilderContextProvider({ children }: EventBuilderContextPro
       router.push("/events");
     } catch (error) {
       console.error(error);
-    } finally {
       setIsLoading(false);
     }
   };

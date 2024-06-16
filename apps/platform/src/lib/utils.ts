@@ -11,7 +11,7 @@ export function buildOrganizationFallbackInitials({ name }: { name: string }): s
   return `${first?.slice(0, 1)}${second ? second.slice(0, 1) : ""}`.toUpperCase();
 }
 
-import { format } from "date-fns";
+import { format, differenceInMilliseconds, formatDuration, intervalToDuration } from "date-fns";
 
 function addOrdinalSuffix(day: number) {
   if (day > 3 && day < 21) return `${day}th`;
@@ -41,4 +41,15 @@ export function formatDateWithWeekdayAndOrdinal(date: Date) {
   const month = format(date, "MMMM");
 
   return `${weekday}, ${month} ${addOrdinalSuffix(+day)}`;
+}
+
+export function timeUntil(date: Date) {
+  const now = new Date();
+  const duration = intervalToDuration({ start: now, end: date });
+
+  // Format the duration to "Xd Yh"
+  const days = duration.days ? `${duration.days}d ` : "";
+  const hours = duration.hours ? `${duration.hours}h` : "";
+
+  return `${days}${hours}`.trim();
 }
