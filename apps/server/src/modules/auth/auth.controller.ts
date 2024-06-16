@@ -24,10 +24,12 @@ export type PlaventiSession = {
 
 const authController = Router();
 
+const { API_URL, APP_URL } = environment;
+
 authController.get("/login", async (req: Request, res: Response) => {
   const authorizationUrl = workos.userManagement.getAuthorizationUrl({
     provider: "GoogleOAuth",
-    redirectUri: "http://localhost:3002/api/auth/callback",
+    redirectUri: `${API_URL}/api/auth/callback`,
     clientId,
   });
 
@@ -54,7 +56,7 @@ authController.get("/callback", async (req, res) => {
   const profile = await getProfileWithBackOff(user.id);
 
   if (!profile) {
-    return res.redirect("http://localhost:3003");
+    return res.redirect(APP_URL);
   }
 
   const sessionData: PlaventiSession = {
@@ -80,7 +82,7 @@ authController.get("/callback", async (req, res) => {
     sameSite: "lax",
   });
 
-  res.redirect("http://localhost:3003");
+  res.redirect(APP_URL);
 });
 
 authController.get("/refresh", withWorkOsAuth, async (req: Request, res: Response) => {

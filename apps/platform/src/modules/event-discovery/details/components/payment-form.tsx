@@ -5,12 +5,15 @@ import { StripeElementsOptions, loadStripe } from "@stripe/stripe-js";
 import { FormEvent, memo, useState } from "react";
 import { api } from "~/trpc/provider";
 import { PlaventiEvent } from "~/trpc/types";
+import { environment } from "~/utils/env";
 
 // Make sure to call `loadStripe` outside of a component’s render to avoid
 // recreating the `Stripe` object on every render.
 const stripePromise = loadStripe(
   "pk_test_51MzHzlAZ9Vfg7QSfkFmhU5V9rje45T7NbK3IljvjsKwAHLDKcvWmLNgx1zaN2CDemFTr97EKAOuYLA0uBWXHaNsM00ay4OFgvo",
 );
+
+const { appUrl } = environment;
 
 function PaymentFormInner({ eventIdentifer }: { eventIdentifer: string }) {
   const [isLoading, setIsLoading] = useState(true);
@@ -34,7 +37,7 @@ function PaymentFormInner({ eventIdentifer }: { eventIdentifer: string }) {
       //`Elements` instance that was used to create the Payment Element
       elements,
       confirmParams: {
-        return_url: `http://localhost:3003/event/${eventIdentifer}`,
+        return_url: `${appUrl}/event/${eventIdentifer}`,
       },
     });
 

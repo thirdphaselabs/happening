@@ -28,11 +28,13 @@ const stripe = new Stripe(environment.STRIPE_SECRET_KEY, {
   apiVersion: "2023-08-16",
 });
 
+const { API_URL, APP_URL } = environment;
+
 export class AuthService {
   async loginWithGoogleUrl(): Promise<{ url: string }> {
     const authorizationUrl = workos.userManagement.getAuthorizationUrl({
       provider: "GoogleOAuth",
-      redirectUri: "http://localhost:3002/api/auth/callback",
+      redirectUri: `${API_URL}/api/auth/callback`,
       clientId: environment.WORKOS_CLIENT_ID,
     });
 

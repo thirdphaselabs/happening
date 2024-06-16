@@ -1,18 +1,18 @@
 "use client";
 
-import { FaGoogle } from "react-icons/fa";
-import { type OAuthStrategy } from "@clerk/nextjs/server";
-import { useSignIn } from "@clerk/nextjs";
-import { useState } from "react";
 import { Button } from "@plaventi/ui";
-import { useSignInContext } from "../../login/_components/sign-in-context";
 import Link from "next/link";
+import { useState } from "react";
+import { FaGoogle } from "react-icons/fa";
+import { environment } from "~/utils/env";
+
+const { apiUrl } = environment;
 
 export function LoginWithGoogle() {
   const [isLoading, setIsLoading] = useState(false);
 
   return (
-    <Link href="http://localhost:3002/api/auth/login">
+    <Link href={`${apiUrl}/api/auth/login`}>
       <Button
         size="3"
         variant="outline"

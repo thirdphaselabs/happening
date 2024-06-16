@@ -5,6 +5,7 @@ import { profile } from "console";
 import { createContext, useCallback, useContext, useMemo, useState, type ReactNode } from "react";
 import { api } from "~/trpc/provider";
 import { Attending, Session } from "~/trpc/types";
+import { environment } from "~/utils/env";
 import { invariant } from "~/utils/helpers";
 
 type UserState = {
@@ -42,6 +43,8 @@ export function OptionalUserContextProvider({
   );
 }
 
+const { apiUrl } = environment;
+
 export function UserContextProvider({
   children,
   session: serverSession,
@@ -55,8 +58,8 @@ export function UserContextProvider({
 
   const refresh = useCallback(async ({ shouldFetchUserInfo = false }: RefreshOptions) => {
     const url = shouldFetchUserInfo
-      ? "http://localhost:3002/api/auth/refresh?fetchUserInfo=true"
-      : "http://localhost:3002/api/auth/refresh";
+      ? `${apiUrl}/api/auth/refresh?fetchUserInfo=true`
+      : `${apiUrl}/api/auth/refresh`;
 
     const res = await fetch(url, {
       credentials: "include",

@@ -7,6 +7,8 @@ const stripe = new Stripe(environment.STRIPE_SECRET_KEY, {
   apiVersion: "2023-08-16",
 });
 
+const { APP_URL } = environment;
+
 export class PaymentAccountService {
   private readonly paymentAccountPersistence = new PaymentAccountPersistence();
 
@@ -27,11 +29,10 @@ export class PaymentAccountService {
   }
 
   async linkAccount(session: SessionWithOrg, { account }: { account: string }) {
-    const baseUrl = "http://localhost:3003";
     const accountLink = await stripe.accountLinks.create({
       account: account,
-      return_url: `${baseUrl}/return/${account}`,
-      refresh_url: `${baseUrl}/refresh/${account}`,
+      return_url: `${APP_URL}/return/${account}`,
+      refresh_url: `${APP_URL}/refresh/${account}`,
       type: "account_onboarding",
     });
 

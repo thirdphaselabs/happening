@@ -27,9 +27,12 @@ import { invariant } from "~/utils/helpers";
 import { GoToLogin } from "./GoToLogin";
 import { LoginWithGoogle } from "./LoginWithGoogle";
 import { SignUpContextProvider, useSignUpContext } from "./sign-up-context";
+import { environment } from "~/utils/env";
+
+const { apiUrl } = environment;
 
 const refresh = async () => {
-  const res = await fetch("http://localhost:3002/api/auth/refresh", {
+  const res = await fetch(`${apiUrl}/api/auth/refresh`, {
     credentials: "include",
   });
 };
