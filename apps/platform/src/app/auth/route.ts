@@ -1,7 +1,10 @@
+import { NextApiRequest, NextApiResponse } from "next";
+import { headers } from "next/headers";
+import { NextRequest } from "next/server";
 import { environment } from "~/utils/env";
 import { isString } from "~/utils/helpers";
 
-export async function POST(request: Request) {
+export async function POST(request: NextRequest, response: NextApiResponse) {
   try {
     const requestBody = await request.json();
 
@@ -11,7 +14,9 @@ export async function POST(request: Request) {
     const password = requestBody.password;
 
     if (!email || !password || !isString(email) || !isString(password)) {
-      return Response.json({ token: null });
+      return new Response(null, {
+        status: 400,
+      });
     }
 
     const result = await fetch(`${environment.apiUrl}/api/trpc/auth.signIn`, {
@@ -34,18 +39,21 @@ export async function POST(request: Request) {
     const token = body.result?.data?.json?.token;
 
     if (!token) {
-      return Response.json({
-        token: null,
+      return new Response(null, {
+        status: 401,
       });
     }
 
-    const res = Response.json({ token }, { status: 200 });
-
-    res.headers.set("Set-Cookie", `wos-session=${token}; Path=/`);
-
-    return res;
+    return new Response(null, {
+      status: 200,
+      headers: {
+        "Set-Cookie": `wos-session=${token}; Path=/`,
+      },
+    });
   } catch (error) {
     console.error("Error authenticating", error);
-    return Response.json({ token: null });
+    return new Response(null, {
+      status: 500,
+    });
   }
 }
