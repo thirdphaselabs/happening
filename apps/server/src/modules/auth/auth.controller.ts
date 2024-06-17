@@ -80,6 +80,7 @@ authController.get("/callback", async (req, res) => {
     httpOnly: true,
     secure: true,
     sameSite: "none",
+    expires: new Date(Date.now() + 1000 * 60 * 60 * 24 * 365),
   });
 
   res.redirect(APP_URL);
@@ -133,6 +134,7 @@ authController.get("/refresh", withWorkOsAuth, async (req: Request, res: Respons
     httpOnly: true,
     secure: true,
     sameSite: "none",
+    expires: new Date(Date.now() + 1000 * 60 * 60 * 24 * 365),
   });
 
   res.json(sessionData);

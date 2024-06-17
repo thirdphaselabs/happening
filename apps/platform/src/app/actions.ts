@@ -34,7 +34,13 @@ export async function getSession<T extends boolean>(options?: {
   const session = await getIronSession<Session>(cookies(), {
     password: "mcRI+dvCYeIAUu4DPlzhEkq+6nLFpW6xY0CD20hFWPytKeDtMGqU0XN6d7c/PEMp3dyNB21U5LyBHxcmxak3tA==",
     cookieName: "wos-session",
+    cookieOptions: {
+      secure: true,
+      sameSite: "none",
+    },
   });
+
+  console.log("session", session);
 
   if (!session || !isString(session.accessToken)) {
     if (ensureSignedIn) {
