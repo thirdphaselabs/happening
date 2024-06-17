@@ -78,7 +78,7 @@ authController.get("/callback", async (req, res) => {
   res.cookie("wos-session", encryptedSession, {
     path: "/",
     secure: true,
-    sameSite: "lax",
+    sameSite: "none",
   });
 
   res.redirect(APP_URL);
@@ -130,7 +130,7 @@ authController.get("/refresh", withWorkOsAuth, async (req: Request, res: Respons
   res.cookie("wos-session", encryptedSession, {
     path: "/",
     secure: true,
-    sameSite: "lax",
+    sameSite: "none",
   });
 
   res.json(sessionData);
