@@ -77,10 +77,8 @@ authController.get("/callback", async (req, res) => {
   // Store the session in a cookie
   res.cookie("wos-session", encryptedSession, {
     path: "/",
-    httpOnly: true,
     secure: true,
-    sameSite: "none",
-    expires: new Date(Date.now() + 1000 * 60 * 60 * 24 * 365),
+    sameSite: "lax",
   });
 
   res.redirect(APP_URL);
@@ -131,10 +129,8 @@ authController.get("/refresh", withWorkOsAuth, async (req: Request, res: Respons
 
   res.cookie("wos-session", encryptedSession, {
     path: "/",
-    httpOnly: true,
     secure: true,
-    sameSite: "none",
-    expires: new Date(Date.now() + 1000 * 60 * 60 * 24 * 365),
+    sameSite: "lax",
   });
 
   res.json(sessionData);

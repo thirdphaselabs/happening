@@ -25,9 +25,9 @@ export const authRouter = createTRPCRouter({
       const { encryptedSession } = await authService.signIn(input);
 
       ctx.res.cookie("wos-session", encryptedSession, {
-        sameSite: "none",
+        path: "/",
+        sameSite: "lax",
         secure: true,
-        expires: new Date(Date.now() + 1000 * 60 * 60 * 24 * 365),
       });
     }),
   signUp: publicProcedure
