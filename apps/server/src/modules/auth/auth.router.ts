@@ -30,6 +30,10 @@ export const authRouter = createTRPCRouter({
         secure: true,
         expires: new Date(Date.now() + 1000 * 60 * 60 * 24 * 365),
       });
+
+      return {
+        token: encryptedSession,
+      };
     }),
   signUp: publicProcedure
     .input(

@@ -1,6 +1,6 @@
 "use client";
 
-import { useSignIn, useUser } from "@clerk/nextjs";
+import { useUser } from "@clerk/nextjs";
 import { Button, TextFieldError, TextFieldLabel, TextFieldLabelContainer, TextFieldRoot } from "@plaventi/ui";
 import { ArrowRightIcon } from "@radix-ui/react-icons";
 import { Flex, Heading, Link, Text, TextField } from "@radix-ui/themes";
@@ -15,6 +15,7 @@ import { AuthErrorType, clerkErrorTypeToCode, getExpectedAuthenticationError } f
 import { invariant } from "~/utils/helpers";
 import { LoginWithGoogle } from "../../sign-up/_components/LoginWithGoogle";
 import { SignInContextProvider, useSignInContext } from "./sign-in-context";
+import { useSignIn } from "~/app/_hooks/useSignIn";
 
 export function SignIn() {
   const searchParams = useSearchParams();
@@ -167,6 +168,7 @@ function PasswordStep() {
   const [error, setError] = useState<string | null>(null);
   const router = useRouter();
   const { mutateAsync: signIn } = api.auth.signIn.useMutation();
+  const { authRefresh } = useSignIn();
 
   const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
     clearError();
@@ -180,7 +182,7 @@ function PasswordStep() {
     const password = formData.get("password") as string;
     try {
       console.log("email", email);
-      const result = await signIn({
+      const result = await authRefresh({
         email,
         password,
       });
@@ -289,7 +291,7 @@ function PasswordStep() {
 
 export function ResetPassword() {
   const { email, setStage, stage } = useSignInContext();
-  const { signIn, isLoaded, setActive } = useSignIn();
+  // const { signIn, isLoaded, setActive } = useSignIn();
   const [loading, setIsLoading] = useState<boolean>(false);
   const [error, setError] = useState<string | null>(null);
   const [otpError, setOtpError] = useState<string | null>(null);
@@ -298,7 +300,7 @@ export function ResetPassword() {
 
   const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
-    invariant(signIn, "SignIn not initialized");
+    // invariant(signIn, "SignIn not initialized");
 
     const formData = new FormData(e.currentTarget);
     const email = formData.get("email") as string;
@@ -308,16 +310,16 @@ export function ResetPassword() {
       return;
     }
 
-    await signIn.create({
-      strategy: "reset_password_email_code",
-      identifier: email,
-    });
+    // await signIn.create({
+    //   strategy: "reset_password_email_code",
+    //   identifier: email,
+    // });
     setStage("reset-password");
   };
 
   const handlePasswordReset = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
-    invariant(signIn, "Sign up context is not available.");
+    // invariant(signIn, "Sign up context is not available.");
     invariant(email, "Email is not available.");
 
     setIsLoading(true);
@@ -326,16 +328,16 @@ export function ResetPassword() {
     const code = formData.get("code") as string;
 
     try {
-      const result = await signIn.attemptFirstFactor({
-        strategy: "reset_password_email_code",
-        code,
-        password,
-      });
+      // const result = await signIn.attemptFirstFactor({
+      //   strategy: "reset_password_email_code",
+      //   code,
+      //   password,
+      // });
 
-      if (result.status === "complete") {
-        await setActive({ session: result.createdSessionId });
-        return;
-      }
+      // if (result.status === "complete") {
+      //   await setActive({ session: result.createdSessionId });
+      //   return;
+      // }
       alert("error");
     } catch (error) {
       const { clerkErrorType, errorMessage } = getExpectedAuthenticationError(error, [
@@ -396,7 +398,7 @@ export function ResetPassword() {
           </label>
           <Flex direction="column" gap="3" width="100%">
             <Button
-              disabled={loading || !isLoaded}
+              disabled={loading}
               size="3"
               loading={{
                 isLoading: loading,
@@ -472,7 +474,7 @@ export function ResetPassword() {
         </label>
         <Flex direction="column" gap="3" width="100%">
           <Button
-            disabled={loading || !isLoaded || showReset}
+            disabled={loading || ! showReset}
             size="3"
             loading={{
               isLoading: loading,

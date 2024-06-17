@@ -4,7 +4,7 @@ import { computeOnboardingPath } from "./utils/helpers";
 import { Routes } from "./utils/routing/routes";
 import { onboardingRoutingHandler } from "./utils/routing/handlers/onboarding.routing-handler";
 
-const publicRoutes = ["/login", "/discovery", "/sign-up"];
+const publicRoutes = ["/login", "/discovery", "/sign-up", "/auth"];
 
 export async function middleware(request: NextRequest) {
   const session = await getSession();
