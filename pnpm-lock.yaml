@@ -433,8 +433,8 @@ importers:
         specifier: ^9.0.8
         version: 9.0.8
       '@workos-inc/node':
-        specifier: ^7.8.0
-        version: 7.8.0
+        specifier: ^7.9.0
+        version: 7.10.0
       body-parser:
         specifier: ^1.20.2
         version: 1.20.2
@@ -3608,6 +3608,13 @@ packages:
 
   /@workos-inc/node@6.8.0:
     resolution: {integrity: sha512-uhlmK3DozCTBOBuy2IY2GvHbpYmDmolc2N5j8MpOUKMYyTWZpdkmETqg1Ky7mUSSPA203E3v6VIra9G4J7me1g==}
+    dependencies:
+      pluralize: 8.0.0
+    dev: false
+
+  /@workos-inc/node@7.10.0:
+    resolution: {integrity: sha512-bRAZFyLUhuRLsQhTdIkbg/+zlmyKVcWbto3hT22dHWlvSENWTEn7PCyFA4rQBS0SaASZ08LdDJF+BaAk3raIZQ==}
+    engines: {node: '>=16'}
     dependencies:
       pluralize: 8.0.0
     dev: false

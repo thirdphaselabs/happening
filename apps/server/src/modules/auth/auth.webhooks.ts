@@ -1,6 +1,5 @@
-import * as crypto from "crypto";
 import { WorkOS } from "@workos-inc/node";
-import { Router, Request, Response, NextFunction } from "express";
+import { Router } from "express";
 import { environment } from "../../environment";
 import { AuthService } from "./auth.service";
 
