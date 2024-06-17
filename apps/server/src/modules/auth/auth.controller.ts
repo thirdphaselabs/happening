@@ -79,7 +79,7 @@ authController.get("/callback", async (req, res) => {
     path: "/",
     httpOnly: true,
     secure: true,
-    sameSite: "lax",
+    sameSite: "none",
   });
 
   res.redirect(APP_URL);
@@ -132,7 +132,7 @@ authController.get("/refresh", withWorkOsAuth, async (req: Request, res: Respons
     path: "/",
     httpOnly: true,
     secure: true,
-    sameSite: "lax",
+    sameSite: "none",
   });
 
   res.json(sessionData);
