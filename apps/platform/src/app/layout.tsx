@@ -24,8 +24,11 @@ export default function RootLayout({ children }: { children: React.ReactNode }):
     <ClerkProvider>
       <html lang="en" style={{ backgroundColor: "#f4f5f6" }}>
         <body>
-          <Theme {...themeConfig} style={{ backgroundColor: "#f4f5f6", overflow: "visible" }} id="root-radix-theme">
-            <TRPCReactProvider cookies={cookies().get('wos-session')}>
+          <Theme
+            {...themeConfig}
+            style={{ backgroundColor: "#f4f5f6", overflow: "visible" }}
+            id="root-radix-theme">
+            <TRPCReactProvider cookies={cookies().get("wos-session")?.value}>
               <TopGradient />
               {children}
             </TRPCReactProvider>
