@@ -43,6 +43,7 @@ export class OnboardingService {
         nextStep,
       };
     } catch (error) {
+      console.error(error);
       throw new TRPCError({
         code: "INTERNAL_SERVER_ERROR",
         message: "An error occurred while inviting team members",
