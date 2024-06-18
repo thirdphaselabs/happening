@@ -30,6 +30,7 @@ import { LoginWithGoogle } from "./LoginWithGoogle";
 import { SignUpContextProvider, useSignUpContext } from "./sign-up-context";
 import { environment } from "~/utils/env";
 import { useSignIn } from "~/app/_hooks/useSignIn";
+import { useAuthRefresh } from "~/app/_hooks/useAuthRefresh";
 
 const { apiUrl } = environment;
 
@@ -350,7 +351,14 @@ function EmailVerification() {
   const { mutateAsync: resendVerificationEmail } = api.auth.resendVerificationEmail.useMutation();
   const { mutateAsync: verifyEmailAddress } = api.auth.verifyEmail.useMutation();
   const { authRefresh: signIn } = useSignIn();
-  const { refresh } = useUserContext();
+  const { authRefresh } = useAuthRefresh();
+
+  const refresh = useCallback(async () => {
+    const res = await authRefresh({ shouldFetchUserInfo: false });
+    if (!res.sessionData) {
+      return;
+    }
+  }, []);
 
   const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
@@ -367,7 +375,7 @@ function EmailVerification() {
       const result = await verifyEmailAddress({ userId, code });
       if (email && password) {
         await signIn({ email, password });
-        await refresh({});
+        await refresh();
         router.push("/onboarding");
       }
     } catch (error) {
