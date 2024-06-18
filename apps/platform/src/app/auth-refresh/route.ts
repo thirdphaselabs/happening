@@ -57,8 +57,9 @@ export async function POST(request: NextRequest, response: NextApiResponse) {
     console.log("biody", body);
 
     const token = body.result?.data?.json?.token;
+    const sessionData = body.result?.data?.json?.sessionData;
 
-    if (!token) {
+    if (!token || !sessionData) {
       return NextResponse.json(
         {
           error: "Invalid credentials",
@@ -72,6 +73,7 @@ export async function POST(request: NextRequest, response: NextApiResponse) {
     return NextResponse.json(
       {
         token,
+        sessionData,
       },
       {
         status: 200,
