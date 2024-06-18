@@ -376,7 +376,7 @@ function EmailVerification() {
       if (email && password) {
         await signIn({ email, password });
         await refresh();
-        router.push("/onboarding");
+        window.location.href = "/onboarding";
       }
     } catch (error) {
       const { clerkErrorType, errorMessage } = getExpectedAuthenticationError(error, [
