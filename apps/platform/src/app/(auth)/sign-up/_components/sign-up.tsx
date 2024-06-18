@@ -1,6 +1,7 @@
 "use client";
 
 import { useClerk, useSession, useSignUp, useUser } from "@clerk/nextjs";
+import { useUser as useUserContext } from "~/modules/auth/user.context";
 import { Button } from "@plaventi/ui";
 import { ArrowRightIcon, CheckCircledIcon, Cross2Icon } from "@radix-ui/react-icons";
 import {
@@ -349,6 +350,7 @@ function EmailVerification() {
   const { mutateAsync: resendVerificationEmail } = api.auth.resendVerificationEmail.useMutation();
   const { mutateAsync: verifyEmailAddress } = api.auth.verifyEmail.useMutation();
   const { authRefresh: signIn } = useSignIn();
+  const { refresh } = useUserContext();
 
   const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
@@ -365,6 +367,7 @@ function EmailVerification() {
       const result = await verifyEmailAddress({ userId, code });
       if (email && password) {
         await signIn({ email, password });
+        await refresh({});
         router.push("/onboarding");
       }
     } catch (error) {
