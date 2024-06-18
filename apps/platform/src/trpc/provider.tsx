@@ -15,7 +15,7 @@ import { useAuth } from "@clerk/nextjs";
 
 export const api = createTRPCReact<AppRouter>({});
 
-export function TRPCReactProvider(props: { children: React.ReactNode; cookies: string }) {
+export function TRPCReactProvider(props: { children: React.ReactNode; cookies: string | undefined }) {
   const [queryClient] = React.useState(() => new QueryClient());
   const { getToken } = useAuth();
 
@@ -31,7 +31,7 @@ export function TRPCReactProvider(props: { children: React.ReactNode; cookies: s
               credentials: "include",
               headers: {
                 ...options?.headers,
-                Authorization: `Bearer ${await getToken()}`,
+                ...(props.cookies ? { Authorization: `${props.cookies}` } : {}),
               },
             });
           },

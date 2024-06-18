@@ -47,7 +47,7 @@ const hasValidSession = t.middleware(async ({ ctx, next }) => {
 
   // If the session is valid, move on to the next function
   if (!hasValidSession) {
-    throw new TRPCError({ code: "UNAUTHORIZED", message: "Session is invalid pal" });
+    throw new TRPCError({ code: "UNAUTHORIZED", message: "Session is invalid" });
   }
 
   return next({
@@ -69,7 +69,7 @@ const hasValidSessionWithOrg = t.middleware(async ({ ctx, next }) => {
 
   // If the session is valid, move on to the next function
   if (!hasValidSession || !session.profile || !session.profile.team) {
-    throw new TRPCError({ code: "UNAUTHORIZED", message: "Session is invalid mate" });
+    throw new TRPCError({ code: "UNAUTHORIZED", message: "Session is invalid org" });
   }
 
   const sessionWithOrg: SessionWithOrg = {
