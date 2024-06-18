@@ -91,6 +91,65 @@ export class AuthService {
     }
   }
 
+  async refresh(
+    session: PlaventiSession,
+    args: { shouldFetchUserInfo: boolean },
+  ): Promise<
+    | { encryptedSession: string; sessionData: PlaventiSession; error: null }
+    | { encryptedSession: null; sessionData: null; error: string }
+  > {
+    console.log("refresh session", session);
+    const { accessToken, refreshToken } = await workos.userManagement.authenticateWithRefreshToken({
+      clientId: environment.WORKOS_CLIENT_ID,
+      refreshToken: session.refreshToken,
+    });
+
+    const decodedAccessToken = await jwtVerify(accessToken, JWKS);
+
+    const sessionId = decodedAccessToken.payload.sid as string;
+
+    const profile = await prisma.profile.findUnique({
+      where: {
+        workosId: session.user.id,
+      },
+      include: profileInclude,
+    });
+
+    if (!profile) {
+      return {
+        encryptedSession: null,
+        sessionData: null,
+        error: "Profile not found",
+      };
+    }
+
+    let updatedUser: User | null;
+
+    if (args.shouldFetchUserInfo) {
+      updatedUser = await workos.userManagement.getUser(session.user.id);
+    } else {
+      updatedUser = session.user;
+    }
+
+    const sessionData: PlaventiSession = {
+      sessionId: sessionId,
+      accessToken,
+      refreshToken,
+      user: updatedUser ?? session.user,
+      impersonator: session.impersonator,
+      profile,
+      organisationId: profile.team?.workosOrganisationId ?? null,
+    };
+
+    const encryptedSession = await sealData(sessionData, { password: environment.WORKOS_COOKIE_PASSWORD });
+
+    return {
+      encryptedSession,
+      sessionData: sessionData,
+      error: null,
+    };
+  }
+
   async signUp(args: { email: string; password: string }) {
     const user = await workos.userManagement.createUser({
       email: args.email,

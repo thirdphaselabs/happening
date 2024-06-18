@@ -56,3 +56,13 @@ export async function getSession<T extends boolean>(options?: {
 
   return session as GetSessionReturnType<T>;
 }
+
+export async function buildSessionFromToken(accessToken: string) {
+  const hasValidSession = await verifyAccessToken(accessToken);
+
+  if (!hasValidSession) {
+    return null;
+  }
+
+  
+}

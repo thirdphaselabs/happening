@@ -38,6 +38,19 @@ export const authRouter = createTRPCRouter({
     .mutation(async ({ input }) => {
       return await authService.signUp(input);
     }),
+  refresh: workOsProcedure
+    .input(
+      z.object({
+        shouldFetchUserInfo: z.boolean(),
+      }),
+    )
+    .mutation(async ({ ctx, input }) => {
+      const response = await authService.refresh(ctx.session, input);
+
+      return {
+        token: response.encryptedSession,
+      };
+    }),
   resendVerificationEmail: publicProcedure
     .input(
       z.object({

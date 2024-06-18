@@ -14,13 +14,9 @@ const clientId = environment.WORKOS_CLIENT_ID;
 
 const JWKS = createRemoteJWKSet(new URL(workos.userManagement.getJwksUrl(clientId)));
 
-async function getSessionFromCookie(cookies: Request["cookies"]): Promise<PlaventiSession | null> {
-  const cookie = cookies["wos-session"];
-
-  console.log("cookie", cookie);
-
-  if (cookie) {
-    return unsealData(cookie, {
+async function getSession(accessToken: string | undefined): Promise<PlaventiSession | null> {
+  if (accessToken) {
+    return unsealData(accessToken, {
       password: environment.WORKOS_COOKIE_PASSWORD,
     });
   }
@@ -40,7 +36,8 @@ async function verifyAccessToken(accessToken: string) {
 }
 
 const hasValidSession = t.middleware(async ({ ctx, next }) => {
-  const session = await getSessionFromCookie(ctx.req.cookies);
+  const accessToken = ctx.req.cookies["wos-session"] ?? ctx.req.headers["authorization"];
+  const session = await getSession(accessToken);
 
   if (!session) {
     throw new TRPCError({ code: "UNAUTHORIZED", message: "No session" });
@@ -62,7 +59,7 @@ const hasValidSession = t.middleware(async ({ ctx, next }) => {
 });
 
 const hasValidSessionWithOrg = t.middleware(async ({ ctx, next }) => {
-  const session = await getSessionFromCookie(ctx.req.cookies);
+  const session = await getSession(ctx.req.cookies["wos-session"]);
 
   if (!session) {
     throw new TRPCError({ code: "UNAUTHORIZED", message: "No session" });

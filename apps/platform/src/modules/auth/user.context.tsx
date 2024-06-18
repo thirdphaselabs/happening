@@ -3,6 +3,7 @@
 import { PlaventiEvent } from "@plaventi/server/src/modules/event-management/event.model";
 import { profile } from "console";
 import { createContext, useCallback, useContext, useMemo, useState, type ReactNode } from "react";
+import { useAuthRefresh } from "~/app/_hooks/useAuthRefresh";
 import { api } from "~/trpc/provider";
 import { Attending, Session } from "~/trpc/types";
 import { environment } from "~/utils/env";
@@ -51,21 +52,18 @@ export function UserContextProvider({
   attending: initialAttending,
 }: UserContextProviderProps) {
   const [session, setSession] = useState<Session>(serverSession);
+  const { authRefresh } = useAuthRefresh();
 
   const { data: attending } = api.profile.attending.useQuery(undefined, {
     initialData: initialAttending,
   });
 
   const refresh = useCallback(async ({ shouldFetchUserInfo = false }: RefreshOptions) => {
-    const url = shouldFetchUserInfo
-      ? `${apiUrl}/api/auth/refresh?fetchUserInfo=true`
-      : `${apiUrl}/api/auth/refresh`;
-
-    const res = await fetch(url, {
-      credentials: "include",
-    });
-    const newSession = await res.json();
-    setSession(newSession);
+    const res = await authRefresh({ shouldFetchUserInfo });
+    if (!res.sessionData) {
+      return;
+    }
+    setSession(res.sessionData);
   }, []);
 
   const value = useMemo(
