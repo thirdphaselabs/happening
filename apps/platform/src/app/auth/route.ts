@@ -14,8 +14,8 @@ export async function POST(request: NextRequest, response: NextApiResponse) {
     const password = requestBody.password;
 
     if (!email || !password || !isString(email) || !isString(password)) {
-      return new Response(null, {
-        status: 400,
+      return response.status(400).json({
+        error: "Invalid request body",
       });
     }
 
@@ -39,12 +39,12 @@ export async function POST(request: NextRequest, response: NextApiResponse) {
     const token = body.result?.data?.json?.token;
 
     if (!token) {
-      return new Response(null, {
-        status: 401,
+      return response.status(401).json({
+        error: "Invalid credentials",
       });
     }
 
-    return new Response(null, {
+    return new Response(JSON.stringify({ error: null, token }), {
       status: 200,
       headers: {
         "Set-Cookie": `wos-session=${token}; Path=/`,
@@ -52,8 +52,8 @@ export async function POST(request: NextRequest, response: NextApiResponse) {
     });
   } catch (error) {
     console.error("Error authenticating", error);
-    return new Response(null, {
-      status: 500,
+    return response.status(500).json({
+      error: "Error authenticating",
     });
   }
 }
