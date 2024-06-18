@@ -3,6 +3,7 @@ import { headers } from "next/headers";
 import { NextRequest } from "next/server";
 import { environment } from "~/utils/env";
 import { isString } from "~/utils/helpers";
+import { NextResponse } from "next/server";
 
 export async function POST(request: NextRequest, response: NextApiResponse) {
   try {
@@ -14,9 +15,14 @@ export async function POST(request: NextRequest, response: NextApiResponse) {
     const password = requestBody.password;
 
     if (!email || !password || !isString(email) || !isString(password)) {
-      return response.status(400).json({
-        error: "Invalid request body",
-      });
+      return NextResponse.json(
+        {
+          error: "Missing email or password",
+        },
+        {
+          status: 400,
+        },
+      );
     }
 
     const result = await fetch(`${environment.apiUrl}/api/trpc/auth.signIn`, {
@@ -39,21 +45,36 @@ export async function POST(request: NextRequest, response: NextApiResponse) {
     const token = body.result?.data?.json?.token;
 
     if (!token) {
-      return response.status(401).json({
-        error: "Invalid credentials",
-      });
+      return NextResponse.json(
+        {
+          error: "Invalid credentials",
+        },
+        {
+          status: 401,
+        },
+      );
     }
 
-    return new Response(JSON.stringify({ error: null, token }), {
-      status: 200,
-      headers: {
-        "Set-Cookie": `wos-session=${token}; Path=/`,
+    return NextResponse.json(
+      {
+        token,
       },
-    });
+      {
+        status: 200,
+        headers: {
+          "Set-Cookie": `wos-session=${token}; Path=/`,
+        },
+      },
+    );
   } catch (error) {
     console.error("Error authenticating", error);
-    return response.status(500).json({
-      error: "Error authenticating",
-    });
+    return NextResponse.json(
+      {
+        error: "Error authenticating",
+      },
+      {
+        status: 500,
+      },
+    );
   }
 }
