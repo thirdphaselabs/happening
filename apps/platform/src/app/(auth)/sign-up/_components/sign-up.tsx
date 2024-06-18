@@ -28,6 +28,7 @@ import { GoToLogin } from "./GoToLogin";
 import { LoginWithGoogle } from "./LoginWithGoogle";
 import { SignUpContextProvider, useSignUpContext } from "./sign-up-context";
 import { environment } from "~/utils/env";
+import { useSignIn } from "~/app/_hooks/useSignIn";
 
 const { apiUrl } = environment;
 
@@ -347,7 +348,7 @@ function EmailVerification() {
   const [showReset, setShowReset] = useState<boolean>(false);
   const { mutateAsync: resendVerificationEmail } = api.auth.resendVerificationEmail.useMutation();
   const { mutateAsync: verifyEmailAddress } = api.auth.verifyEmail.useMutation();
-  const { mutateAsync: signIn } = api.auth.signIn.useMutation();
+  const { authRefresh: signIn } = useSignIn();
 
   const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
