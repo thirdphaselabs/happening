@@ -36,6 +36,11 @@ const app: Application = express();
 
 app.use("/api/webhooks/payments", paymentsController);
 
+app.use(function (_req, res, next) {
+  res.header("Access-Control-Allow-Headers", "Origin, X-Requested-With, Content-Type, Accept");
+  next();
+});
+
 app
   .use(cors({ origin: true, credentials: true }))
   .disable("x-powered-by")

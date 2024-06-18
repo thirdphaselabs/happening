@@ -43,6 +43,16 @@ export function TRPCReactProvider(props: { children: React.ReactNode; cookies: s
         }),
         unstableHttpBatchLink({
           url: getUrl(),
+          async fetch(url, options) {
+            return fetch(url, {
+              ...options,
+              credentials: "include",
+              headers: {
+                ...options?.headers,
+                ...(props.cookies ? { Authorization: `${props.cookies}` } : {}),
+              },
+            });
+          },
         }),
       ],
     }),
