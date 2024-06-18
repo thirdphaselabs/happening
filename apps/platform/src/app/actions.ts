@@ -5,12 +5,10 @@ import WorkOS from "@workos-inc/node";
 import { createRemoteJWKSet, jwtVerify } from "jose";
 import { isString } from "~/utils/helpers";
 
-const workos = new WorkOS(
-  "sk_test_a2V5XzAxSEdKOFZSTkgxWTExRlRRRDA3Mzg2MjlYLHFXRWNlcGo4S211c2R3UmxKc3B1NVJQWHA",
-);
+const workos = new WorkOS(process.env.WORKOS_API_KEY as string);
 
 const JWKS = createRemoteJWKSet(
-  new URL(workos.userManagement.getJwksUrl("client_01HGJ8VS4K0JGVVNY1FP0BSBFZ")),
+  new URL(workos.userManagement.getJwksUrl(process.env.WORKOS_CLIENT_ID as string)),
 );
 
 type GetSessionReturnType<T extends boolean> = T extends true ? Session : Session | null;
