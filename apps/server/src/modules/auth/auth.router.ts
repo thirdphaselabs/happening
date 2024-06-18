@@ -48,6 +48,7 @@ export const authRouter = createTRPCRouter({
       const response = await authService.refresh(ctx.session, input);
 
       return {
+        sessionData: response.sessionData,
         token: response.encryptedSession,
       };
     }),
