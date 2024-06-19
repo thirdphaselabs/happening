@@ -76,7 +76,7 @@ const hasValidSessionWithOrg = t.middleware(async ({ ctx, next }) => {
   const session = await getSession(accessToken);
 
   if (!session) {
-    throw new TRPCError({ code: "UNAUTHORIZED", message: "No session" });
+    throw new TRPCError({ code: "UNAUTHORIZED", message: "No session org" });
   }
 
   const hasValidSession = await verifyAccessToken(session.accessToken);

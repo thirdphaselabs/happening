@@ -1,9 +1,8 @@
 import type { AppRouter } from "@plaventi/server";
 import { createTRPCProxyClient, httpBatchLink } from "@trpc/client";
-import SuperJSON from "superjson";
-import { getUrl } from "./utils/getUrl";
 import { cookies, headers } from "next/headers";
 import { transformer } from "./transformer";
+import { getUrl } from "./utils/getUrl";
 
 export const serverClient = createTRPCProxyClient<AppRouter>({
   transformer,
@@ -28,6 +27,18 @@ export const serverClient = createTRPCProxyClient<AppRouter>({
 
         // Forward headers from the browser to the API
         return Object.fromEntries(newHeaders);
+      },
+      async fetch(url, options) {
+        const cookiesList = cookies();
+        const sessionCookie = cookiesList.get("wos-session")?.value;
+        return fetch(url, {
+          ...options,
+          credentials: "include",
+          headers: {
+            ...options?.headers,
+            ...(sessionCookie ? { Authorization: `${sessionCookie}` } : {}),
+          },
+        });
       },
     }),
   ],
