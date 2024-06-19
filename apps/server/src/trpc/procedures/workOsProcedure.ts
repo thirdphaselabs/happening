@@ -50,6 +50,8 @@ const hasValidSession = t.middleware(async ({ ctx, next }) => {
     throw new TRPCError({ code: "UNAUTHORIZED", message: "Session is invalid" });
   }
 
+  console.log("valid session in workOsProcedure", session);
+
   return next({
     ctx: {
       ...ctx,
