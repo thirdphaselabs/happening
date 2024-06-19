@@ -11,27 +11,22 @@ export const createContextInner = async ({ req, res }: trpcExpress.CreateExpress
 
   console.log("headers in context", JSON.stringify(req.headers, null, 2));
 
+  const authHeader = req.headers["authorization"];
+  const authCookie = req.cookies["wos-session"];
+  const sessionToken = authCookie !== undefined && authCookie !== null ? authCookie : authHeader;
+
+  console.log("context", {
+    sessionToken,
+    authCookie,
+    authHeader,
+  });
+
   return {
     req,
     res,
+    sessionToken,
   };
 };
-
-export const t = initTRPC
-  .context<typeof createContext>()
-  .meta<OpenApiMeta>()
-  .create({
-    transformer: SuperJSON,
-    errorFormatter({ shape, error }) {
-      return {
-        ...shape,
-        data: {
-          ...shape.data,
-          zodError: error.cause instanceof ZodError ? error.cause.flatten() : null,
-        },
-      };
-    },
-  });
 
 export const createTRPCRouter = t.router;
 

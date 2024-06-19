@@ -35,15 +35,10 @@ async function verifyAccessToken(accessToken: string) {
 }
 
 const hasValidSession = t.middleware(async ({ ctx, next }) => {
-  const accessToken = ctx.req.cookies["wos-session"] ?? ctx.req.headers["Authorization"];
-
-  console.log("hasValidSession", {
-    accessToken,
-    cookie: ctx.req.cookies["wos-session"],
-    header: ctx.req.headers["Authorization"],
+  console.log("hasValidSessionWithOrg", {
+    sessionToken: ctx.sessionToken,
   });
-
-  const session = await getSession(accessToken);
+  const session = await getSession(ctx.sessionToken);
 
   if (!session) {
     throw new TRPCError({ code: "UNAUTHORIZED", message: "No session" });
@@ -67,13 +62,10 @@ const hasValidSession = t.middleware(async ({ ctx, next }) => {
 });
 
 const hasValidSessionWithOrg = t.middleware(async ({ ctx, next }) => {
-  const accessToken = ctx.req.cookies["wos-session"] ?? ctx.req.headers["Authorization"];
   console.log("hasValidSessionWithOrg", {
-    accessToken,
-    cookie: ctx.req.cookies["wos-session"],
-    header: ctx.req.headers["Authorization"],
+    sessionToken: ctx.sessionToken,
   });
-  const session = await getSession(accessToken);
+  const session = await getSession(ctx.sessionToken);
 
   if (!session) {
     throw new TRPCError({ code: "UNAUTHORIZED", message: "No session org" });
