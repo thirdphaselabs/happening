@@ -9,6 +9,7 @@ import { prisma } from "@plaventi/database";
 import { PlaventiSession } from "../modules/auth/auth.controller";
 import { profileInclude } from "../modules/profile/entities/profile.entity";
 import { SessionWithOrg } from "../types/types";
+import { getSession, verifyAccessToken } from "../modules/auth/helpers/session";
 
 const clientId = environment.WORKOS_CLIENT_ID;
 
@@ -20,7 +21,7 @@ const JWKS = createRemoteJWKSet(new URL(workos.userManagement.getJwksUrl(clientI
 // Auth middleware function
 export async function withWorkOsAuth(req: Request, res: Response, next: NextFunction) {
   // First, attempt to get the session from the cookie
-  const session = await getSessionFromCookie(req.cookies);
+  const session = await getSession(req.cookies["wos-session"]);
 
   // If no session, redirect the user to the login page
   if (!session) {
@@ -79,7 +80,7 @@ export async function withWorkOsAuth(req: Request, res: Response, next: NextFunc
 
 export async function withWorkOsOrgAuth(req: Request, res: Response, next: NextFunction) {
   // First, attempt to get the session from the cookie
-  const session = await getSessionFromCookie(req.cookies);
+  const session = await getSession(req.cookies["wos-session"]);
 
   // If no session, redirect the user to the login page
   if (!session) {
@@ -142,27 +143,5 @@ export async function withWorkOsOrgAuth(req: Request, res: Response, next: NextF
     // Failed to refresh access token, redirect user to login page
     // after deleting the cookie
     return res.status(401);
-  }
-}
-
-async function getSessionFromCookie(cookies: Request["cookies"]): Promise<PlaventiSession | null> {
-  const cookie = cookies["wos-session"];
-
-  if (cookie) {
-    return unsealData(cookie, {
-      password: environment.WORKOS_COOKIE_PASSWORD,
-    });
-  }
-
-  return null;
-}
-
-async function verifyAccessToken(accessToken: string) {
-  try {
-    await jwtVerify(accessToken, JWKS);
-    return true;
-  } catch (e) {
-    console.warn("Failed to verify session:", e);
-    return false;
   }
 }

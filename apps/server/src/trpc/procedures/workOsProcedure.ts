@@ -1,38 +1,7 @@
 import { TRPCError } from "@trpc/server";
-import WorkOS from "@workos-inc/node";
-import { unsealData } from "iron-session";
-import { createRemoteJWKSet, jwtVerify } from "jose";
-import { environment } from "../../environment";
-import { PlaventiSession } from "../../modules/auth/auth.controller";
+import { getSession, verifyAccessToken } from "../../modules/auth/helpers/session";
 import { SessionWithOrg } from "../../types/types";
 import { t } from "../context";
-
-const workos = new WorkOS(environment.WORKOS_API_KEY);
-
-const clientId = environment.WORKOS_CLIENT_ID;
-
-const JWKS = createRemoteJWKSet(new URL(workos.userManagement.getJwksUrl(clientId)));
-
-async function getSession(accessToken: string | undefined): Promise<PlaventiSession | null> {
-  if (accessToken) {
-    return unsealData(accessToken, {
-      password: environment.WORKOS_COOKIE_PASSWORD,
-    });
-  }
-
-  return null;
-}
-
-async function verifyAccessToken(accessToken: string) {
-  console.log("accessToken", accessToken);
-  try {
-    await jwtVerify(accessToken, JWKS);
-    return true;
-  } catch (e) {
-    console.warn("Failed to verify session:", e);
-    return false;
-  }
-}
 
 const hasValidSession = t.middleware(async ({ ctx, next }) => {
   if (!ctx.sessionToken) {
