@@ -1,6 +1,5 @@
 import { TRPCError } from "@trpc/server";
 import WorkOS from "@workos-inc/node";
-import { Request } from "express";
 import { unsealData } from "iron-session";
 import { createRemoteJWKSet, jwtVerify } from "jose";
 import { environment } from "../../environment";
@@ -36,7 +35,8 @@ async function verifyAccessToken(accessToken: string) {
 }
 
 const hasValidSession = t.middleware(async ({ ctx, next }) => {
-  const accessToken = ctx.req.cookies["wos-session"] ?? ctx.req.headers["authorization"];
+  const accessToken = ctx.req.cookies["wos-session"] ?? ctx.req.headers["Authorization"];
+
   console.log("hasValidSession", {
     accessToken,
     cookies: ctx.req.cookies,
@@ -66,7 +66,8 @@ const hasValidSession = t.middleware(async ({ ctx, next }) => {
 });
 
 const hasValidSessionWithOrg = t.middleware(async ({ ctx, next }) => {
-  const session = await getSession(ctx.req.cookies["wos-session"]);
+  const accessToken = ctx.req.cookies["wos-session"] ?? ctx.req.headers["Authorization"];
+  const session = await getSession(accessToken);
 
   if (!session) {
     throw new TRPCError({ code: "UNAUTHORIZED", message: "No session" });
