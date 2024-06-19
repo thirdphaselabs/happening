@@ -6,25 +6,16 @@ import { OpenApiMeta } from "trpc-openapi";
 import { ZodError } from "zod";
 
 export const createContextInner = async ({ req, res }: trpcExpress.CreateExpressContextOptions) => {
-  // @ts-ignore
-  const auth: WithAuthProp<Request> = req.auth;
-
-  console.log("headers in context", JSON.stringify(req.headers, null, 2));
-
-  const authHeader = req.headers["authorization"];
-  const authCookie = req.cookies["wos-session"];
-  const sessionToken = authCookie !== undefined && authCookie !== null ? authCookie : authHeader;
+  const sessionToken = req.cookies["wos-session"] as string | undefined;
 
   console.log("context", {
     sessionToken,
-    authHeader,
-    authCookie,
   });
 
   return {
     req,
     res,
-    sessionToken,
+    sessionToken: sessionToken ?? req.headers.authorization ?? null,
   };
 };
 

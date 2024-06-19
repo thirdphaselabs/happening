@@ -8,8 +8,7 @@ import {
   unstable_httpBatchStreamLink as unstableHttpBatchLink,
 } from "@trpc/client";
 import { createTRPCReact } from "@trpc/react-query";
-import React, { useEffect, useState } from "react";
-import { useTRPCContext } from "~/app/_components/trpc.context";
+import React, { useState } from "react";
 import { transformer } from "./transformer";
 import { getUrl } from "./utils/getUrl";
 
@@ -17,9 +16,8 @@ export const api = createTRPCReact<AppRouter>({});
 
 export function TRPCReactProvider(props: { children: React.ReactNode }) {
   const [queryClient] = React.useState(() => new QueryClient());
-  const { accessToken } = useTRPCContext();
 
-  const buildTrpcClient = (token: string | null) =>
+  const [trpcClient] = useState(() =>
     api.createClient({
       transformer,
       links: [
@@ -29,10 +27,6 @@ export function TRPCReactProvider(props: { children: React.ReactNode }) {
             return fetch(url, {
               ...options,
               credentials: "include",
-              headers: {
-                ...options?.headers,
-                ...(token ? { Authorization: `${token}` } : {}),
-              },
             });
           },
           maxURLLength: 2083,
@@ -47,21 +41,12 @@ export function TRPCReactProvider(props: { children: React.ReactNode }) {
             return fetch(url, {
               ...options,
               credentials: "include",
-              headers: {
-                ...options?.headers,
-                ...(token ? { Authorization: `${token}` } : {}),
-              },
             });
           },
         }),
       ],
-    });
-
-  const [trpcClient, setTrpcClient] = useState(buildTrpcClient(accessToken ?? null));
-
-  useEffect(() => {
-    setTrpcClient(buildTrpcClient(accessToken ?? null));
-  }, [accessToken]);
+    }),
+  );
 
   return (
     <QueryClientProvider client={queryClient}>

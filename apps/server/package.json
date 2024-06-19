@@ -6,7 +6,7 @@
   "scripts": {
     "build": "tsc --skipLibCheck && esbuild src/index.ts --bundle --platform=node --outfile=build/index.js",
     "tsc": "tsc",
-    "dev": "tsx watch src/index.ts",
+    "dev": "NODE_EXTRA_CA_CERTS=/users/reecejohnson/RootCa.pem tsx watch src/index.ts",
     "start": "node build/index.js",
     "test": "echo \"Error: no test specified\" && exit 1"
   },

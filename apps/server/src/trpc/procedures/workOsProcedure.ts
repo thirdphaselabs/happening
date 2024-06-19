@@ -35,6 +35,10 @@ async function verifyAccessToken(accessToken: string) {
 }
 
 const hasValidSession = t.middleware(async ({ ctx, next }) => {
+  if (!ctx.sessionToken) {
+    throw new TRPCError({ code: "UNAUTHORIZED", message: "No session token" });
+  }
+
   console.log("hasValidSessionWithOrg", {
     sessionToken: ctx.sessionToken,
   });
@@ -65,6 +69,11 @@ const hasValidSessionWithOrg = t.middleware(async ({ ctx, next }) => {
   console.log("hasValidSessionWithOrg", {
     sessionToken: ctx.sessionToken,
   });
+
+  if (!ctx.sessionToken) {
+    throw new TRPCError({ code: "UNAUTHORIZED", message: "No session token" });
+  }
+
   const session = await getSession(ctx.sessionToken);
 
   if (!session) {

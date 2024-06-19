@@ -63,6 +63,4 @@ export async function buildSessionFromToken(accessToken: string) {
   if (!hasValidSession) {
     return null;
   }
-
-  
 }

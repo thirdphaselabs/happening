@@ -27,6 +27,7 @@ export async function POST(request: NextRequest, response: NextApiResponse) {
 
     const result = await fetch(`${environment.apiUrl}/api/trpc/auth.signIn`, {
       method: "POST",
+      credentials: "include",
       body: JSON.stringify({
         json: {
           email,
@@ -62,7 +63,7 @@ export async function POST(request: NextRequest, response: NextApiResponse) {
       {
         status: 200,
         headers: {
-          "Set-Cookie": `wos-session=${token}; Path=/; SameSite=None; Secure`,
+          "Set-Cookie": `wos-session=${token}; Path=/; SameSite=Lax; Domain=.plaventi.local; Secure;`,
         },
       },
     );

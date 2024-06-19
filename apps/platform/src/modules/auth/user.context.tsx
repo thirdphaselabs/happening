@@ -1,13 +1,9 @@
 "use client";
 
-import { PlaventiEvent } from "@plaventi/server/src/modules/event-management/event.model";
-import { profile } from "console";
 import { createContext, useCallback, useContext, useMemo, useState, type ReactNode } from "react";
-import { useTRPCContext } from "~/app/_components/trpc.context";
 import { useAuthRefresh } from "~/app/_hooks/useAuthRefresh";
 import { api } from "~/trpc/provider";
 import { Attending, Session } from "~/trpc/types";
-import { environment } from "~/utils/env";
 import { invariant } from "~/utils/helpers";
 
 type UserState = {
@@ -45,8 +41,6 @@ export function OptionalUserContextProvider({
   );
 }
 
-const { apiUrl } = environment;
-
 export function UserContextProvider({
   children,
   session: serverSession,
@@ -54,7 +48,6 @@ export function UserContextProvider({
 }: UserContextProviderProps) {
   const [session, setSession] = useState<Session>(serverSession);
   const { authRefresh } = useAuthRefresh();
-  const { setAccessToken } = useTRPCContext();
 
   const { data: attending } = api.profile.attending.useQuery(undefined, {
     initialData: initialAttending,
@@ -66,7 +59,6 @@ export function UserContextProvider({
       return;
     }
     setSession(res.sessionData);
-    setAccessToken(res.token);
   }, []);
 
   const value = useMemo(

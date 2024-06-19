@@ -8,7 +8,6 @@ import { TRPCReactProvider } from "../trpc/provider";
 
 import type { Metadata } from "next";
 import { TopGradient } from "./_components/TopGradient";
-import { TRPCContextProvider } from "./_components/trpc.context";
 import { getSession } from "./actions";
 
 export const metadata: Metadata = {
@@ -26,12 +25,10 @@ export default async function RootLayout({ children }: { children: React.ReactNo
             {...themeConfig}
             style={{ backgroundColor: "#f4f5f6", overflow: "visible" }}
             id="root-radix-theme">
-            <TRPCContextProvider accessToken={session ? session.accessToken : null}>
-              <TRPCReactProvider>
-                <TopGradient />
-                {children}
-              </TRPCReactProvider>
-            </TRPCContextProvider>
+            <TRPCReactProvider>
+              <TopGradient />
+              {children}
+            </TRPCReactProvider>
             <Toaster
               duration={5000}
               closeButton={true}
