@@ -39,9 +39,10 @@ const hasValidSession = t.middleware(async ({ ctx, next }) => {
 
   console.log("hasValidSession", {
     accessToken,
-    cookies: ctx.req.cookies,
-    headers: ctx.req.headers,
+    cookie: ctx.req.cookies["wos-session"],
+    header: ctx.req.headers["Authorization"],
   });
+
   const session = await getSession(accessToken);
 
   if (!session) {
@@ -67,6 +68,11 @@ const hasValidSession = t.middleware(async ({ ctx, next }) => {
 
 const hasValidSessionWithOrg = t.middleware(async ({ ctx, next }) => {
   const accessToken = ctx.req.cookies["wos-session"] ?? ctx.req.headers["Authorization"];
+  console.log("hasValidSessionWithOrg", {
+    accessToken,
+    cookie: ctx.req.cookies["wos-session"],
+    header: ctx.req.headers["Authorization"],
+  });
   const session = await getSession(accessToken);
 
   if (!session) {
