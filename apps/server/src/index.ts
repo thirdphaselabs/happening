@@ -41,8 +41,14 @@ app.use(function (_req, res, next) {
   next();
 });
 
+const corsOptions = {
+  origin: environment.APP_URL,
+  credentials: true,
+};
+
 app
-  .use(cors({ origin: true, credentials: true }))
+  .use(cors(corsOptions))
+  .options("*", cors(corsOptions))
   .disable("x-powered-by")
   .use(cookieParser())
   .use(urlencoded({ extended: true }))
