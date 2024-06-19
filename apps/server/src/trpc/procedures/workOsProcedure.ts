@@ -37,6 +37,11 @@ async function verifyAccessToken(accessToken: string) {
 
 const hasValidSession = t.middleware(async ({ ctx, next }) => {
   const accessToken = ctx.req.cookies["wos-session"] ?? ctx.req.headers["authorization"];
+  console.log("hasValidSession", {
+    accessToken,
+    cookies: ctx.req.cookies,
+    headers: ctx.req.headers,
+  });
   const session = await getSession(accessToken);
 
   if (!session) {
