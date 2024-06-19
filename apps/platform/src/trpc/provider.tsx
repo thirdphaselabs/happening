@@ -1,7 +1,7 @@
 "use client";
 
-import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
 import type { AppRouter } from "@plaventi/server";
+import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
 import {
   httpBatchLink,
   loggerLink,
@@ -9,59 +9,58 @@ import {
 } from "@trpc/client";
 import { createTRPCReact } from "@trpc/react-query";
 import React, { useEffect, useState } from "react";
+import { useTRPCContext } from "~/app/_components/trpc.context";
 import { transformer } from "./transformer";
 import { getUrl } from "./utils/getUrl";
-import { useAuth } from "@clerk/nextjs";
-import { useTRPCContext } from "~/app/_components/trpc.context";
 
 export const api = createTRPCReact<AppRouter>({});
 
-export function TRPCReactProvider(props: { children: React.ReactNode; cookies: string | undefined }) {
+export function TRPCReactProvider(props: { children: React.ReactNode }) {
   const [queryClient] = React.useState(() => new QueryClient());
-  const { getToken } = useAuth();
   const { accessToken } = useTRPCContext();
 
-  const buildTrpcClient = api.createClient({
-    transformer,
-    links: [
-      httpBatchLink({
-        url: getUrl(),
-        async fetch(url, options) {
-          return fetch(url, {
-            ...options,
-            credentials: "include",
-            headers: {
-              ...options?.headers,
-              ...(props.cookies ? { Authorization: `${props.cookies}` } : {}),
-            },
-          });
-        },
-        maxURLLength: 2083,
-      }),
-      loggerLink({
-        enabled: (op) =>
-          process.env.NODE_ENV === "development" || (op.direction === "down" && op.result instanceof Error),
-      }),
-      unstableHttpBatchLink({
-        url: getUrl(),
-        async fetch(url, options) {
-          return fetch(url, {
-            ...options,
-            credentials: "include",
-            headers: {
-              ...options?.headers,
-              ...(props.cookies ? { Authorization: `${props.cookies}` } : {}),
-            },
-          });
-        },
-      }),
-    ],
-  });
+  const buildTrpcClient = (token: string | null) =>
+    api.createClient({
+      transformer,
+      links: [
+        httpBatchLink({
+          url: getUrl(),
+          async fetch(url, options) {
+            return fetch(url, {
+              ...options,
+              credentials: "include",
+              headers: {
+                ...options?.headers,
+                ...(token ? { Authorization: `${token}` } : {}),
+              },
+            });
+          },
+          maxURLLength: 2083,
+        }),
+        loggerLink({
+          enabled: (op) =>
+            process.env.NODE_ENV === "development" || (op.direction === "down" && op.result instanceof Error),
+        }),
+        unstableHttpBatchLink({
+          url: getUrl(),
+          async fetch(url, options) {
+            return fetch(url, {
+              ...options,
+              credentials: "include",
+              headers: {
+                ...options?.headers,
+                ...(token ? { Authorization: `${token}` } : {}),
+              },
+            });
+          },
+        }),
+      ],
+    });
 
-  const [trpcClient, setTrpcClient] = useState(buildTrpcClient);
+  const [trpcClient, setTrpcClient] = useState(buildTrpcClient(accessToken ?? null));
 
   useEffect(() => {
-    setTrpcClient(buildTrpcClient);
+    setTrpcClient(buildTrpcClient(accessToken ?? null));
   }, [accessToken]);
 
   return (
