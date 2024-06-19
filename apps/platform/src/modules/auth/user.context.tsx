@@ -66,7 +66,7 @@ export function UserContextProvider({
       return;
     }
     setSession(res.sessionData);
-    setAccessToken(res.sessionData.accessToken);
+    setAccessToken(res.token);
   }, []);
 
   const value = useMemo(
