@@ -9,6 +9,8 @@ export const createContextInner = async ({ req, res }: trpcExpress.CreateExpress
   // @ts-ignore
   const auth: WithAuthProp<Request> = req.auth;
 
+  console.log("headers in context", JSON.stringify(req.headers, null, 2));
+
   return {
     req,
     res,
