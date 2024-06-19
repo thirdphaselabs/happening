@@ -17,8 +17,8 @@ export const createContextInner = async ({ req, res }: trpcExpress.CreateExpress
 
   console.log("context", {
     sessionToken,
-    authCookie,
     authHeader,
+    authCookie,
   });
 
   return {
@@ -27,6 +27,22 @@ export const createContextInner = async ({ req, res }: trpcExpress.CreateExpress
     sessionToken,
   };
 };
+
+export const t = initTRPC
+  .context<typeof createContext>()
+  .meta<OpenApiMeta>()
+  .create({
+    transformer: SuperJSON,
+    errorFormatter({ shape, error }) {
+      return {
+        ...shape,
+        data: {
+          ...shape.data,
+          zodError: error.cause instanceof ZodError ? error.cause.flatten() : null,
+        },
+      };
+    },
+  });
 
 export const createTRPCRouter = t.router;
 
