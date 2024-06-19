@@ -42,7 +42,7 @@ app.use(function (_req, res, next) {
 });
 
 const corsOptions = {
-  origin: environment.APP_URL,
+  origin: [environment.APP_URL, "https://plaventi.dev"],
   credentials: true,
 };
 
