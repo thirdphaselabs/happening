@@ -1,9 +1,7 @@
-import { NextApiRequest, NextApiResponse } from "next";
-import { headers } from "next/headers";
-import { NextRequest } from "next/server";
+import { NextApiResponse } from "next";
+import { NextRequest, NextResponse } from "next/server";
 import { environment } from "~/utils/env";
 import { isString } from "~/utils/helpers";
-import { NextResponse } from "next/server";
 
 export async function POST(request: NextRequest, response: NextApiResponse) {
   try {
@@ -63,7 +61,7 @@ export async function POST(request: NextRequest, response: NextApiResponse) {
       {
         status: 200,
         headers: {
-          "Set-Cookie": `wos-session=${token}; Path=/; SameSite=Lax; Domain=.plaventi.local; Secure;`,
+          "Set-Cookie": `wos-session=${token}; Path=/; SameSite=Lax; Domain=.${environment.domain}; Secure;`,
         },
       },
     );
