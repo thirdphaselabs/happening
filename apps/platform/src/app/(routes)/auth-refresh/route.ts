@@ -4,7 +4,7 @@ import { NextRequest } from "next/server";
 import { environment } from "~/utils/env";
 import { isString } from "~/utils/helpers";
 import { NextResponse } from "next/server";
-import { getSession } from "../actions";
+import { getSession } from "../../actions";
 
 export async function POST(request: NextRequest, response: NextApiResponse) {
   try {

@@ -1,23 +1,23 @@
 "use client";
 
-import { useClerk, useUser } from "@clerk/nextjs";
 import { DropdownMenu } from "@radix-ui/themes";
 import { useRouter } from "next/navigation";
 import { environment } from "~/utils/env";
 
-const { apiUrl } = environment;
+const { appUrl } = environment;
 
 export function Logout() {
-  const { signOut } = useClerk();
   const router = useRouter();
+  const logout = async () => {
+    await fetch(`${appUrl}/log-out`, {
+      method: "POST",
+      credentials: "include",
+    });
+    router.push("/login");
+  };
+
   return (
-    <DropdownMenu.Item
-      color="red"
-      onClick={() => {
-        if (!signOut) throw new Error("signOut is not defined");
-        signOut();
-        router.push(`${apiUrl}/api/auth/logout`);
-      }}>
+    <DropdownMenu.Item color="red" onClick={logout}>
       Log out
     </DropdownMenu.Item>
   );

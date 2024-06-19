@@ -57,10 +57,13 @@ export async function getSession<T extends boolean>(options?: {
   return session as GetSessionReturnType<T>;
 }
 
-export async function buildSessionFromToken(accessToken: string) {
-  const hasValidSession = await verifyAccessToken(accessToken);
+export async function deleteSession() {
+  const session = await getIronSession(cookies(), {
+    password: "mcRI+dvCYeIAUu4DPlzhEkq+6nLFpW6xY0CD20hFWPytKeDtMGqU0XN6d7c/PEMp3dyNB21U5LyBHxcmxak3tA==",
+    cookieName: "wos-session",
+  });
 
-  if (!hasValidSession) {
-    return null;
+  if (session) {
+    session.destroy();
   }
 }
