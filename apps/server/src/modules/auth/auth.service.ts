@@ -42,6 +42,7 @@ export class AuthService {
       url: authorizationUrl,
     };
   }
+
   async signIn(args: { email: string; password: string }) {
     try {
       const response = await workos.userManagement.authenticateWithPassword({

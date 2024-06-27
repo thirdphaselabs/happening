@@ -1,5 +1,5 @@
 import { json, urlencoded } from "body-parser";
-import cors from "cors";
+import cors, { CorsOptions } from "cors";
 import express, { Application } from "express";
 
 import swaggerUi from "swagger-ui-express";
@@ -40,7 +40,7 @@ app.use(function (_req, res, next) {
   next();
 });
 
-const corsOptions = {
+const corsOptions: CorsOptions = {
   origin: [environment.APP_URL, "https://plaventi.dev"],
   credentials: true,
 };

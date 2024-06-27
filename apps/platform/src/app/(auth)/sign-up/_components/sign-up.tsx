@@ -51,12 +51,7 @@ export function SignUpForm() {
 }
 
 function SignUpFormInner() {
-  const { user, isLoaded } = useUser();
-  const { stage, setStage, setEmail, ticket } = useSignUpContext();
-  const { signUp } = useSignUp();
-  const { session, isLoaded: isSessionLoaded } = useSession();
-
-  if (!isLoaded || !isSessionLoaded) return null;
+  const { stage, ticket } = useSignUpContext();
 
   return (
     <Flex direction="column" mx="auto" className="w-full max-w-[450px]">
@@ -226,10 +221,6 @@ function PasswordStep() {
       setLoading(false);
     }
   };
-
-  if (!email && !ticket) {
-    return null;
-  }
 
   return (
     <form className="h-[160px] w-full" onSubmit={handleSubmit}>

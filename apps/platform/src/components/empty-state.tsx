@@ -1,8 +1,7 @@
 "use client";
 
-import { ArrowLeftIcon, PlusIcon } from "@radix-ui/react-icons";
-import { Flex, Heading, Text, Button } from "@radix-ui/themes";
-import Link from "next/link";
+import { ArrowLeftIcon } from "@radix-ui/react-icons";
+import { Button, Flex, Heading, Text } from "@radix-ui/themes";
 import { useRouter } from "next/navigation";
 
 export function EmptyState({ title, description }: { title: string; description: string }) {
