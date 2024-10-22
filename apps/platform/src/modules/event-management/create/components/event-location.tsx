@@ -22,6 +22,7 @@ export function EventLocationInner() {
 
   useEffect(() => {
     if (!debouncedSearch) return;
+    console.log("debouncedSearch", debouncedSearch);
     getPlacePredictions({ input: debouncedSearch });
   }, [debouncedSearch]);
 

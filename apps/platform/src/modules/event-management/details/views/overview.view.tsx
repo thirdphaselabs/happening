@@ -1,42 +1,34 @@
 "use client";
 
+import { faker } from "@faker-js/faker";
 import { Button } from "@plaventi/ui";
 import {
   ArrowRightIcon,
   ArrowTopRightIcon,
-  BarChartIcon,
-  ChatBubbleIcon,
   CheckIcon,
   Cross2Icon,
   Pencil2Icon,
-  PersonIcon,
-  PlusCircledIcon,
   PlusIcon,
 } from "@radix-ui/react-icons";
-import { Badge, Box, Flex, Heading, IconButton, Separator, Text } from "@radix-ui/themes";
-import {
-  RiBarChartGroupedLine,
-  RiChat4Line,
-  RiGroupLine,
-  RiMessage2Line,
-  RiQrScan2Line,
-} from "@remixicon/react";
+import { Badge, Box, Flex, Heading, IconButton, Separator, Skeleton, Text } from "@radix-ui/themes";
+import { RiBarChartGroupedLine, RiGroupLine, RiMessage2Line, RiQrScan2Line } from "@remixicon/react";
+import { ProgressBar } from "@tremor/react";
 import { formatDate } from "date-fns";
 import Link from "next/link";
 import { CalendarIcon } from "~/components/icons/Calendar.icon";
 import { LocationIcon } from "~/components/icons/Location.icon";
 import { UserAvatar } from "~/components/user-avatar";
 import { useUser } from "~/modules/auth/user.context";
-import { Card, ProgressBar } from "@tremor/react";
 
-import { useEventDetails } from "../context/event-details.context";
-import Image from "next/image";
-import EventDetailsDiscovery from "~/app/event/[identifier]/page";
 import { EventDetailsDiscoveryInner } from "~/modules/event-discovery/details/components/event-disovery-details";
+import { useEventDetails } from "../context/event-details.context";
+import { useState, useEffect } from "react";
+import { cn } from "~/lib/utils";
 
 export function EventDetailsOverviewView() {
   const { event } = useEventDetails();
-  const { user } = useUser();
+  const { user, fakeUserOne, updateFakeUserStatus } = useUser();
+
   return (
     <Flex direction="column" gap="5">
       <Flex width="100%" gap="4">
@@ -134,7 +126,7 @@ export function EventDetailsOverviewView() {
               color="gray"
               size="2">
               <Flex gap="2" align="center">
-                plaveti.com/px232msd32
+                happening.so/px232msd32
                 <ArrowTopRightIcon />
               </Flex>
               <Text className="text-white/60">COPY</Text>
@@ -196,10 +188,10 @@ export function EventDetailsOverviewView() {
             <Flex width="100%" justify="between">
               <Flex align="end" gap="1">
                 <Text size="6" weight="medium" color="green">
-                  1
+                  {fakeUserOne.length}
                 </Text>
                 <Text size="3" color="green">
-                  guest
+                  guests
                 </Text>
               </Flex>
               <Flex align="end" gap="1">
@@ -211,18 +203,32 @@ export function EventDetailsOverviewView() {
                 </Text>
               </Flex>
             </Flex>
-            <ProgressBar color="green" value={1} />
+            <ProgressBar
+              color="green"
+              value={(fakeUserOne.filter((user) => user.status === "approved").length / 500) * 100 || 0}
+            />
             <Flex width="100%" gap="4">
               <Flex align="center" gap="2">
                 <Box className="bg-greenA8 rounded-full p-1" />
                 <Text size="2" color="green">
-                  1 Going
+                  {fakeUserOne.filter((user) => user.status === "approved").length} Going
+                </Text>
+              </Flex>
+              <Flex
+                align="center"
+                gap="2"
+                className={cn(
+                  fakeUserOne.filter((user) => user.status === "pending").length > 0 ? "" : "hidden",
+                )}>
+                <Box className="bg-orangeA8 rounded-full p-1" />
+                <Text size="2" color="orange">
+                  {fakeUserOne.filter((user) => user.status === "pending").length} Pending Approval
                 </Text>
               </Flex>
               <Flex align="center" gap="2">
-                <Box className="bg-orangeA8 rounded-full p-1" />
-                <Text size="2" color="orange">
-                  1 Pending Approval
+                <Box className="bg-redA8 rounded-full p-1" />
+                <Text size="2" color="red">
+                  {fakeUserOne.filter((user) => user.status === "rejected").length} Declined
                 </Text>
               </Flex>
             </Flex>
@@ -240,55 +246,62 @@ export function EventDetailsOverviewView() {
             direction="column"
             className="border-grayA4 gap-3 rounded-xl border-[1px] border-solid bg-white/75 py-3"
             justify="between">
-            <Flex width="100%" justify="between" className="px-3">
-              <Flex align="center" gap="3">
-                <UserAvatar user={user} />
-                <Flex align="center" gap="2">
-                  <Text size="3" weight="medium">
-                    {user.firstName} {user.lastName}
-                  </Text>
-                  <Text color="gray" size="3">
-                    {user.email}
-                  </Text>
+            {fakeUserOne.slice(0, 10).map(({ name, email, status, color, image }, index) => (
+              <>
+                <Flex width="100%" justify="between" className="px-3">
+                  <Flex align="center" gap="3">
+                    <UserAvatar
+                      user={{
+                        ...user,
+                        firstName: name.split(" ")[0],
+                        lastName: name.split(" ").slice(1).join(" "),
+                      }}
+                      color={color}
+                      image={image}
+                    />
+                    <Flex align="center" gap="2">
+                      <Text size="3" weight="medium">
+                        {name}
+                      </Text>
+                      <Text color="gray" size="3">
+                        {email}
+                      </Text>
+                    </Flex>
+                  </Flex>
+                  {status === "pending" ? (
+                    <Flex align="center" gap="3">
+                      <Button
+                        variant="ghost"
+                        color="green"
+                        onClick={() => updateFakeUserStatus("one", email, "approved")}>
+                        <CheckIcon />
+                        Approve
+                      </Button>
+                      <Button
+                        variant="ghost"
+                        color="red"
+                        onClick={() => updateFakeUserStatus("one", email, "rejected")}>
+                        <Cross2Icon />
+                        Decline
+                      </Button>
+                      <Text size="2" color="gray">
+                        {formatDate(new Date(), "d MMM")}
+                      </Text>
+                    </Flex>
+                  ) : (
+                    <Flex align="center" gap="3">
+                      <Badge color={status === "approved" ? "green" : "red"} size="2" radius="full">
+                        {status === "approved" ? "Going" : "Declined"}
+                      </Badge>
+                      <Text size="2" color="gray">
+                        {formatDate(new Date(), "d MMM")}
+                      </Text>
+                    </Flex>
+                  )}
                 </Flex>
-              </Flex>
-              <Flex align="center" gap="3">
-                <Button variant="ghost" color="green">
-                  <CheckIcon />
-                  Approve
-                </Button>
-                <Button variant="ghost" color="red">
-                  <Cross2Icon />
-                  Decline
-                </Button>
-
-                <Text size="2" color="gray">
-                  {formatDate(new Date(), "d MMM")}
-                </Text>
-              </Flex>
-            </Flex>
-            <Separator orientation="horizontal" className="bg-grayA3 w-full" />
-            <Flex width="100%" justify="between" className="px-3">
-              <Flex align="center" gap="3">
-                <UserAvatar user={user} />
-                <Flex align="center" gap="2">
-                  <Text size="3" weight="medium">
-                    {user.firstName} {user.lastName}
-                  </Text>
-                  <Text color="gray" size="3">
-                    {user.email}
-                  </Text>
-                </Flex>
-              </Flex>
-              <Flex align="center" gap="3">
-                <Badge color="green" size="2" radius="full">
-                  Going
-                </Badge>
-                <Text size="2" color="gray">
-                  {formatDate(new Date(), "d MMM")}
-                </Text>
-              </Flex>
-            </Flex>
+                {index !== 9 && <Separator orientation="horizontal" className="bg-grayA3 w-full" />}
+              </>
+            ))}
           </Flex>
         </Flex>
         <Separator orientation="horizontal" className="bg-grayA3 w-full" />

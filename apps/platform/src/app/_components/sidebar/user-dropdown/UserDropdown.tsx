@@ -12,7 +12,7 @@ export function UserDropdown() {
   return (
     <DropdownMenu.Root>
       <DropdownMenu.Trigger>
-        <IconButton variant="ghost" color="gray" className="hidden focus:outline-none md:flex">
+        <IconButton variant="ghost" color="gray" className=" focus:outline-none">
           <Flex gap="2" align="center">
             <UserAvatar user={user.user} />
           </Flex>

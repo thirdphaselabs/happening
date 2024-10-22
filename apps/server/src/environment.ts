@@ -2,6 +2,7 @@ import z from "zod";
 import "dotenv/config";
 
 const envSchema = z.object({
+  ENVIRONMENT: z.enum(["development", "production"]),
   DATABASE_URL: z.string().trim().min(1),
   CLERK_SECRET_KEY: z.string().trim().min(1),
   CLERK_PEM_PUBLIC_KEY: z.string().trim().min(1),

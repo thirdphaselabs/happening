@@ -9,7 +9,7 @@ import { themeConfig } from "@plaventi/ui";
 import type { Metadata } from "next";
 
 export const metadata: Metadata = {
-  title: "Plaventi",
+  title: "Happening",
   description: "Event planning, management & ticketing. All in one place.",
 };
 

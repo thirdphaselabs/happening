@@ -1,9 +1,9 @@
 "use client";
 
-import { createContext, useCallback, useContext, useMemo, useState, type ReactNode } from "react";
-import { PlaventiEvent } from "../../trpc/types";
+import { createContext, useContext, useMemo, type ReactNode } from "react";
 import { api } from "~/trpc/provider";
 import { invariant } from "~/utils/helpers";
+import { PlaventiEvent } from "../../trpc/types";
 
 type MyEventsState = {
   events: PlaventiEvent[];

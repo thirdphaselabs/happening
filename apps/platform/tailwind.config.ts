@@ -23,6 +23,8 @@ import {
   yellowA,
   cyan,
   cyanA,
+  red,
+  redA,
 } from "@plaventi/ui/src/colours";
 
 const config = {
@@ -97,6 +99,8 @@ const config = {
         ...yellowA,
         ...cyan,
         ...cyanA,
+        ...red,
+        ...redA,
         border: "hsl(var(--border))",
         input: "hsl(var(--input))",
         ring: "hsl(var(--ring))",

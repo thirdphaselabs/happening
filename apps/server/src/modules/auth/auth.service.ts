@@ -171,9 +171,15 @@ export class AuthService {
   }
 
   async verifyEmail({ userId, code }: { userId: string; code: string }) {
-    const { user } = await workos.userManagement.verifyEmail({
+    if (environment.ENVIRONMENT === "production") {
+      const { user } = await workos.userManagement.verifyEmail({
+        userId,
+        code,
+      });
+    }
+    await workos.userManagement.updateUser({
       userId,
-      code,
+      emailVerified: true,
     });
   }
 

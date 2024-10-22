@@ -7,7 +7,7 @@ import { OnboardingStatus } from "~/trpc/types";
 
 const stepPaths: Record<Exclude<OnboardingStatus, "COMPLETED">, string> = {
   PROFILE: "/onboarding/profile",
-  TEAM: "/onboarding/company",
+  TEAM: "/onboarding/team",
   INVITE: "/onboarding/invite",
 };
 

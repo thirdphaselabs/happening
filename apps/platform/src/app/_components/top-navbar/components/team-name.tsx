@@ -11,7 +11,7 @@ export function TeamName() {
   if (!user.profile.team) return null;
 
   return (
-    <Text color="gray" size="2" className="text-gray8">
+    <Text color="gray" size="2" className="text-gray8 hidden md:block">
       {user.profile.team.name}
     </Text>
   );

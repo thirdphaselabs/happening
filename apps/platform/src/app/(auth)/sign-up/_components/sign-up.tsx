@@ -65,7 +65,7 @@ function SignUpFormInner() {
             {stage === "email-verification" ? "Verify your email" : "Create your account"}
           </Heading>
           <Text size="2" color="gray" weight="light">
-            Join the new age of event planning.
+            Attend events. Create events. Sell tickets.
           </Text>
         </Flex>
 

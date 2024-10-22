@@ -200,6 +200,9 @@ importers:
       '@clerk/nextjs':
         specifier: ^4.29.9
         version: 4.29.9(next@14.1.3)(react-dom@18.2.0)(react@18.2.0)
+      '@faker-js/faker':
+        specifier: ^9.0.3
+        version: 9.0.3
       '@googlemaps/markerclusterer':
         specifier: ^2.5.3
         version: 2.5.3
@@ -272,6 +275,9 @@ importers:
       '@workos-inc/node':
         specifier: ^7.8.0
         version: 7.8.0
+      add:
+        specifier: ^2.0.6
+        version: 2.0.6
       class-variance-authority:
         specifier: ^0.7.0
         version: 0.7.0
@@ -308,6 +314,9 @@ importers:
       next-themes:
         specifier: ^0.3.0
         version: 0.3.0(react-dom@18.2.0)(react@18.2.0)
+      pnpm:
+        specifier: ^9.12.2
+        version: 9.12.2
       postcss-import:
         specifier: ^16.1.0
         version: 16.1.0(postcss@8.4.36)
@@ -1204,6 +1213,11 @@ packages:
     resolution: {integrity: sha512-Ys+3g2TaW7gADOJzPt83SJtCDhMjndcDMFVQ/Tj9iA1BfJzFKD9mAUXT3OenpuPHbI6P/myECxRJrofUsDx/5g==}
     engines: {node: ^12.22.0 || ^14.17.0 || >=16.0.0}
     dev: true
+
+  /@faker-js/faker@9.0.3:
+    resolution: {integrity: sha512-lWrrK4QNlFSU+13PL9jMbMKLJYXDFu3tQfayBsMXX7KL/GiQeqfB1CzHkqD5UHBUtPAuPo6XwGbMFNdVMZObRA==}
+    engines: {node: '>=18.0.0', npm: '>=9.0.0'}
+    dev: false
 
   /@floating-ui/core@1.6.0:
     resolution: {integrity: sha512-PcF++MykgmTj3CIyOQbKA/hDzOAiqI3mhuoN44WRCopIs1sgoDoU4oty4Jtqaj/y3oDU6fnVSm4QG0a3t5i0+g==}
@@ -3654,6 +3668,10 @@ packages:
     resolution: {integrity: sha512-Y9rRfJG5jcKOE0CLisYbojUjIrIEE7AGMzA/Sm4BslANhbS+cDMpgBdcPT91oJ7OuJ9hYJBx59RjbhxVnrF8Xg==}
     engines: {node: '>=0.4.0'}
     hasBin: true
+
+  /add@2.0.6:
+    resolution: {integrity: sha512-j5QzrmsokwWWp6kUcJQySpbG+xfOBqqKnup3OIk1pz+kB/80SLorZ9V8zHFLO92Lcd+hbvq8bT+zOGoPkmBV0Q==}
+    dev: false
 
   /agent-base@7.1.0:
     resolution: {integrity: sha512-o/zjMZRhJxny7OyEF+Op8X+efiELC7k7yOjMzgfzVqOzXqkBkWI79YoTdOtsuWd5BWhAGAuOY/Xa6xpiaWXiNg==}
@@ -7489,6 +7507,12 @@ packages:
   /pluralize@8.0.0:
     resolution: {integrity: sha512-Nc3IT5yHzflTfbjgqWcCPpo7DaKy4FnpB0l/zCAW0Tc7jxAiuqSxHasntB3D7887LSrA93kDJ9IXovxJYxyLCA==}
     engines: {node: '>=4'}
+
+  /pnpm@9.12.2:
+    resolution: {integrity: sha512-InIbOhH4FmGuHsaM4ae4eUJaHKW5kcl1sHSsIgsYfOVscI/l22n0yWLJiUUu7nbIKHf07oD0dM69Ye4TRhtiKA==}
+    engines: {node: '>=18.12'}
+    hasBin: true
+    dev: false
 
   /possible-typed-array-names@1.0.0:
     resolution: {integrity: sha512-d7Uw+eZoloe0EHDIYoe+bQ5WXnGMOpmiZFTuMWCwpjzzkL2nTjcKiAk4hh8TjnGye2TwWOk3UXucZ+3rbmBa8Q==}

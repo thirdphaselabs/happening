@@ -19,6 +19,8 @@ import {
   purpleA as rPurpleA,
   yellow as rYellow,
   yellowA as rYellowA,
+  red as rRed,
+  redA as rRedA,
 } from "@radix-ui/colors";
 
 export const sky = {
@@ -349,4 +351,34 @@ export const yellowA = {
   yellowA10: rYellowA.yellowA10,
   yellowA11: rYellowA.yellowA11,
   yellowA12: rYellowA.yellowA12,
+};
+
+export const red = {
+  red1: rRed.red1,
+  red2: rRed.red2,
+  red3: rRed.red3,
+  red4: rRed.red4,
+  red5: rRed.red5,
+  red6: rRed.red6,
+  red7: rRed.red7,
+  red8: rRed.red8,
+  red9: rRed.red9,
+  red10: rRed.red10,
+  red11: rRed.red11,
+  red12: rRed.red12,
+};
+
+export const redA = {
+  redA1: rRedA.redA1,
+  redA2: rRedA.redA2,
+  redA3: rRedA.redA3,
+  redA4: rRedA.redA4,
+  redA5: rRedA.redA5,
+  redA6: rRedA.redA6,
+  redA7: rRedA.redA7,
+  redA8: rRedA.redA8,
+  redA9: rRedA.redA9,
+  redA10: rRedA.redA10,
+  redA11: rRedA.redA11,
+  redA12: rRedA.redA12,
 };

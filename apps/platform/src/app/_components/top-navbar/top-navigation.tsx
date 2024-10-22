@@ -91,14 +91,14 @@ export function TopNavigation({
             }}
             width="100%"
             py="3"
-            px="6"
+            px={{ initial: "3", md: "6" }}
             align="center">
-            <Flex className="z-10 w-fit" gap="6">
+            <Flex className="z-10 w-fit" gap={{ initial: "4", md: "6" }}>
               {/* <EventsManagerBadge /> */}
               <LogoOnlyBadge />
               <NavigationItems />
             </Flex>
-            <Flex gap="4" align="center" position="absolute" right="6">
+            <Flex gap="4" align="center" position="absolute" right={{ initial: "3", md: "6" }}>
               <TeamName />
               <Link
                 size="2"

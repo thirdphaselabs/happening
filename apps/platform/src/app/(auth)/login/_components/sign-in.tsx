@@ -80,7 +80,7 @@ function Header() {
           <Heading size="7">
             {stage === "forgot-password" || stage === "reset-password"
               ? "Reset your password"
-              : "Sign in your account"}
+              : "Sign in to your account"}
           </Heading>
         </Flex>
       </Flex>
@@ -474,7 +474,7 @@ export function ResetPassword() {
         </label>
         <Flex direction="column" gap="3" width="100%">
           <Button
-            disabled={loading || ! showReset}
+            disabled={loading || !showReset}
             size="3"
             loading={{
               isLoading: loading,

@@ -14,7 +14,7 @@ export default function NavigationItems() {
 
   return (
     // <Container size={isLargerContainer ? "3" : "2"} align="center">
-    <Flex align="center" gap="5" className="h-[24px]">
+    <Flex align="center" gap={{ initial: "4", md: "5" }} className="h-[24px]">
       {navigationItems.map((item) => {
         const isActive = activeRoute?.route === item.route;
         return (
@@ -24,11 +24,11 @@ export default function NavigationItems() {
               color="gray"
               highContrast={isActive}
               className={cn(
-                "transition-default text-gray10 hover:text-gray12 m-0 w-fit gap-[6px] p-0 font-[500] transition duration-300 ease-in-out hover:bg-transparent",
+                "transition-default text-gray8 md:text-gray10 hover:text-gray12 m-0 w-fit gap-[6px] p-0 font-[500] transition duration-300 ease-in-out hover:bg-transparent",
                 { "text-gray12": isActive },
               )}>
               <item.icon height="16" width="16" />
-              {item.title}
+              <span className="hidden md:block">{item.title}</span>
             </Button>
           </Link>
         );

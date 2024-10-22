@@ -1,6 +1,6 @@
 "use client";
 
-import { Flex, Heading, Text } from "@radix-ui/themes";
+import { Button, Flex, Heading, Link, Text } from "@radix-ui/themes";
 import { AreaChart } from "@tremor/react";
 import { formatDate } from "date-fns";
 import { useMemo } from "react";
@@ -131,18 +131,35 @@ export function EventPageViews() {
           See recent page views for your upcoming events.
         </Text>
       </Flex>
-      <Flex className="hover:border-grayA4 w-full rounded-xl border-[1px] border-solid border-white/50 bg-white/50 p-3 pl-4 transition duration-200 ease-in-out hover:shadow-sm">
-        <AreaChart
-          className="h-[300px]"
-          data={chartData}
-          index="date"
-          categories={eventTitles}
-          colors={["cyan", "yellow"]}
-          valueFormatter={dataFormatter}
-          yAxisWidth={60}
-          onValueChange={(v) => console.log(v)}
-        />
-      </Flex>
+      {events.length > 0 ? (
+        <Flex className="hover:border-grayA4 w-full rounded-xl border-[1px] border-solid border-white/50 bg-white/50 p-3 pl-4 transition duration-200 ease-in-out hover:shadow-sm">
+          <AreaChart
+            className="h-[300px]"
+            data={chartData}
+            index="date"
+            categories={eventTitles}
+            colors={["cyan", "orange"]}
+            valueFormatter={dataFormatter}
+            yAxisWidth={60}
+            onValueChange={(v) => console.log(v)}
+          />
+        </Flex>
+      ) : (
+        <EmptyState />
+      )}
+    </Flex>
+  );
+}
+
+function EmptyState() {
+  return (
+    <Flex direction="column" gap="4" width="100%" align="center" py="5">
+      <Heading size="5" color="gray">
+        No Page Views
+      </Heading>
+      <Text size="2" color="gray">
+        For any upcoming events, you will see page views here.
+      </Text>
     </Flex>
   );
 }

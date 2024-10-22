@@ -11,7 +11,7 @@ import { TopGradient } from "./_components/TopGradient";
 import { getSession } from "./actions";
 
 export const metadata: Metadata = {
-  title: "Plaventi",
+  title: "Happening",
   description: "Events Re-imagined: Plan, Manage, Sell & Discover",
 };
 
